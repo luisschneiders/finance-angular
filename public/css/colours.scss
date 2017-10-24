@@ -1,0 +1,58 @@
+$body-bg: #f4f4f4;
+$line-height-base: 1.57142857;
+$link-color: #1d7cf4;
+$link-hover-decoration: none;
+
+$brand-success: #29b35b;
+$brand-danger: #b61b17;
+
+$font-family-base: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$headings-font-weight: 600;
+
+$alert-info-border: #31708f;
+$alert-success-border: darken($brand-success, 12%);
+$alert-success-text: #fff;
+$alert-success-bg: $brand-success;
+$alert-danger-border: #b61b17;
+$alert-danger-text: #b61b17;
+$alert-danger-bg: #ffcdd2;
+
+$navbar-height: 56px;
+$navbar-default-bg: #fff;
+$navbar-default-border: #e0e0e0;
+$navbar-default-color: #757575;
+$navbar-default-link-color: #262626;
+$navbar-default-link-hover-bg: transparent;
+$navbar-default-link-active-bg: transparent;
+$navbar-default-link-active-color: #262626;
+
+$panel-heading-padding: 20px 30px;
+$panel-body-padding: 30px;
+
+$colour-1-light : #BBE4F1;
+$colour-2-light : #99D6EA;
+$colour-3-mid   : #5BC2E7;
+$colour-4-mid   : #0099D8;
+$colour-5-main  : #0078C8;
+$colour-6-dark  : #0067C0;
+$colour-7-dark  : #0057B8;
+
+
+// branding //
+$light-blue     : #2aa9e0;
+$dark-blue      : #2f378f;
+$light-gray     : #f0f0f0;
+$mid-gray       : #e0e0e0;
+$light-orange   : #f5683d;
+$mid-orange     : #f35626;
+$dark-orange    : #da3c0b;
+$light-yellow   : #febf67;
+$mid-yellow     : #feab3a;
+$dark-yellow    : #fe9501;
+$light-green    : #00cc00;
+$mid-green      : #009900;
+$dark-green     : #008000;
+
+$light-black    : #636363;
+$mid-black      : #4f4f4f;
+$dark-black     : #383838;

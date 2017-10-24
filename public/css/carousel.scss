@@ -1,0 +1,36 @@
+.carousel-center {
+  text-align: -webkit-center;
+  text-align: -moz-center;
+  text-align: -ms-center;
+}
+.carousel-indicators {
+  top: 0;
+  li {
+    background-color: $mid-gray;
+  }
+  .active {
+    background-color: $dark-orange;
+  }
+}
+.carousel-inner {
+  i {
+    width: 100%;
+    font-size: 20em;
+    height: 100%;
+    margin-top: 60px;
+    padding-bottom: 60px;
+
+    background-image: $colour-7-dark;
+    background-image: -moz-linear-gradient(left, $dark_blue 0%, $light_blue 100%);
+    background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark_blue), color-stop(100%, $light_blue));
+    background-image: -webkit-linear-gradient(left, $dark_blue 0%, $light_blue 100%);
+    background-image: -o-linear-gradient(left, $dark_blue 0%, $light_blue 100%);
+    background-image: -ms-linear-gradient(left, $dark_blue 0%, $light_blue 100%);
+    background-image: linear-gradient(to right, $dark_blue 0%, $light_blue 100%);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+  }
+}

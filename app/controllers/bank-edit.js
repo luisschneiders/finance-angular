@@ -1,38 +1,35 @@
 angular.module('MyApp')
-  .controller('BankCtrl', function($scope, $rootScope, $location, BankServices, DefaultServices) {
+  .controller('BankEditCtrl', function($scope, $location, BankServices, DefaultServices) {
     let data = {
-      banks: [],
+      bank: null,
+      url: '/all-banks',
+      isSaving: false,
+      isNull: false,
       notFound: 'Record Not Found!',
-      isNull: false,      
       class: {
         active: 'is-active',
         inactive: 'is-inactive'
       },
       top: {
-        title: 'banks',
+        title: 'bank',
         url: '/bank-new',
         show: true
-      }
+      }      
     };
-    let banks = BankServices.getAllBanks();
-
+    let id = $location.path().substr(6); // to remove /bank/
+    let banks = BankServices.getBankById(id);
+    
     DefaultServices.setTop(data.top);
-
+    
     banks.then(function(response) {
-      let top = {};
-      if(!response) {
+      if (!response) {
         data.isNull = true;
         return;
       }
-      data.banks = response;
-      top = DefaultServices.getTop();
+      data.isNull = false;
+      data.bank = response;
     }).catch(function(err) {
       console.warn('Error getting banks: ', err);
     });
-    
-    $scope.editBank = function(id) {
-      $location.path(`/bank/${id}`);
-    };
-
     $scope.data = data;
   });

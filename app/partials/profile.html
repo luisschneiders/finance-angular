@@ -1,6 +1,7 @@
 <div class="container">
-  <div class="panel">
-    <div class="panel-body">
+  <!-- <div class="panel">
+    <div class="panel-body"> -->
+      <div ng-include src="'partials/top.html'"></div>
       <div ng-if="messages.error" role="alert" class="alert alert-danger">
         <div ng-repeat="error in messages.error">{{error.msg}}</div>
       </div>
@@ -8,7 +9,6 @@
         <div ng-repeat="success in messages.success">{{success.msg}}</div>
       </div>
       <form ng-submit="updateProfile()" class="form-horizontal">
-        <legend>Profile Information</legend>
         <div class="form-group">
           <label for="email" class="col-sm-3">Email</label>
           <div class="col-sm-7">
@@ -56,12 +56,12 @@
           </div>
         </div>
       </form>
-    </div>
+    <!-- </div>
   </div>
   <div class="panel">
-    <div class="panel-body">
+    <div class="panel-body"> -->
       <form ng-submit="changePassword()" class="form-horizontal">
-        <legend>Change Password</legend>
+        <legend><h4 class="text-capitalize title-border-left">Password</h4></legend>
         <div class="form-group">
           <label for="password" class="col-sm-3">New Password</label>
           <div class="col-sm-7">
@@ -80,12 +80,12 @@
           </div>
         </div>
       </form>
-    </div>
+    <!-- </div>
   </div>
   <div class="panel">
-    <div class="panel-body">
+    <div class="panel-body"> -->
       <div class="form-horizontal">
-        <legend>Linked Accounts</legend>
+        <legend><h4 class="text-capitalize title-border-left">Linked Accounts</h4></legend>
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-4">
             <p>
@@ -95,19 +95,19 @@
           </div>
         </div>
       </div>
-    </div>
+    <!-- </div>
   </div>
   <div class="panel">
-    <div class="panel-body">
+    <div class="panel-body"> -->
       <form ng-submit="deleteAccount()" class="form-horizontal">
-        <legend>Delete Account</legend>
+        <legend><h4 class="text-capitalize title-border-left">Account</h4></legend>
         <div class="form-group">
           <p class="col-sm-offset-3 col-sm-9">You can delete your account, but keep in mind this action is irreversible.</p>
           <div class="col-sm-offset-3 col-sm-9">
-            <button type="submit" class="btn btn-danger">Delete my account</button>
+            <button type="submit" class="btn btn-danger" disabled>Delete my account</button>
           </div>
         </div>
       </form>
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
 </div>

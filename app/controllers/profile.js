@@ -1,5 +1,14 @@
 angular.module('MyApp')
-  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account) {
+  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+    let data = {
+      top: {
+        title: 'Profile Information',
+        url: null,
+        show: false
+      }
+    };
+    DefaultServices.setTop(data.top);
+
     $scope.profile = $rootScope.currentUser;
 
     $scope.updateProfile = function() {
@@ -46,6 +55,7 @@ angular.module('MyApp')
           };
         });
     };
+
     $scope.unlink = function(provider) {
       $auth.unlink(provider)
         .then(function() {

@@ -9,19 +9,20 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const request = require('request');
+const favicon = require('serve-favicon');
 
 // Load environment variables from .env file
 dotenv.load();
 
 // Models
-const User = require('./models/User');
-
-// Controllers
-const userController = require('./controllers/user');
-const contactController = require('./controllers/contact');
-const bankController = require('./controllers/bank');
+let User = require('./models/User');
 
 const app = express();
+// Controllers
+let userController = require('./controllers/user');
+let contactController = require('./controllers/contact');
+let bankController = require('./controllers/bank');
+
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
 app.use(compression());
@@ -31,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(path.join(__dirname, 'public','/img/favicon.ico')));
 
 app.use(function(req, res, next) {
   req.isAuthenticated = function() {
@@ -66,9 +68,10 @@ app.post('/reset/:token', userController.resetPost);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
-app.get('/banks', bankController.bankGet);
-app.post('/bank', userController.ensureAuthenticated, bankController.bankPost);
-
+app.get('/banks', bankController.bankGetAll);
+app.get('/banks/:id', bankController.bankGetById);
+// app.post('/bank', userController.ensureAuthenticated, bankController.bankPost);
+// app.put('/bank/:id', userController.ensureAuthenticated, bankController.bankPut);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

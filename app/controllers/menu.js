@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('HeaderCtrl', function($scope, $location, $window, $auth, DefaultServices) {
+  .controller('MenuCtrl', function($scope, $location, $window, $auth) {
     let defaultsApp = {
       logo: null,
       title: null,

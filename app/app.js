@@ -40,11 +40,21 @@ angular.module('MyApp', ['ngRoute', 'satellizer'])
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/bank', {
+      .when('/all-banks', {
         templateUrl: 'partials/bank.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/bank/:id', {
+        templateUrl: 'partials/bank-edit.html',
+        controller: 'BankEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/bank-new', {
+        templateUrl: 'partials/bank-edit.html',
+        controller: 'BankNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })      
       .otherwise({
         templateUrl: 'partials/404.html'
       });

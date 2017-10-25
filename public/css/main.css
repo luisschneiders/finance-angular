@@ -8137,16 +8137,16 @@ button.close {
 
 .nav-side-menu ul .active,
 .nav-side-menu li .active {
-  border-left: 3px solid #d19b3d;
+  border-left: 3px solid #feab3a;
   background-color: #4f5b69; }
 
 .nav-side-menu ul .sub-menu li.active,
 .nav-side-menu li .sub-menu li.active {
-  color: #d19b3d; }
+  color: #feab3a; }
 
 .nav-side-menu ul .sub-menu li.active a,
 .nav-side-menu li .sub-menu li.active a {
-  color: #d19b3d; }
+  color: #feab3a; }
 
 .nav-side-menu ul .sub-menu li,
 .nav-side-menu li .sub-menu li {
@@ -8184,7 +8184,7 @@ button.close {
   padding-right: 20px; }
 
 .nav-side-menu li:hover {
-  border-left: 3px solid #d19b3d;
+  border-left: 3px solid #feab3a;
   background-color: #4f5b69;
   transition: all 1s ease; }
 
@@ -8255,6 +8255,47 @@ button.close {
   background-clip: text;
   -webkit-text-fill-color: transparent; }
 
+@media (max-width: 767px) {
+  /* Force table to not be like tables anymore */
+  #no-more-tables table,
+  #no-more-tables thead,
+  #no-more-tables tbody,
+  #no-more-tables th,
+  #no-more-tables td,
+  #no-more-tables tr {
+    display: block; }
+  /* Hide table headers (but not display: none;, for accessibility) */
+  #no-more-tables thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px; }
+  #no-more-tables tr {
+    border: 1px solid #ccc; }
+  #no-more-tables td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+    white-space: normal;
+    text-align: left; }
+  #no-more-tables td:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold; }
+  /*
+  Label the data
+  */
+  #no-more-tables td:before {
+    content: attr(data-title); } }
+
 .font-family, body {
   font-family: 'ralewayregular'; }
 
@@ -8302,9 +8343,36 @@ footer {
 
 .btn {
   font-weight: 600;
-  border-radius: 3px; }
+  border-radius: 0; }
   .btn:focus {
     outline: 0 !important; }
+
+.btn-primary {
+  border-color: #0078C8;
+  background: #0078C8;
+  /* Old browsers */
+  /* FF3.6+ */
+  /* Chrome,Safari4+ */
+  /* Chrome10+,Safari5.1+ */
+  /* Opera 11.10+ */
+  /* IE10+ */
+  background-image: linear-gradient(to bottom, #0078C8 0%, #0067C0 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$colour-5-main', endColorstr='$colour-6-dark',GradientType=0 );
+  /* IE6-9 */ }
+  .btn-primary:active, .btn-primary:hover, .btn-primary:focus {
+    border-color: #0078C8;
+    background: #0067C0;
+    /* Old browsers */
+    /* FF3.6+ */
+    /* Chrome,Safari4+ */
+    /* Chrome10+,Safari5.1+ */
+    /* Opera 11.10+ */
+    /* IE10+ */
+    background-image: linear-gradient(to bottom, #0067C0 0%, #0057B8 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$colour-6-dark', endColorstr='$colour-7-dark',GradientType=0 );
+    /* IE6-9 */ }
 
 .btn-default {
   border-color: #ccc;
@@ -8314,18 +8382,58 @@ footer {
     background: #e6e6e6 linear-gradient(to bottom, #f0f0f0, #e6e6e6); }
 
 .btn-success {
-  border-color: #208a46;
-  background: #29b35b linear-gradient(to bottom, #2ec866, #29b35b);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -1px 4px rgba(32, 138, 70, 0.3); }
-  .btn-success:active {
-    background: #239a4e linear-gradient(to bottom, #28af59, #239a4e); }
+  border-color: #009900;
+  background: #009900;
+  /* Old browsers */
+  /* FF3.6+ */
+  /* Chrome,Safari4+ */
+  /* Chrome10+,Safari5.1+ */
+  /* Opera 11.10+ */
+  /* IE10+ */
+  background-image: linear-gradient(to bottom, #009900 0%, #009900 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$mid-green', endColorstr='$mid-green',GradientType=0 );
+  /* IE6-9 */ }
+  .btn-success:active, .btn-success:hover, .btn-success:focus {
+    border-color: #008000;
+    background: #008000;
+    /* Old browsers */
+    /* FF3.6+ */
+    /* Chrome,Safari4+ */
+    /* Chrome10+,Safari5.1+ */
+    /* Opera 11.10+ */
+    /* IE10+ */
+    background-image: linear-gradient(to bottom, #008000 0%, #008000 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$dark-green', endColorstr='$dark-green',GradientType=0 );
+    /* IE6-9 */ }
 
 .btn-danger {
-  border-color: #8c1512;
-  background: #b61b17 linear-gradient(to bottom, #cc1e1a, #b61b17);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -1px 4px rgba(140, 21, 18, 0.3); }
-  .btn-danger:active {
-    background: #9b1714 linear-gradient(to bottom, #b11a17, #9b1714); }
+  border-color: #f35626;
+  background: #f35626;
+  /* Old browsers */
+  /* FF3.6+ */
+  /* Chrome,Safari4+ */
+  /* Chrome10+,Safari5.1+ */
+  /* Opera 11.10+ */
+  /* IE10+ */
+  background-image: linear-gradient(to bottom, #f35626 0%, #f35626 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$mid-orange', endColorstr='$mid-orange',GradientType=0 );
+  /* IE6-9 */ }
+  .btn-danger:active, .btn-danger:hover, .btn-danger:focus {
+    border-color: #da3c0b;
+    background: #da3c0b;
+    /* Old browsers */
+    /* FF3.6+ */
+    /* Chrome,Safari4+ */
+    /* Chrome10+,Safari5.1+ */
+    /* Opera 11.10+ */
+    /* IE10+ */
+    background-image: linear-gradient(to bottom, #da3c0b 0%, #da3c0b 100%);
+    /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$dark-orange', endColorstr='$dark-orange',GradientType=0 );
+    /* IE6-9 */ }
 
 .btn-facebook {
   color: #fff;
@@ -8399,8 +8507,18 @@ textarea {
   letter-spacing: 0.2em;
   text-transform: uppercase; }
 
-.shadows {
-  box-shadow: 0px 1px 1px 1px #646464; }
+.is-active {
+  color: #008000; }
+
+.is-inactive {
+  color: #fe9501; }
+
+.table-cursor {
+  cursor: pointer; }
+
+.title-border-left {
+  border-left: 3px solid #feab3a;
+  padding-left: 5px; }
 
 @media (min-width: 767px) {
   #main {
@@ -8409,5 +8527,14 @@ textarea {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    margin-top: 15px;
-    margin-bottom: 44px; } }
+    margin-top: 58px;
+    margin-bottom: 44px; }
+  .fixed-row {
+    border-bottom: 1px solid #e0e0e0;
+    position: fixed;
+    top: 0;
+    width: calc(100% - 200px);
+    height: 50px;
+    padding-top: 8px;
+    background-color: #fff;
+    z-index: 10; } }

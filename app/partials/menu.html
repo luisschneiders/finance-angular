@@ -1,4 +1,4 @@
-<div ng-controller="HeaderCtrl" class="nav-side-menu">
+<div ng-controller="MenuCtrl" class="nav-side-menu">
     <div class="brand">
       <span ng-if="!isAuthenticated()" class="navbar-logo text-center">
         <img ng-src="{{defaultsApp.logo}}" alt="{{defaultsApp.alt}}" title="{{defaultsApp.title}}" width="{{defaultsApp.width}}">
@@ -16,7 +16,7 @@
           </li>
           <ul class="sub-menu collapse" id="setup">
               <!-- <li class="active"><a href="#">CSS3 Animation</a></li> -->
-              <li><a href="/bank">Banks</a></li>
+              <li><a href="/all-banks">Banks</a></li>
               <li><a href="/employer">Employers</a></li>
               <li><a href="/expense-type">Expenses</a></li>
               <li><a href="/transaction-type">Transactions Types</a></li>

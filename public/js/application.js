@@ -42,11 +42,21 @@ angular.module('MyApp', ['ngRoute', 'satellizer'])
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/bank', {
+      .when('/all-banks', {
         templateUrl: 'partials/bank.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/bank/:id', {
+        templateUrl: 'partials/bank-edit.html',
+        controller: 'BankEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/bank-new', {
+        templateUrl: 'partials/bank-edit.html',
+        controller: 'BankNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })      
       .otherwise({
         templateUrl: 'partials/404.html'
       });
@@ -77,21 +87,110 @@ angular.module('MyApp', ['ngRoute', 'satellizer'])
   }]);
 
 angular.module('MyApp')
-  .controller('BankCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", "BankServices", function($scope, $rootScope, $location, $window, $auth, BankServices) {
+  .controller('BankEditCtrl', ["$scope", "$location", "BankServices", "DefaultServices", function($scope, $location, BankServices, DefaultServices) {
     let data = {
-      banks: []
+      bank: null,
+      url: '/all-banks',
+      isSaving: false,
+      isNull: false,
+      notFound: 'Record Not Found!',
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'bank',
+        url: '/bank-new',
+        show: true
+      }      
     };
-    $scope.data = data;
+    let id = $location.path().substr(6); // to remove /bank/
+    let banks = BankServices.getBankById(id);
     
-    let banks = BankServices.getAllBanks();
+    DefaultServices.setTop(data.top);
+    
     banks.then(function(response) {
-      console.table(response);
-      data.banks = response
-
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.bank = response;
     }).catch(function(err) {
       console.warn('Error getting banks: ', err);
     });
+    $scope.data = data;
+  }]);
+angular.module('MyApp')
+  .controller('BankNewCtrl', ["$scope", "$location", "BankServices", "DefaultServices", function($scope, $location, BankServices, DefaultServices) {
+    let data = {
+      bank: null,
+      url: '/all-banks',
+      title: 'banks',
+      isSaving: false,
+      isNull: false,
+      top: {
+        title: 'new bank',
+        url: '/bank-new',
+        show: true
+      }      
+    };
+    // let id = $location.path().substr(6); // to remove /bank/
+    // let banks = BankServices.getBankById(id);
+    DefaultServices.setTop(data.top);
 
+    $scope.data = data;
+
+    // banks.then(function(response) {
+    //   console.table(response);
+    //   if (!response) {
+    //     data.isNull = true;
+    //     return;
+    //   }
+    //   data.isNull = false;
+    //   data.bank = response;
+    // }).catch(function(err) {
+    //   console.warn('Error getting banks: ', err);
+    // });
+  }]);
+
+angular.module('MyApp')
+  .controller('BankCtrl', ["$scope", "$rootScope", "$location", "BankServices", "DefaultServices", function($scope, $rootScope, $location, BankServices, DefaultServices) {
+    let data = {
+      banks: [],
+      notFound: 'Record Not Found!',
+      isNull: false,      
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'banks',
+        url: '/bank-new',
+        show: true
+      }
+    };
+    let banks = BankServices.getAllBanks();
+
+    DefaultServices.setTop(data.top);
+
+    banks.then(function(response) {
+      let top = {};
+      if(!response) {
+        data.isNull = true;
+        return;
+      }
+      data.banks = response;
+      top = DefaultServices.getTop();
+    }).catch(function(err) {
+      console.warn('Error getting banks: ', err);
+    });
+    
+    $scope.editBank = function(id) {
+      $location.path(`/bank/${id}`);
+    };
+
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -126,39 +225,6 @@ angular.module('MyApp')
           };
         });
     };
-  }]);
-
-angular.module('MyApp')
-  .controller('HeaderCtrl', ["$scope", "$location", "$window", "$auth", "DefaultServices", function($scope, $location, $window, $auth, DefaultServices) {
-    let defaultsApp = {
-      logo: null,
-      title: null,
-      alt: null,
-      width: 170,
-      copyRight: new Date().getFullYear()
-    };
-
-    defaultsApp.logo = '/img/schneiders-tech-software-development-release.svg';
-    defaultsApp.title = 'Your personal finance app';
-    defaultsApp.alt = defaultsApp.title;
- 
-    $scope.isActive = function (viewLocation) {
-      return viewLocation === $location.path();
-    };
-    
-    $scope.isAuthenticated = function() {
-      return $auth.isAuthenticated();
-    };
-    
-    $scope.logout = function() {
-      console.log('here')
-      $auth.logout();
-      delete $window.localStorage.user;
-      $location.path('/');
-    };
-
-    $scope.defaultsApp = defaultsApp;
-    
   }]);
 
 angular.module('MyApp')
@@ -202,7 +268,49 @@ angular.module('MyApp')
 
   }]);
 angular.module('MyApp')
-  .controller('ProfileCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", "Account", function($scope, $rootScope, $location, $window, $auth, Account) {
+  .controller('MenuCtrl', ["$scope", "$location", "$window", "$auth", function($scope, $location, $window, $auth) {
+    let defaultsApp = {
+      logo: null,
+      title: null,
+      alt: null,
+      width: 170,
+      copyRight: new Date().getFullYear()
+    };
+
+    defaultsApp.logo = '/img/schneiders-tech-software-development-release.svg';
+    defaultsApp.title = 'Your personal finance app';
+    defaultsApp.alt = defaultsApp.title;
+ 
+    $scope.isActive = function (viewLocation) {
+      return viewLocation === $location.path();
+    };
+    
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
+    
+    $scope.logout = function() {
+      console.log('here')
+      $auth.logout();
+      delete $window.localStorage.user;
+      $location.path('/');
+    };
+
+    $scope.defaultsApp = defaultsApp;
+    
+  }]);
+
+angular.module('MyApp')
+  .controller('ProfileCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", "Account", "DefaultServices", function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+    let data = {
+      top: {
+        title: 'Profile Information',
+        url: null,
+        show: false
+      }
+    };
+    DefaultServices.setTop(data.top);
+
     $scope.profile = $rootScope.currentUser;
 
     $scope.updateProfile = function() {
@@ -249,6 +357,7 @@ angular.module('MyApp')
           };
         });
     };
+
     $scope.unlink = function(provider) {
       $auth.unlink(provider)
         .then(function() {
@@ -332,6 +441,22 @@ angular.module('MyApp')
     };
   }]);
 angular.module('MyApp')
+  .controller('TopCtrl', ["$scope", "$location", "DefaultServices", function($scope, $location, DefaultServices) {
+    let data = {
+      title: null,
+      url: null,
+      show: false
+    };
+    let top = DefaultServices.getTop();
+
+    data.title = top.title;
+    data.url = top.url;
+    data.show = top.show;
+
+    $scope.default = data;
+  }]);
+
+angular.module('MyApp')
   .factory('Account', ["$http", function($http) {
     return {
       updateProfile: function(data) {
@@ -352,17 +477,27 @@ angular.module('MyApp')
     };
   }]);
 angular.module('MyApp')
-.factory('BankServices', ["$http", function($http) {
+.factory('BankServices', ["$http", "$rootScope", function($http, $rootScope) {
   return {
-    getAllBanks: function(data) {
-      let banks = $http.get('/banks', data)
+    getAllBanks: function() {
+      let banks = $http.get('/banks')
         .then(function(response){
           return response.data;
         })
-        .catch(function (error) {
+        .catch(function(error) {
           return error;
         });        
       return banks;
+    },
+    getBankById: function(id) {
+      let bank = $http.get(`/banks/${id}`)
+        .then(function(response){
+          return response.data;
+        })
+        .catch(function(error) {
+          return error;
+        });
+      return bank;
     }
   };
 }]);
@@ -376,11 +511,17 @@ angular.module('MyApp')
   }]);
 angular.module('MyApp')
 .factory('DefaultServices', ["$http", function($http) {
+  let top = {};
   return {
-    getDefaultsApp: function(data) {
-      return $http.post('/', data);
+    setTop: function(data) {
+      top.title = data.title;
+      top.url = data.url;
+      top.show = data.show;
+    },
+    getTop: function() {
+      return top;
     }
-  };
+  }
 }]);
 angular.module('MyApp')
 .factory('MainServices', ["$http", function($http) {

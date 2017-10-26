@@ -1,32 +1,50 @@
 angular.module('MyApp')
-  .controller('BankNewCtrl', function($scope, $location, BankServices, DefaultServices) {
+  .controller('BankNewCtrl', function($scope, $location, $timeout, BankServices, DefaultServices) {
     let data = {
-      bank: null,
-      url: '/all-banks',
-      title: 'banks',
+      bank: {
+        bankDescription: null,
+        bankAccount: null,
+        bankInitialBalance: 0.00,
+        bankCurrentBalance: 0.00,
+        bankIsActive: 1
+      },
       isSaving: false,
-      isNull: false,
+      isNull: false, // it's required for the bank-edit.html
       top: {
         title: 'new bank',
         url: '/bank-new',
         show: true
-      }      
+      }
     };
-    // let id = $location.path().substr(6); // to remove /bank/
-    // let banks = BankServices.getBankById(id);
+
     DefaultServices.setTop(data.top);
 
-    $scope.data = data;
+    $scope.updateBank = function($valid) {
+      let bankUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      bankUpdated = BankServices.add(data.bank);
+      bankUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/bank/${response.data.bank.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating bank: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
 
-    // banks.then(function(response) {
-    //   console.table(response);
-    //   if (!response) {
-    //     data.isNull = true;
-    //     return;
-    //   }
-    //   data.isNull = false;
-    //   data.bank = response;
-    // }).catch(function(err) {
-    //   console.warn('Error getting banks: ', err);
-    // });
+    $scope.data = data;
   });

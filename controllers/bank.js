@@ -12,7 +12,7 @@ exports.bankGetAll = function(req, res) {
 };
 
 /**
- * GET /bank/:id
+ * GET /banks/:id
  */
 exports.bankGetById = function(req, res) {
   Bank.where({'bankInsertedBy': req.user.id, 'id': req.params.id}).fetch().then(function(bank) {
@@ -23,15 +23,67 @@ exports.bankGetById = function(req, res) {
 };
 
 /**
- * POST /bank
+ * PUT /banks/:id
  */
-exports.bankPost = function(req, res) {
+exports.bankPut = function(req, res) {
+  let bank;
+  let errors;
 
+  req.assert('bankDescription', 'Description cannot be blank').notEmpty();
+  req.assert('bankAccount', 'Account cannot be blank').notEmpty();
+
+  errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(400).send(errors);
+  }
+
+  bank = new Bank({'bankInsertedBy': req.user.id, 'id': req.body.id});
+  bank.save({
+    bankDescription: req.body.bankDescription,
+    bankAccount: req.body.bankAccount,
+    bankCurrentBalance: req.body.bankCurrentBalance,
+    bankIsActive: req.body.bankIsActive,
+  }, { patch: true })
+      .then(function(model) {
+        res.send({ bank: model, msg: 'Bank has been updated.' });
+      })
+      .catch(function(err) {
+        res.send({ msg: err });
+      });
 };
 
 /**
- * PUT /bank:id
+ * POST /banks/new
  */
-exports.bankPut = function(req, res) {
-  
+exports.bankPost = function(req, res) {
+  let bank;
+  let errors;
+
+  req.assert('bankDescription', 'Description cannot be blank').notEmpty();
+  req.assert('bankAccount', 'Account cannot be blank').notEmpty();
+
+  errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(400).send(errors);
+  }
+
+  bank = new Bank();
+  bank.save({
+        bankInsertedBy: req.user.id,
+        bankDescription: req.body.bankDescription,
+        bankAccount: req.body.bankAccount,
+        bankInitialBalance: req.body.bankCurrentBalance,
+        bankCurrentBalance: req.body.bankCurrentBalance,
+        bankIsActive: req.body.bankIsActive,
+      })
+      .then(function(model) {
+        res.send({ bank: model, msg: 'Bank has been added.' });
+      })
+      .catch(function(err) {
+        if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
+          return res.status(400).send({ msg: 'The account you have entered already exists.' });
+        }
+      });
 };

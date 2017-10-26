@@ -12,20 +12,23 @@ angular.module('MyApp')
         title: 'banks',
         url: '/bank-new',
         show: true
-      }
+      },
+      isLoading: false
     };
     let banks = BankServices.getAllBanks();
-
+    data.isLoading = true;
     DefaultServices.setTop(data.top);
 
     banks.then(function(response) {
       let top = {};
       if(!response) {
         data.isNull = true;
+        data.isLoading = false;
         return;
       }
       data.banks = response;
       top = DefaultServices.getTop();
+      data.isLoading = false;
     }).catch(function(err) {
       console.warn('Error getting banks: ', err);
     });

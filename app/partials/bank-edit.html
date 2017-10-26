@@ -2,39 +2,45 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="alert alert-danger text-center" ng-if="data.isNull === true">
-          <h3>{{::data.notFound}}</h3>
-          <a class="text-capitalize" ng-href="{{data.url}}">Return to {{data.title}}</a>
+          <h3>{{::data.notFound.message}}</h3>
+          <a class="text-capitalize" ng-href="{{data.notFound.url}}">Return to {{data.notFound.title}}</a>
         </div>
-        <form ng-submit="updateBank()" class="form-horizontal" ng-if="data.isNull === false">
+        <div ng-if="data.messages.error" role="alert" class="alert alert-danger">
+            <div ng-repeat="error in data.messages.error">{{error.msg}}</div>
+        </div>
+        <div ng-if="data.messages.success" role="alert" class="alert alert-success">
+          <div ng-repeat="success in data.messages.success">{{success.msg}}</div>
+        </div>
+        <form name="standardForm" ng-submit="updateBank(standardForm.$valid)" class="form-horizontal" ng-if="data.isNull === false">
             <div ng-include src="'partials/top.html'"></div>
             <div class="form-group">
-              <label for="email" class="col-sm-3">Description</label>
+              <label for="bankDescription" class="col-sm-3">Description</label>
               <div class="col-sm-7">
-                <input type="text" name="bankDescription" id="bankDescription" class="form-control" ng-model="data.bank.bankDescription">
+                <input type="text" name="bankDescription" id="bankDescription" class="form-control" ng-model="data.bank.bankDescription" required>
               </div>
             </div>
             <div class="form-group">
               <label for="bankAccount" class="col-sm-3">Account</label>
               <div class="col-sm-7">
-                <input type="text" name="bankAccount" id="bankAccount" class="form-control" ng-model="data.bank.bankAccount">
+                <input type="text" name="bankAccount" id="bankAccount" class="form-control" ng-model="data.bank.bankAccount" required>
               </div>
             </div>
             <div class="form-group">
-                <label for="bankIsActive" class="col-sm-3">Active</label>
-                <div class="col-sm-7">
-                  <input type="checkbox" name="bankIsActive" ng-model="data.bank.bankIsActive" ng-checked="data.bank.bankIsActive === 1">
-                </div>
+              <label for="bankIsActive" class="col-sm-3">Active</label>
+              <div class="col-sm-7">
+                <input type="checkbox" name="bankIsActive" ng-model="data.bank.bankIsActive" ng-checked="data.bank.bankIsActive === 1" ng-true-value="1" ng-false-value="0">
+              </div>
             </div>
             <div class="form-group">
               <label for="bankInitialBalance" class="col-sm-3">Initial Balance</label>
               <div class="col-sm-7">
-                <input type="number" name="bankInitialBalance" id="bankInitialBalance" class="form-control" ng-model="data.bank.bankInitialBalance" step=".01" disabled>
+                <input type="text" name="bankInitialBalance" id="bankInitialBalance" class="form-control" ng-model="data.bank.bankInitialBalance" format="number" disabled>
               </div>
             </div>
             <div class="form-group">
               <label for="bankCurrentBalance" class="col-sm-3">Current Balance</label>
               <div class="col-sm-7">
-                <input type="number" name="bankCurrentBalance" id="bankCurrentBalance" class="form-control" ng-model="data.bank.bankCurrentBalance" step=".01">
+                <input type="text" name="bankCurrentBalance" id="bankCurrentBalance" class="form-control" ng-model="data.bank.bankCurrentBalance" format="number">
               </div>
             </div>
             <div class="form-group">

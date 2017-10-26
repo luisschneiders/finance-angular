@@ -57,7 +57,6 @@ app.use(function(req, res, next) {
   }
 });
 
-
 app.post('/contact', contactController.contactPost);
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
@@ -70,8 +69,8 @@ app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
 app.get('/banks', bankController.bankGetAll);
 app.get('/banks/:id', bankController.bankGetById);
-// app.post('/bank', userController.ensureAuthenticated, bankController.bankPost);
-// app.put('/bank/:id', userController.ensureAuthenticated, bankController.bankPut);
+app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut);
+app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

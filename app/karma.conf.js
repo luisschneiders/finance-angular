@@ -11,6 +11,7 @@ module.exports = function(config) {
       // App services, controllers, directives, filters, etc.
       'controllers/*.js',
       'services/*.js',
+      'directives/*.js',
       // Unit tests
       'test/unit/**/*.test.js'
     ],
@@ -33,7 +34,8 @@ module.exports = function(config) {
     preprocessors: {
       'app.js': ['coverage'],
       'controllers/*.js': ['coverage'],
-      'services/*.js': ['coverage']
+      'services/*.js': ['coverage'],
+      'directives/*.js': ['coverage']
     },
 
     coverageReporter: {

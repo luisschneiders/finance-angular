@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
       <div class="col-sm-12">
-        <div ng-include src="'partials/top.html'"></div>            
+        <div ng-include src="'partials/top.html'"></div>
         <div id="no-more-tables">
           <table class="table table-responsive table-striped table-hover table-cursor">
             <thead>
@@ -15,8 +15,14 @@
               </tr>
             </thead>
             <tbody>
+              <tr class="loading text-center" ng-show="data.isLoading">
+                <td colspan="6">
+                  <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </td>
+              </tr>
               <tr ng-repeat="item in data.banks | orderBy: '-bankIsActive' " ng-click="editBank(item.id)">
-                <td data-title="Bank" >{{::item.bankDescription}}</td>
+                <td data-title="Bank" class="text-uppercase">{{::item.bankDescription}}</td>
                 <td data-title="Account" >{{::item.bankAccount}}</td>
                 <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>
                 <td data-title="Current Balance"  class="text-right">{{::item.bankCurrentBalance | number:2}}</td>

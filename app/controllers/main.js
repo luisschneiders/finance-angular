@@ -129,7 +129,7 @@ angular.module('MyApp')
           }
           return [value.pieChartColoursBackground];
         });
-    
+
         pieChart = new Chart(transactionChart, {
           type: 'pie',
           data: {

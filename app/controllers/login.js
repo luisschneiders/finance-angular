@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth) {
+  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
     let year = new Date().getFullYear();
     $scope.login = function() {
       $auth.login($scope.user)
@@ -34,4 +34,4 @@ angular.module('MyApp')
           }
         });
     };
-  });
+  }]);

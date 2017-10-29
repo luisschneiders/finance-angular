@@ -23,6 +23,8 @@ let userController = require('./controllers/user');
 let contactController = require('./controllers/contact');
 let bankController = require('./controllers/bank');
 let transactionController = require('./controllers/transaction');
+let purchaseController = require('./controllers/purchase');
+let mainController = require('./controllers/main');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
@@ -77,8 +79,8 @@ app.get('/banks/:id', bankController.bankGetById);
 app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut);
 app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);
 
-// Transactions
-app.get('/transactions-by-year/:id', transactionController.transactionsGetByYear);
+// main
+app.get('/main-by-year/:id', mainController.mainGetByYear);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('ForgotCtrl', function($scope, Account) {
+  .controller('ForgotCtrl', ['$scope', 'Account', function($scope, Account) {
     $scope.forgotPassword = function() {
       Account.forgotPassword($scope.user)
         .then(function(response) {
@@ -13,4 +13,4 @@ angular.module('MyApp')
           };
         });
     };
-  });
+  }]);

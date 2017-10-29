@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('BankNewCtrl', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
+  .controller('BankNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -51,4 +51,4 @@ angular.module('MyApp')
     };
 
     $scope.data = data;
-  });
+  }]);

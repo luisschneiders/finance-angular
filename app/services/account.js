@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .factory('Account', function($http) {
+  .factory('Account', ['$http', function($http) {
     return {
       updateProfile: function(data) {
         return $http.put('/account', data);
@@ -17,4 +17,4 @@ angular.module('MyApp')
         return $http.post('/reset', data);
       }
     };
-  });
+  }]);

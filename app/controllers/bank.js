@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('BankCtrl', function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -44,4 +44,4 @@ angular.module('MyApp')
     };
 
     $scope.data = data;
-  });
+  }]);

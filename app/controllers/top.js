@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('TopCtrl', function($scope, $location, DefaultServices) {
+  .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
     let data = {
       title: null,
       url: null,
@@ -12,4 +12,4 @@ angular.module('MyApp')
     data.show = top.show;
 
     $scope.default = data;
-  });
+  }]);

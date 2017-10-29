@@ -1,5 +1,5 @@
 angular.module('MyApp')
-.factory('DefaultServices', function($http) {
+.factory('DefaultServices', ['$http', function($http) {
   let top = {};
   return {
     setTop: function(data) {
@@ -11,4 +11,4 @@ angular.module('MyApp')
       return top;
     }
   }
-});
+}]);

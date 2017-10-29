@@ -1,5 +1,5 @@
 angular.module('MyApp')
-.factory('BankServices', function($http) {
+.factory('BankServices', ['$http', function($http) {
   return {
     getAllBanks: function() {
       let banks = $http.get('/banks')
@@ -28,4 +28,4 @@ angular.module('MyApp')
       return $http.post(`/banks/new`, data);
     }
   };
-});
+}]);

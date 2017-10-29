@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'Account', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -87,4 +87,4 @@ angular.module('MyApp')
           };
         });
     };
-  });
+  }]);

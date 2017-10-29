@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('ContactCtrl', function($scope, Contact) {
+  .controller('ContactCtrl', ['$scope', 'Contact', function($scope, Contact) {
     $scope.sendContactForm = function() {
       Contact.send($scope.contact)
         .then(function(response) {
@@ -13,4 +13,4 @@ angular.module('MyApp')
           };
         });
     };
-  });
+  }]);

@@ -87,7 +87,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer'])
   }]);
 
 angular.module('MyApp')
-  .controller('BankEditCtrl', ["$scope", "$auth", "$location", "BankServices", "DefaultServices", function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('BankEditCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -152,7 +152,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('BankNewCtrl', ["$scope", "$auth", "$location", "$timeout", "BankServices", "DefaultServices", function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
+  .controller('BankNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -207,7 +207,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('BankCtrl', ["$scope", "$auth", "$location", "BankServices", "DefaultServices", function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -255,7 +255,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ContactCtrl', ["$scope", "Contact", function($scope, Contact) {
+  .controller('ContactCtrl', ['$scope', 'Contact', function($scope, Contact) {
     $scope.sendContactForm = function() {
       Contact.send($scope.contact)
         .then(function(response) {
@@ -272,7 +272,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ForgotCtrl', ["$scope", "Account", function($scope, Account) {
+  .controller('ForgotCtrl', ['$scope', 'Account', function($scope, Account) {
     $scope.forgotPassword = function() {
       Account.forgotPassword($scope.user)
         .then(function(response) {
@@ -289,7 +289,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('LoginCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", function($scope, $rootScope, $location, $window, $auth) {
+  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
     let year = new Date().getFullYear();
     $scope.login = function() {
       $auth.login($scope.user)
@@ -325,14 +325,16 @@ angular.module('MyApp')
         });
     };
   }]);
+
 angular.module('MyApp')
-  .controller('MainCtrl', ["$scope", "$auth", "$location", "MainServices", "DefaultServices", function($scope, $auth, $location, MainServices, DefaultServices) {
+  .controller('MainCtrl', ['$scope', '$auth', '$location', 'MainServices', 'DefaultServices', function($scope, $auth, $location, MainServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     let data = {
-      isNull: false,
+      transactionIsNull: false,
+      purchaseIsNull: false,
       notFound: {
         url: null,
         title: null,
@@ -348,45 +350,12 @@ angular.module('MyApp')
     };
     let pieChart;
     let pieChartColoursBackground = [];
+    let barChart;
     let transactionsData = [];
+    let purchaseData = [];
     let transactionsLabel = [];
     let transactionChart = document.getElementById("transactionChart");
-    // let myChart = new Chart(ctx, {
-    //     type: 'bar',
-    //     data: {
-    //         labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    //         datasets: [{
-    //             label: '# of Votes',
-    //             data: [12, 19, 3, 5, 2, 3],
-    //             backgroundColor: [
-    //                 'rgba(255, 99, 132, 0.2)',
-    //                 'rgba(54, 162, 235, 0.2)',
-    //                 'rgba(255, 206, 86, 0.2)',
-    //                 'rgba(75, 192, 192, 0.2)',
-    //                 'rgba(153, 102, 255, 0.2)',
-    //                 'rgba(255, 159, 64, 0.2)'
-    //             ],
-    //             borderColor: [
-    //                 'rgba(255,99,132,1)',
-    //                 'rgba(54, 162, 235, 1)',
-    //                 'rgba(255, 206, 86, 1)',
-    //                 'rgba(75, 192, 192, 1)',
-    //                 'rgba(153, 102, 255, 1)',
-    //                 'rgba(255, 159, 64, 1)'
-    //             ],
-    //             borderWidth: 1
-    //         }]
-    //     },
-    //     options: {
-    //         scales: {
-    //             yAxes: [{
-    //                 ticks: {
-    //                     beginAtZero:true
-    //                 }
-    //             }]
-    //         }
-    //     }
-    // });
+    let purchaseChart = document.getElementById("purchaseChart");
 
     DefaultServices.setTop(data.top);    
 
@@ -409,78 +378,157 @@ angular.module('MyApp')
       let transactions = MainServices.getTransactionsByYear(data.year);
       transactions.then(function(response) {
         data.isNull = false;
-        if(response.data.length == 0) {
-          data.isNull = true;
+
+        if(response.data[0].length == 0) {//transaction
+          data.transactionIsNull = true;
+        } else {
+          renderTransactionGraphic(response.data[0]);
         }
-        transactionsData = response.data.map(function(value) {
-          switch(value.transactionLabel){
-            case 'C':
-              value.TotalAmountByLabel;
-              break;
-            case 'D':
-              value.TotalAmountByLabel;
-              break;
-            case 'T':
-              value.TotalAmountByLabel = value.TotalAmountByLabel / 2;
-              break;
-          }
-          return [value.TotalAmountByLabel];
-        });
 
-        transactionsLabel = response.data.map(function(value){
-          switch(value.transactionLabel){
-            case 'C':
-              value.transactionLabel = 'INCOMES'
-              break;
-            case 'D':
-              value.transactionLabel = 'OUTCOMES'
-              break;
-            case 'T':
-              value.transactionLabel = 'TRANSFERS'
-              break;
-          }
-          return [value.transactionLabel];
-        });
+        if(response.data[1].length == 0) {//purchase
+          data.purchaseIsNull = true;
+        } else {
+          renderPurchaseGraphic(response.data[1]);
+        }
 
-        pieChartColoursBackground = response.data.map(function(value){
-          switch(value.transactionLabel){
-            case 'INCOMES':
-              value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
-              break;
-            case 'OUTCOMES':
-              value.pieChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
-              break;
-            case 'TRANSFERS':
-              value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
-              break;
-          }
-          return [value.pieChartColoursBackground];
-        });
-
-        pieChart = new Chart(transactionChart, {
-          type: 'pie',
-          data: {
-            labels: transactionsLabel,
-            datasets: [{
-              data: transactionsData,
-              backgroundColor: pieChartColoursBackground,
-              borderColor: '#383838',
-              hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
-              borderWidth: 1
-            }]
-          }
-        });
         data.isLoading = false;
       }).catch(function(err) {
-        console.warn('Error getting banks: ', err);
+        console.warn('Error getting data: ', err);
       });  
+    }
+
+    function renderTransactionGraphic(response) {
+      transactionsData = response.map(function(value) {
+        switch(value.transactionLabel){
+          case 'C':
+            value.TotalAmountByLabel;
+            break;
+          case 'D':
+            value.TotalAmountByLabel;
+            break;
+          case 'T':
+            value.TotalAmountByLabel = value.TotalAmountByLabel / 2;
+            break;
+        }
+        return [value.TotalAmountByLabel];
+      });
+
+      transactionsLabel = response.map(function(value){
+        switch(value.transactionLabel){
+          case 'C':
+            value.transactionLabel = 'INCOMES'
+            break;
+          case 'D':
+            value.transactionLabel = 'OUTCOMES'
+            break;
+          case 'T':
+            value.transactionLabel = 'TRANSFERS'
+            break;
+        }
+        return [value.transactionLabel];
+      });
+
+      pieChartColoursBackground = response.map(function(value){
+        switch(value.transactionLabel){
+          case 'INCOMES':
+            value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            break;
+          case 'OUTCOMES':
+            value.pieChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            break;
+          case 'TRANSFERS':
+            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            break;
+        }
+        return [value.pieChartColoursBackground];
+      });
+
+      pieChart = new Chart(transactionChart, {
+        type: 'pie',
+        data: {
+          labels: transactionsLabel,
+          datasets: [{
+            data: transactionsData,
+            backgroundColor: pieChartColoursBackground,
+            borderColor: '#383838',
+            hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+            borderWidth: 1
+          }]
+        }
+      });
+      data.isLoading = false;
+    }
+
+    function renderPurchaseGraphic(response) {
+      // console.table(response);
+      let barChartLabelsMonths = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+      let barChartOptions = {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+      };
+      let barChartColoursBackground = [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ];
+
+//  work in progress
+      // barChartColoursBackground = response.map(function(value){
+      //   switch(value){
+      //     case 0:
+      //       value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+      //       break;
+      //     case 'OUTCOMES':
+      //       value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+      //       break;
+      //     case 'TRANSFERS':
+      //       value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+      //       break;
+      //   }
+      //   return [value.barChartColoursBackground];
+      // });
+//  work in progress
+
+      purchaseData = response.map(function(value) {
+        return [value.TotalAmountByMonth];
+      });
+
+      barChart = new Chart(purchaseChart, {
+        type: 'bar',
+        data: {
+            labels: barChartLabelsMonths,
+            datasets: [{
+                label: 'Monthly',
+                data: purchaseData,
+                backgroundColor: barChartColoursBackground,
+                borderColor: '#383838',
+                hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: barChartOptions
+    });
     }
 
     $scope.data = data;        
   }]);
 
 angular.module('MyApp')
-  .controller('MenuCtrl', ["$scope", "$location", "$window", "$auth", function($scope, $location, $window, $auth) {
+  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', function($scope, $location, $window, $auth) {
     let defaultsApp = {
       logo: null,
       title: null,
@@ -492,28 +540,26 @@ angular.module('MyApp')
     defaultsApp.logo = '/img/schneiders-tech-software-development-release.svg';
     defaultsApp.title = 'Your personal finance app';
     defaultsApp.alt = defaultsApp.title;
- 
+
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.path();
     };
-    
+
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();
     };
-    
+
     $scope.logout = function() {
-      console.log('here')
       $auth.logout();
       delete $window.localStorage.user;
       $location.path('/');
     };
 
     $scope.defaultsApp = defaultsApp;
-    
   }]);
 
 angular.module('MyApp')
-  .controller('ProfileCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", "Account", "DefaultServices", function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'Account', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -603,7 +649,7 @@ angular.module('MyApp')
     };
   }]);
 angular.module('MyApp')
-  .controller('ResetCtrl', ["$scope", "Account", function($scope, Account) {
+  .controller('ResetCtrl', ['$scope', 'Account', function($scope, Account) {
     $scope.resetPassword = function() {
       Account.resetPassword($scope.user)
         .then(function(response) {
@@ -620,7 +666,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('SignupCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", function($scope, $rootScope, $location, $window, $auth) {
+  .controller('SignupCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
     $scope.signup = function() {
       $auth.signup($scope.user)
         .then(function(response) {
@@ -656,8 +702,9 @@ angular.module('MyApp')
         });
     };
   }]);
+
 angular.module('MyApp')
-  .controller('TopCtrl', ["$scope", "$location", "DefaultServices", function($scope, $location, DefaultServices) {
+  .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
     let data = {
       title: null,
       url: null,
@@ -673,7 +720,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .factory('Account', ["$http", function($http) {
+  .factory('Account', ['$http', function($http) {
     return {
       updateProfile: function(data) {
         return $http.put('/account', data);
@@ -692,8 +739,9 @@ angular.module('MyApp')
       }
     };
   }]);
+
 angular.module('MyApp')
-.factory('BankServices', ["$http", function($http) {
+.factory('BankServices', ['$http', function($http) {
   return {
     getAllBanks: function() {
       let banks = $http.get('/banks')
@@ -725,15 +773,16 @@ angular.module('MyApp')
 }]);
 
 angular.module('MyApp')
-  .factory('Contact', ["$http", function($http) {
+  .factory('Contact', ['$http', function($http) {
     return {
       send: function(data) {
         return $http.post('/contact', data);
       }
     };
   }]);
+
 angular.module('MyApp')
-.factory('DefaultServices', ["$http", function($http) {
+.factory('DefaultServices', ['$http', function($http) {
   let top = {};
   return {
     setTop: function(data) {
@@ -746,17 +795,19 @@ angular.module('MyApp')
     }
   }
 }]);
+
 angular.module('MyApp')
-.factory('MainServices', ["$http", function($http) {
+.factory('MainServices', ['$http', function($http) {
   return {
     getDefaultsApp: function(data) {
-      // return $http.get('/transactions-by-year');
+
     },
     getTransactionsByYear: function(year) {
-      return $http.get(`/transactions-by-year/${year}`);      
+      return $http.get(`/main-by-year/${year}`);
     }
   };
 }]);
+
 angular.module('MyApp')
   .directive('format', ["$filter", function ($filter) {
     return {

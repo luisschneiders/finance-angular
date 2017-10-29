@@ -1,5 +1,9 @@
 angular.module('MyApp')
-  .controller('BankNewCtrl', function($scope, $location, $timeout, BankServices, DefaultServices) {
+  .controller('BankNewCtrl', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
     let data = {
       bank: {
         bankDescription: null,

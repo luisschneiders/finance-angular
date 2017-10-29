@@ -35,7 +35,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer'])
         controller: 'ResetCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
-      .when('/main', {
+      .when('/main/:id', {
         templateUrl: 'partials/main.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
@@ -68,7 +68,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer'])
 
     function skipIfAuthenticated($location, $auth) {
       if ($auth.isAuthenticated()) {
-        $location.path('/main');
+        $location.path('/main/:id');
       }
     }
 

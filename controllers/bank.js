@@ -4,22 +4,24 @@ const Bank = require('../models/Bank');
  * GET /banks
  */
 exports.bankGetAll = function(req, res) {
-  Bank.where('bankInsertedBy', req.user.id).fetchAll().then(function(banks) {
-    res.json(banks);
-  }).catch(function(err) {
-    console.error(err);
-  });
+  Bank.getAll(req.user.id)
+    .then(function(banks) {
+      res.json(banks);
+    }).catch(function(err) {
+      console.error(err);
+    });
 };
 
 /**
  * GET /banks/:id
  */
 exports.bankGetById = function(req, res) {
-  Bank.where({'bankInsertedBy': req.user.id, 'id': req.params.id}).fetch().then(function(bank) {
-    res.json(bank);
-  }).catch(function(err) {
-    console.error(err);
-  });
+  Bank.getById(req.user.id, req.params.id)
+    .then(function(bank) {
+      res.json(bank);
+    }).catch(function(err) {
+      console.error(err);
+    });
 };
 
 /**

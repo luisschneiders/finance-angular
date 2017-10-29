@@ -22,6 +22,7 @@ const app = express();
 let userController = require('./controllers/user');
 let contactController = require('./controllers/contact');
 let bankController = require('./controllers/bank');
+let transactionController = require('./controllers/transaction');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
@@ -58,8 +59,6 @@ app.use(function(req, res, next) {
 });
 
 app.post('/contact', contactController.contactPost);
-app.put('/account', userController.ensureAuthenticated, userController.accountPut);
-app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 app.post('/signup', userController.signupPost);
 app.post('/login', userController.loginPost);
 app.post('/forgot', userController.forgotPost);
@@ -67,10 +66,19 @@ app.post('/reset/:token', userController.resetPost);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
+
+// Profile
+app.put('/account', userController.ensureAuthenticated, userController.accountPut);
+app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
+
+// Banks
 app.get('/banks', bankController.bankGetAll);
 app.get('/banks/:id', bankController.bankGetById);
 app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut);
 app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);
+
+// Transactions
+app.get('/transactions-by-year/:id', transactionController.transactionsGetByYear);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

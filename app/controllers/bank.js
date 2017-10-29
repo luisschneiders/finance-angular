@@ -1,9 +1,13 @@
 angular.module('MyApp')
-  .controller('BankCtrl', function($scope, $rootScope, $location, BankServices, DefaultServices) {
+  .controller('BankCtrl', function($scope, $auth, $location, BankServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
     let data = {
       banks: [],
       notFound: 'Record Not Found!',
-      isNull: false,      
+      isNull: false,
       class: {
         active: 'is-active',
         inactive: 'is-inactive'
@@ -16,7 +20,9 @@ angular.module('MyApp')
       isLoading: false
     };
     let banks = BankServices.getAllBanks();
+
     data.isLoading = true;
+
     DefaultServices.setTop(data.top);
 
     banks.then(function(response) {

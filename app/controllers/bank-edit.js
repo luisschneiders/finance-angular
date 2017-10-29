@@ -1,5 +1,9 @@
 angular.module('MyApp')
-  .controller('BankEditCtrl', function($scope, $location, BankServices, DefaultServices) {
+  .controller('BankEditCtrl', function($scope, $auth, $location, BankServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
     let data = {
       bank: null,
       isSaving: false,

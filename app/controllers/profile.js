@@ -1,5 +1,9 @@
 angular.module('MyApp')
   .controller('ProfileCtrl', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
     let data = {
       top: {
         title: 'Profile Information',

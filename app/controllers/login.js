@@ -1,11 +1,12 @@
 angular.module('MyApp')
   .controller('LoginCtrl', function($scope, $rootScope, $location, $window, $auth) {
+    let year = new Date().getFullYear();
     $scope.login = function() {
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/main');
+          $location.path(`/main/${year}`);
         })
         .catch(function(response) {
           $scope.messages = {
@@ -19,7 +20,7 @@ angular.module('MyApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/main');
+          $location.path(`/main/${year}`);
         })
         .catch(function(response) {
           if (response.error) {

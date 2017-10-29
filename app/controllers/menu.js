@@ -5,7 +5,7 @@ angular.module('MyApp')
       title: null,
       alt: null,
       width: 170,
-      copyRight: new Date().getFullYear()
+      year: new Date().getFullYear()
     };
 
     defaultsApp.logo = '/img/schneiders-tech-software-development-release.svg';

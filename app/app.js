@@ -54,7 +54,22 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
         templateUrl: 'partials/bank-edit.html',
         controller: 'BankNewCtrl',
         resolve: { loginRequired: loginRequired }
-      })      
+      })
+      .when('/all-expenses-type', {
+        templateUrl: 'partials/expense-type.html',
+        controller: 'ExpenseTypeCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/expense-type/:id', {
+        templateUrl: 'partials/expense-type-edit.html',
+        controller: 'ExpenseTypeEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/expense-type-new', {
+        templateUrl: 'partials/expense-type-edit.html',
+        controller: 'ExpenseTypeNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });
@@ -63,7 +78,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
     $authProvider.signupUrl = '/signup';
     $authProvider.google({
       url: '/auth/google',
-      clientId: '631036554609-v5hm2amv4pvico3asfi97f54sc51ji4o.apps.googleusercontent.com' // needs to be updated
+      clientId: 'xxx.apps.googleusercontent.com' // needs to be updated
     });
 
     function skipIfAuthenticated($location, $auth) {

@@ -56,7 +56,22 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
         templateUrl: 'partials/bank-edit.html',
         controller: 'BankNewCtrl',
         resolve: { loginRequired: loginRequired }
-      })      
+      })
+      .when('/all-expenses-type', {
+        templateUrl: 'partials/expense-type.html',
+        controller: 'ExpenseTypeCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/expense-type/:id', {
+        templateUrl: 'partials/expense-type-edit.html',
+        controller: 'ExpenseTypeEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/expense-type-new', {
+        templateUrl: 'partials/expense-type-edit.html',
+        controller: 'ExpenseTypeNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });
@@ -65,7 +80,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
     $authProvider.signupUrl = '/signup';
     $authProvider.google({
       url: '/auth/google',
-      clientId: '631036554609-v5hm2amv4pvico3asfi97f54sc51ji4o.apps.googleusercontent.com' // needs to be updated
+      clientId: 'xxx.apps.googleusercontent.com' // needs to be updated
     });
 
     function skipIfAuthenticated($location, $auth) {
@@ -214,11 +229,15 @@ angular.module('MyApp')
     }
     let data = {
       banks: [],
-      notFound: 'Record Not Found!',
-      isNull: false,
       class: {
         active: 'is-active',
         inactive: 'is-inactive'
+      },
+      isNull: false,
+      notFound: {
+        url: '/all-banks',
+        title: 'banks',
+        message:'Record Not Found!',
       },
       top: {
         title: 'banks',
@@ -235,7 +254,7 @@ angular.module('MyApp')
 
     banks.then(function(response) {
       let top = {};
-      if(!response) {
+      if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;
@@ -269,6 +288,176 @@ angular.module('MyApp')
           };
         });
     };
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expenseType: null,
+      isSaving: false,
+      isNull: false,
+      notFound: {
+        url: '/all-expenses-type',
+        title: 'Expenses',
+        message:'Record Not Found!',
+      },
+      top: {
+        title: 'Expense',
+        url: '/expense-type-new',
+        show: true
+      },
+      messages: {}
+    };
+    let id = $location.path().substr(14); // to remove /expense-type/
+    let expenseType = ExpenseTypeServices.getExpenseTypeById(id);
+
+    DefaultServices.setTop(data.top);
+
+    expenseType.then(function(response) {
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.expenseType = response;
+    }).catch(function(err) {
+      console.warn('Error getting Expense Type: ', err);
+    });
+
+    $scope.updateExpenseType = function($valid) {
+      let expenseTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      expenseTypeUpdated = ExpenseTypeServices.update(data.expenseType);
+      expenseTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating Expense Type: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expenseType: {
+        expenseTypeDescription: null,
+        expenseTypeIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the expense-type-edit.html
+      top: {
+        title: 'new expense',
+        url: '/expense-type-new',
+        show: true
+      }
+    };
+
+    DefaultServices.setTop(data.top);
+
+    $scope.updateExpenseType = function($valid) {
+      let expenseTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      expenseTypeUpdated = ExpenseTypeServices.add(data.expenseType);
+      expenseTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/expense-type/${response.data.expenseType.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating expense: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expensesType: [],
+      isNull: false,
+      notFound: {
+        url: '/all-expenses-type',
+        title: 'Expenses',
+        message:'Record Not Found!',
+      },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'Expense Type',
+        url: '/expense-type-new',
+        show: true
+      },
+      isLoading: false
+    };
+    let expensesType = ExpenseTypeServices.getAllExpensesType();
+
+    data.isLoading = true;
+
+    DefaultServices.setTop(data.top);
+
+    expensesType.then(function(response) {
+      let top = {};
+      console.log(response);
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.expensesType = response;
+      top = DefaultServices.getTop();
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting Expenses Type: ', err);
+    });
+    
+    $scope.editExpenseType = function(id) {
+      $location.path(`/expense-type/${id}`);
+    };
+
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -853,6 +1042,38 @@ angular.module('MyApp')
       return top;
     }
   }
+}]);
+
+angular.module('MyApp')
+.factory('ExpenseTypeServices', ['$http', function($http) {
+  return {
+    getAllExpensesType: function() {
+      let expensesType = $http.get('/expenses-type')
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return expensesType;
+    },
+    getExpenseTypeById: function(id) {
+      let expenseType = $http.get(`/expenses-type/${id}`)
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return expenseType;
+    },
+    update: function(data) {
+      return $http.put(`/expenses-type/${data.id}`, data);
+    },
+    add: function(data) {
+      return $http.post(`/expenses-type/new`, data);
+    }
+  };
 }]);
 
 angular.module('MyApp')

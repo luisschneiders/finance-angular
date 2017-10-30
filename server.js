@@ -19,12 +19,13 @@ let User = require('./models/User');
 
 const app = express();
 // Controllers
+let mainController = require('./controllers/main');
 let userController = require('./controllers/user');
 let contactController = require('./controllers/contact');
 let bankController = require('./controllers/bank');
 let transactionController = require('./controllers/transaction');
 let purchaseController = require('./controllers/purchase');
-let mainController = require('./controllers/main');
+let expenseTypeController = require('./controllers/expense-type');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
@@ -73,14 +74,20 @@ app.get('/auth/google/callback', userController.authGoogleCallback);
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 
+// main
+app.get('/main-by-year/:id', mainController.mainGetByYear);
+
 // Banks
 app.get('/banks', bankController.bankGetAll);
 app.get('/banks/:id', bankController.bankGetById);
 app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut);
 app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);
 
-// main
-app.get('/main-by-year/:id', mainController.mainGetByYear);
+// Expense Type
+app.get('/expenses-type', expenseTypeController.expenseTypeGetAll);
+app.get('/expenses-type/:id', expenseTypeController.expenseTypeGetById);
+app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeController.expenseTypePut);
+app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypePost);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

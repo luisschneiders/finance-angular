@@ -6,11 +6,15 @@ angular.module('MyApp')
     }
     let data = {
       banks: [],
-      notFound: 'Record Not Found!',
-      isNull: false,
       class: {
         active: 'is-active',
         inactive: 'is-inactive'
+      },
+      isNull: false,
+      notFound: {
+        url: '/all-banks',
+        title: 'banks',
+        message:'Record Not Found!',
       },
       top: {
         title: 'banks',
@@ -27,7 +31,7 @@ angular.module('MyApp')
 
     banks.then(function(response) {
       let top = {};
-      if(!response) {
+      if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;

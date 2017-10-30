@@ -9,7 +9,7 @@ const Purchase = bookshelf.Model.extend({
         qr.select('purchaseExpenseId', 'purchaseAmount', 'purchaseInsertedBy', 'purchaseDate');
         qr.sum('purchaseAmount AS TotalAmountByMonth');
         qr.where({'purchaseInsertedBy': user, 'purchaseFlag': 'r'});
-        qr.whereBetween('purchaseDate', [new Date(startDate), new Date(endDate)]);
+        qr.whereBetween('purchaseDate', [startDate, endDate]);
         qr.groupByRaw('month (purchaseDate)');
       }).fetchAll();
     }    

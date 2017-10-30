@@ -7,6 +7,9 @@ module.exports = function(config) {
       'vendor/angular-mocks.js',
       'vendor/satellizer.js',
       'vendor/chart.js',
+      'vendor/moment.min.js',
+      'vendor/angular-moment.min.js',
+      'vendor/angular-moment.min.js.map',
       // App entry point
       'app.js',
       // App services, controllers, directives, filters, etc.

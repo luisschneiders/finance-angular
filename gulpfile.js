@@ -42,7 +42,7 @@ gulp.task('templates', function() {
 });
 
 gulp.task('vendor', function() {
-  return gulp.src('app/vendor/*.js')
+  return gulp.src(['app/vendor/*.js', 'app/vendor/*.js.map'])
     .pipe(gulpif(argv.production, uglify()))
     .pipe(gulp.dest('public/js/lib'));
 });

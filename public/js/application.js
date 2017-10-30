@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngRoute', 'satellizer'])
+angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
   .config(["$routeProvider", "$locationProvider", "$authProvider", function($routeProvider, $locationProvider, $authProvider) {
     skipIfAuthenticated.$inject = ["$location", "$auth"];
     loginRequired.$inject = ["$location", "$auth"];
@@ -327,7 +327,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('MainCtrl', ['$scope', '$auth', '$location', 'MainServices', 'DefaultServices', function($scope, $auth, $location, MainServices, DefaultServices) {
+  .controller('MainCtrl', ['$scope', '$auth', '$location', 'moment', 'MainServices', 'DefaultServices', function($scope, $auth, $location, moment, MainServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -351,6 +351,8 @@ angular.module('MyApp')
     let pieChart;
     let pieChartColoursBackground = [];
     let barChart;
+    let barChartColoursBackground = [];
+    let barChartLabelsMonths = [];
     let transactionsData = [];
     let purchaseData = [];
     let transactionsLabel = [];
@@ -394,7 +396,7 @@ angular.module('MyApp')
         data.isLoading = false;
       }).catch(function(err) {
         console.warn('Error getting data: ', err);
-      });  
+      });
     }
 
     function renderTransactionGraphic(response) {
@@ -460,8 +462,6 @@ angular.module('MyApp')
     }
 
     function renderPurchaseGraphic(response) {
-      // console.table(response);
-      let barChartLabelsMonths = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
       let barChartOptions = {
             scales: {
               yAxes: [{
@@ -471,37 +471,96 @@ angular.module('MyApp')
               }]
             }
       };
-      let barChartColoursBackground = [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ];
 
-//  work in progress
-      // barChartColoursBackground = response.map(function(value){
-      //   switch(value){
-      //     case 0:
-      //       value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
-      //       break;
-      //     case 'OUTCOMES':
-      //       value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
-      //       break;
-      //     case 'TRANSFERS':
-      //       value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
-      //       break;
-      //   }
-      //   return [value.barChartColoursBackground];
-      // });
-//  work in progress
+      barChartLabelsMonths = response.map(function(value){
+        let date = moment(value.purchaseDate);
+        let month = date.format('M');
+        month = month.toString();
+        switch(month){
+          case '1':
+            value.barChartLabelsMonths = 'Jan';
+            break;
+          case '2':
+            value.barChartLabelsMonths = 'Feb';
+            break;
+          case '3':
+            value.barChartLabelsMonths = 'Mar';
+            break;
+          case '4':
+            value.barChartLabelsMonths = 'Apr';
+            break;
+          case '5':
+            value.barChartLabelsMonths = 'May';
+            break;
+          case '6':
+            value.barChartLabelsMonths = 'Jun';
+            break;
+          case '7':
+            value.barChartLabelsMonths = 'Jul';
+            break;
+          case '8':
+            value.barChartLabelsMonths = 'Aug';
+            break;
+          case '9':
+            value.barChartLabelsMonths = 'Sep';
+            break;
+          case '10':
+            value.barChartLabelsMonths = 'Oct';
+            break;
+          case '11':
+            value.barChartLabelsMonths = 'Nov';
+            break;
+          case '12':
+            value.barChartLabelsMonths = 'Dec';
+            break;
+        }
+        return [value.barChartLabelsMonths];
+      });
+
+      barChartColoursBackground = response.map(function(value){
+        let date = moment(value.purchaseDate);
+        let month = date.format('M');
+        month = month.toString();
+        switch(month){
+          case '1':
+            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            break;
+          case '2':
+            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            break;
+          case '3':
+            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
+            break;
+          case '4':
+            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            break;
+          case '5':
+            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
+            break;
+          case '6':
+            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            break;
+          case '7':
+            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            break;
+          case '8':
+            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            break;
+          case '9':
+            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
+            break;
+          case '10':
+            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            break;
+          case '11':
+            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
+            break;
+          case '12':
+            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            break;
+        }
+        return [value.barChartColoursBackground];
+      });
 
       purchaseData = response.map(function(value) {
         return [value.TotalAmountByMonth];
@@ -512,7 +571,7 @@ angular.module('MyApp')
         data: {
             labels: barChartLabelsMonths,
             datasets: [{
-                label: 'Monthly',
+                label: 'Month',
                 data: purchaseData,
                 backgroundColor: barChartColoursBackground,
                 borderColor: '#383838',
@@ -524,7 +583,7 @@ angular.module('MyApp')
     });
     }
 
-    $scope.data = data;        
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')

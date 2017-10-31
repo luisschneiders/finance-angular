@@ -26,6 +26,7 @@ let bankController = require('./controllers/bank');
 let transactionController = require('./controllers/transaction');
 let purchaseController = require('./controllers/purchase');
 let expenseTypeController = require('./controllers/expense-type');
+let transactionTypeController = require('./controllers/transaction-type');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
@@ -88,6 +89,12 @@ app.get('/expenses-type', expenseTypeController.expenseTypeGetAll);
 app.get('/expenses-type/:id', expenseTypeController.expenseTypeGetById);
 app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeController.expenseTypePut);
 app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypePost);
+
+// Transaction Type
+app.get('/transactions-type', transactionTypeController.transactionTypeGetAll);
+app.get('/transactions-type/:id', transactionTypeController.transactionTypeGetById);
+app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypePut);
+app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

@@ -72,6 +72,21 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
         controller: 'ExpenseTypeNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/all-transactions-type', {
+        templateUrl: 'partials/transaction-type.html',
+        controller: 'TransactionTypeCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/transaction-type/:id', {
+        templateUrl: 'partials/transaction-type-edit.html',
+        controller: 'TransactionTypeEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/transaction-type-new', {
+        templateUrl: 'partials/transaction-type-edit.html',
+        controller: 'TransactionTypeNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });
@@ -440,7 +455,6 @@ angular.module('MyApp')
 
     expensesType.then(function(response) {
       let top = {};
-      console.log(response);
       if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
@@ -968,6 +982,180 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('TransactionTypeEditCtrl', ['$scope', '$auth', '$location', 'TransactionTypeServices', 'DefaultServices', function($scope, $auth, $location, TransactionTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      transactionType: null,
+      isSaving: false,
+      isNull: false,
+      notFound: {
+        url: '/all-transactions-type',
+        title: 'transactions',
+        message:'Record Not Found!',
+      },
+      top: {
+        title: 'transaction',
+        url: '/transaction-type-new',
+        show: true
+      },
+      typeAction: [],
+      messages: {}
+    };
+    let id = $location.path().substr(18); // to remove /transaction-type/
+    let transactionType = TransactionTypeServices.getTransactionTypeById(id);
+
+    DefaultServices.setTop(data.top);
+    data.typeAction = TransactionTypeServices.getTransactionTypeAction();
+
+    transactionType.then(function(response) {
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.transactionType = response;
+    }).catch(function(err) {
+      console.warn('Error getting Transaction Type: ', err);
+    });
+
+    $scope.updateTransactionType = function($valid) {
+      let transactionTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      transactionTypeUpdated = TransactionTypeServices.update(data.transactionType);
+      transactionTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating Transaction Type: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('TransactionTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'TransactionTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, TransactionTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      transactionType: {
+        transactionTypeDescription: null,
+        transactionTypeAction: null,
+        transactionTypeIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the transaction-type-edit.html
+      top: {
+        title: 'new transaction type',
+        url: '/transaction-type-new',
+        show: true
+      },
+      typeAction: []
+    };
+
+    DefaultServices.setTop(data.top);
+    data.typeAction = TransactionTypeServices.getTransactionTypeAction();
+
+    $scope.updateTransactionType = function($valid) {
+      let transactionTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      transactionTypeUpdated = TransactionTypeServices.add(data.transactionType);
+      transactionTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/transaction-type/${response.data.transactionType.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating transaction type: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', 'TransactionTypeServices', 'DefaultServices', function($scope, $auth, $location, TransactionTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      transactionsType: [],
+      isNull: false,
+      notFound: {
+        url: '/all-transactions-type',
+        title: 'transactions',
+        message:'Record Not Found!',
+      },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'transaction type',
+        url: '/transaction-type-new',
+        show: true
+      },
+      isLoading: false
+    };
+    let transactionsType = TransactionTypeServices.getAllTransactionsType();
+
+    data.isLoading = true;
+
+    DefaultServices.setTop(data.top);
+
+    transactionsType.then(function(response) {
+      let top = {};
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.transactionsType = response;
+      top = DefaultServices.getTop();
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting transactions type: ', err);
+    });
+
+    $scope.editTransactionType = function(id) {
+      $location.path(`/transaction-type/${id}`);
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
   .factory('Account', ['$http', function($http) {
     return {
       updateProfile: function(data) {
@@ -1084,6 +1272,62 @@ angular.module('MyApp')
     },
     getTransactionsByYear: function(year) {
       return $http.get(`/main-by-year/${year}`);
+    }
+  };
+}]);
+
+angular.module('MyApp')
+.factory('TransactionTypeServices', ['$http', function($http) {
+  return {
+    getTransactionTypeAction: function() {
+      return actions = [
+        {
+          value: null,
+          description: 'Please select one...',
+          selected: true
+        },
+        {
+          value: 'C',
+          description: 'Credit',
+          selected: false
+        },
+        {
+          value: 'D',
+          description: 'Debit',
+          selected: false
+        },
+        {
+          value: 'T',
+          description: 'Transfer',
+          selected: false
+        }
+      ]
+    },
+    getAllTransactionsType: function() {
+      let transactionsType = $http.get('/transactions-type')
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return transactionsType;
+    },
+    getTransactionTypeById: function(id) {
+      let transactionType = $http.get(`/transactions-type/${id}`)
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return transactionType;
+    },
+    update: function(data) {
+      return $http.put(`/transactions-type/${data.id}`, data);
+    },
+    add: function(data) {
+      return $http.post(`/transactions-type/new`, data);
     }
   };
 }]);

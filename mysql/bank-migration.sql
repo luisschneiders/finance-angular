@@ -1,4 +1,5 @@
 INSERT INTO `finance-angular`.`banks`(
+  `id`,
   `bankDescription`,
   `bankAccount`,
   `bankInitialBalance`,
@@ -6,6 +7,7 @@ INSERT INTO `finance-angular`.`banks`(
   `bankInsertedBy`,
   `created_at`)
 SELECT
+  `bank_id`,
   `bank_description`,
   `bank_account`,
   `bank_initbalance`,

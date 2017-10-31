@@ -70,6 +70,21 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
         controller: 'ExpenseTypeNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/all-transactions-type', {
+        templateUrl: 'partials/transaction-type.html',
+        controller: 'TransactionTypeCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/transaction-type/:id', {
+        templateUrl: 'partials/transaction-type-edit.html',
+        controller: 'TransactionTypeEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/transaction-type-new', {
+        templateUrl: 'partials/transaction-type-edit.html',
+        controller: 'TransactionTypeNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });

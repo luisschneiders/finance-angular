@@ -10,7 +10,7 @@
 }
 .nav-side-menu {
   overflow: auto;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 200;
   // background-color: #2e353d;
   position: fixed;
@@ -156,6 +156,13 @@
     font-size: 22px;
     padding-left: 20px;
     line-height: 50px !important;
+  }
+}
+.menu-list {
+  li {
+    i {
+      margin-right: 5px;
+    }
   }
 }
 @media (min-width: 767px) {

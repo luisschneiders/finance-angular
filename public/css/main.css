@@ -8105,7 +8105,7 @@ button.close {
 
 .nav-side-menu {
   overflow: auto;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 200;
   position: fixed;
   top: 0px;
@@ -8230,6 +8230,9 @@ button.close {
     font-size: 22px;
     padding-left: 20px;
     line-height: 50px !important; } }
+
+.menu-list li i {
+  margin-right: 5px; }
 
 @media (min-width: 767px) {
   .nav-side-menu .menu-list .menu-content {

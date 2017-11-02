@@ -10,11 +10,11 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-expenses-type',
-        title: 'Expenses',
+        title: 'expenses type',
         message:'Record Not Found!',
       },
       top: {
-        title: 'Expense',
+        title: 'update expense type',
         url: '/expense-type-new',
         show: true
       },

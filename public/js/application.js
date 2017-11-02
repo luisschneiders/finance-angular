@@ -132,7 +132,7 @@ angular.module('MyApp')
         message:'Record Not Found!',
       },
       top: {
-        title: 'bank',
+        title: 'update bank',
         url: '/bank-new',
         show: true
       },
@@ -317,11 +317,11 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-expenses-type',
-        title: 'Expenses',
+        title: 'expenses type',
         message:'Record Not Found!',
       },
       top: {
-        title: 'Expense',
+        title: 'update expense type',
         url: '/expense-type-new',
         show: true
       },
@@ -384,7 +384,7 @@ angular.module('MyApp')
       isSaving: false,
       isNull: false, // it's required for the expense-type-edit.html
       top: {
-        title: 'new expense',
+        title: 'new expense type',
         url: '/expense-type-new',
         show: true
       }
@@ -993,11 +993,11 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-transactions-type',
-        title: 'transactions',
+        title: 'transactions type',
         message:'Record Not Found!',
       },
       top: {
-        title: 'transaction',
+        title: 'update transaction type',
         url: '/transaction-type-new',
         show: true
       },

@@ -12,7 +12,7 @@ angular.module('MyApp')
       isSaving: false,
       isNull: false, // it's required for the expense-type-edit.html
       top: {
-        title: 'new expense',
+        title: 'new expense type',
         url: '/expense-type-new',
         show: true
       }

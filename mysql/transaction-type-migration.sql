@@ -6,7 +6,7 @@ INSERT INTO `finance-angular`.`transaction-type`(
   `created_at`) 
 SELECT
   `transactiontype_id`,
-  `transactiontype_description`,
+  `transactiontype_name`,
   `transactiontype_action`,
   `transactiontype_insertedby`,
   `transactiontype_dateinserted`

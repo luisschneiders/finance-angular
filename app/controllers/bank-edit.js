@@ -14,7 +14,7 @@ angular.module('MyApp')
         message:'Record Not Found!',
       },
       top: {
-        title: 'bank',
+        title: 'update bank',
         url: '/bank-new',
         show: true
       },

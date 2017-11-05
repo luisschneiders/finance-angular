@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
+angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash'])
   .config(function($routeProvider, $locationProvider, $authProvider) {
     $locationProvider.html5Mode(true);
 
@@ -83,6 +83,21 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
       .when('/transaction-type-new', {
         templateUrl: 'partials/transaction-type-edit.html',
         controller: 'TransactionTypeNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/all-users', {
+        templateUrl: 'partials/people.html',
+        controller: 'PeopleCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/user/:id', {
+        templateUrl: 'partials/people-edit.html',
+        controller: 'PeopleEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/user-new', {
+        templateUrl: 'partials/people-edit.html',
+        controller: 'PeopleNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({

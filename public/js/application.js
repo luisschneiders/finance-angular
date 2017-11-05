@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
+angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash'])
   .config(["$routeProvider", "$locationProvider", "$authProvider", function($routeProvider, $locationProvider, $authProvider) {
     skipIfAuthenticated.$inject = ["$location", "$auth"];
     loginRequired.$inject = ["$location", "$auth"];
@@ -85,6 +85,21 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment'])
       .when('/transaction-type-new', {
         templateUrl: 'partials/transaction-type-edit.html',
         controller: 'TransactionTypeNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/all-users', {
+        templateUrl: 'partials/people.html',
+        controller: 'PeopleCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/user/:id', {
+        templateUrl: 'partials/people-edit.html',
+        controller: 'PeopleEditCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/user-new', {
+        templateUrl: 'partials/people-edit.html',
+        controller: 'PeopleNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
@@ -562,7 +577,7 @@ angular.module('MyApp')
     let transactionChart = document.getElementById("transactionChart");
     let purchaseChart = document.getElementById("purchaseChart");
 
-    DefaultServices.setTop(data.top);    
+    DefaultServices.setTop(data.top);
 
     getGraphicData();
     
@@ -818,6 +833,183 @@ angular.module('MyApp')
     };
 
     $scope.defaultsApp = defaultsApp;
+  }]);
+
+angular.module('MyApp')
+  .controller('PeopleEditCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      people: null,
+      isSaving: false,
+      isNull: false,
+      notFound: {
+        url: '/all-users',
+        title: 'people',
+        message:'Record Not Found!',
+      },
+      top: {
+        title: 'update user',
+        url: '/user-new',
+        show: true
+      },
+      typeAction: [],
+      messages: {}
+    };
+    let id = $location.path().substr(6); // to remove /user/
+    let people = PeopleServices.getPeopleById(id);
+
+    DefaultServices.setTop(data.top);
+    data.typeAction = PeopleServices.getPeopleType();
+
+    people.then(function(response) {
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.people = response;
+    }).catch(function(err) {
+      console.warn('Error getting user: ', err);
+    });
+
+    $scope.updatePeople = function($valid) {
+      let peopleUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      peopleUpdated = PeopleServices.update(data.people);
+      peopleUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating user: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+'use strict';
+
+angular.module('MyApp')
+  .controller('PeopleNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $timeout, PeopleServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      people: {
+        peopleDescription: null,
+        peopleRates: null,
+        peopleType: null,
+        peopleIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the transaction-type-edit.html
+      top: {
+        title: 'new user',
+        url: '/user-new',
+        show: true
+      },
+      typeAction: []
+    };
+
+    DefaultServices.setTop(data.top);
+    data.typeAction = PeopleServices.getPeopleType();
+
+    $scope.updatePeople = function($valid) {
+      let peopleUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      peopleUpdated = PeopleServices.add(data.people);
+      peopleUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/user/${response.data.people.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating user: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      people: [],
+      isNull: false,
+      notFound: {
+        url: '/all-users',
+        title: 'Users',
+        message:'Record Not Found!',
+      },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'people',
+        url: '/user-new',
+        show: true
+      },
+      isLoading: false
+    };
+    let people = PeopleServices.getAllPeople();
+
+    data.isLoading = true;
+
+    DefaultServices.setTop(data.top);
+
+    people.then(function(response) {
+      let top = {};
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.people = response;
+      top = DefaultServices.getTop();
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting users: ', err);
+    });
+
+    $scope.editPeople = function(id) {
+      $location.path(`/user/${id}`);
+    };
+
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -1126,13 +1318,15 @@ angular.module('MyApp')
         url: '/transaction-type-new',
         show: true
       },
-      isLoading: false
+      isLoading: false,
+      typeAction: []
     };
     let transactionsType = TransactionTypeServices.getAllTransactionsType();
 
     data.isLoading = true;
 
     DefaultServices.setTop(data.top);
+    data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
     transactionsType.then(function(response) {
       let top = {};
@@ -1277,6 +1471,70 @@ angular.module('MyApp')
 }]);
 
 angular.module('MyApp')
+.factory('PeopleServices', ['$http', function($http) {
+  return {
+    getPeopleType: function() {
+      return actions = [
+        {
+          value: null,
+          description: 'Please select one...',
+          selected: true
+        },
+        {
+          value: 1,
+          description: 'Employer',
+          selected: false
+        },
+        {
+          value: 2,
+          description: 'Contractor',
+          selected: false
+        },
+        {
+          value: 3,
+          description: 'Subcontractor',
+          selected: false
+        }
+      ]
+    },
+    getAllPeople: function() {
+      let actions = this.getPeopleType();
+      let people = $http.get('/people')
+          .then(function(response){
+            _.forEach(response.data, function(data) {
+              _.find(actions, function(action){
+                if (data.peopleType == action.value) {
+                  data.peopleTypeDescription = action.description;
+                }
+              });
+            });
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return people;
+    },
+    getPeopleById: function(id) {
+      let people = $http.get(`/people/${id}`)
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return people;
+    },
+    update: function(data) {
+      return $http.put(`/people/${data.id}`, data);
+    },
+    add: function(data) {
+      return $http.post(`/people/new`, data);
+    }
+  };
+}]);
+
+angular.module('MyApp')
 .factory('TransactionTypeServices', ['$http', function($http) {
   return {
     getTransactionTypeAction: function() {
@@ -1304,8 +1562,16 @@ angular.module('MyApp')
       ]
     },
     getAllTransactionsType: function() {
+      let actions = this.getTransactionTypeAction();
       let transactionsType = $http.get('/transactions-type')
           .then(function(response){
+            _.forEach(response.data, function(data) {
+              _.find(actions, function(action){
+                if (data.transactionTypeAction == action.value) {
+                  data.transactionTypeActionDescription = action.description;
+                }
+              });
+            });
             return response.data;
           })
           .catch(function(error) {

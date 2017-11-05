@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
       table.increments();
       table.string('peopleDescription').notNullable();
       table.decimal('peopleRates', [10],[2]);
-      table.integer('peopleType', [1]).defaultTo(1).notNullable();
+      table.integer('peopleType').notNullable();
       table.boolean('peopleIsActive').defaultTo(1);
       table.integer('peopleInsertedBy').notNullable();
       table.timestamps();

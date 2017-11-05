@@ -8486,6 +8486,13 @@ footer {
 textarea {
   resize: none; }
 
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* Safari 3-4, iOS 1-3.2, Android 1.6- */
+  /* Firefox 1-3.6 */
+  border-radius: 0; }
+
 .form-control {
   height: 40px;
   padding: 8px 12px;

@@ -21,13 +21,15 @@ angular.module('MyApp')
         url: '/transaction-type-new',
         show: true
       },
-      isLoading: false
+      isLoading: false,
+      typeAction: []
     };
     let transactionsType = TransactionTypeServices.getAllTransactionsType();
 
     data.isLoading = true;
 
     DefaultServices.setTop(data.top);
+    data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
     transactionsType.then(function(response) {
       let top = {};

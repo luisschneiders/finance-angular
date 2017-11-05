@@ -1,7 +1,7 @@
 angular.module('MyApp')
-.factory('TransactionTypeServices', ['$http', function($http) {
+.factory('PeopleServices', ['$http', function($http) {
   return {
-    getTransactionTypeAction: function() {
+    getPeopleType: function() {
       return actions = [
         {
           value: null,
@@ -9,30 +9,30 @@ angular.module('MyApp')
           selected: true
         },
         {
-          value: 'C',
-          description: 'Credit',
+          value: 1,
+          description: 'Employer',
           selected: false
         },
         {
-          value: 'D',
-          description: 'Debit',
+          value: 2,
+          description: 'Contractor',
           selected: false
         },
         {
-          value: 'T',
-          description: 'Transfer',
+          value: 3,
+          description: 'Subcontractor',
           selected: false
         }
       ]
     },
-    getAllTransactionsType: function() {
-      let actions = this.getTransactionTypeAction();
-      let transactionsType = $http.get('/transactions-type')
+    getAllPeople: function() {
+      let actions = this.getPeopleType();
+      let people = $http.get('/people')
           .then(function(response){
             _.forEach(response.data, function(data) {
               _.find(actions, function(action){
-                if (data.transactionTypeAction == action.value) {
-                  data.transactionTypeActionDescription = action.description;
+                if (data.peopleType == action.value) {
+                  data.peopleTypeDescription = action.description;
                 }
               });
             });
@@ -41,23 +41,23 @@ angular.module('MyApp')
           .catch(function(error) {
             return error;
           });
-      return transactionsType;
+      return people;
     },
-    getTransactionTypeById: function(id) {
-      let transactionType = $http.get(`/transactions-type/${id}`)
+    getPeopleById: function(id) {
+      let people = $http.get(`/people/${id}`)
           .then(function(response){
             return response.data;
           })
           .catch(function(error) {
             return error;
           });
-      return transactionType;
+      return people;
     },
     update: function(data) {
-      return $http.put(`/transactions-type/${data.id}`, data);
+      return $http.put(`/people/${data.id}`, data);
     },
     add: function(data) {
-      return $http.post(`/transactions-type/new`, data);
+      return $http.post(`/people/new`, data);
     }
   };
 }]);

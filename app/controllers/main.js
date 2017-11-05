@@ -31,7 +31,7 @@ angular.module('MyApp')
     let transactionChart = document.getElementById("transactionChart");
     let purchaseChart = document.getElementById("purchaseChart");
 
-    DefaultServices.setTop(data.top);    
+    DefaultServices.setTop(data.top);
 
     getGraphicData();
     

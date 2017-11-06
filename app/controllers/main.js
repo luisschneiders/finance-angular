@@ -40,18 +40,17 @@ angular.module('MyApp')
       if(value == 'd') {
         data.year = data.year - 1;
         $location.path(`/main/${data.year}`);
-        getGraphicData();
       } else {
         data.year = data.year + 1;
         $location.path(`/main/${data.year}`);
-        getGraphicData();
       }
     };
 
     function getGraphicData() {
       let transactions = MainServices.getTransactionsByYear(data.year);
       transactions.then(function(response) {
-        data.isNull = false;
+        data.transactionIsNull = false;
+        data.purchaseIsNull = false;
 
         if(response.data[0].length == 0) {//transaction
           data.transactionIsNull = true;

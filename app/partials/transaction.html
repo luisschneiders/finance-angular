@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div ng-include src="'partials/top.html'"></div>
+        <div class="text-center select-period">
+          <a ng-click="changePeriod('d')"><i class="fa fa-minus" aria-hidden="true"></i></a>
+          <span>{{data.currentPeriod}}</span>
+          <a ng-click="changePeriod('i')"><i class="fa fa-plus" aria-hidden="true"></i></a>
+        </div>
+        <div class="loading text-center" ng-show="data.isLoading">
+          <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <span>Transactions Graphic:</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -35,7 +35,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'ResetCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
-      .when('/main/:id', {
+      .when('/main/:year', {
         templateUrl: 'partials/main.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
@@ -98,6 +98,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       .when('/user-new', {
         templateUrl: 'partials/people-edit.html',
         controller: 'PeopleNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/transactions/:year/:month', {
+        templateUrl: 'partials/transaction.html',
+        controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({

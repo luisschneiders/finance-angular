@@ -1,6 +1,7 @@
 angular.module('MyApp')
-.factory('DefaultServices', ['$http', function($http) {
+.factory('DefaultServices', ['$http', 'moment', function($http, moment) {
   let top = {};
+  let monthAndYear = null;
   return {
     setTop: function(data) {
       top.title = data.title;
@@ -9,6 +10,14 @@ angular.module('MyApp')
     },
     getTop: function() {
       return top;
+    },
+    setMonthAndYear: function(data) {
+      data = '01-' + data.toString();
+      monthAndYear = data.split("-").reverse().join("-");
+      monthAndYear = new Date(monthAndYear);
+    },
+    getMonthAndYear: function() {
+      return monthAndYear;
     }
   }
 }]);

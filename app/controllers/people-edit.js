@@ -10,7 +10,7 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-users',
-        title: 'people',
+        title: 'all users',
         message:'Record Not Found!',
       },
       top: {

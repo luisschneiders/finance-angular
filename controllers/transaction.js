@@ -1,9 +1,10 @@
+const moment = require('moment');
 const Transaction = require('../models/Transaction');
 
 /**
- * GET /transactions
+ * GET /transaction
  */
-exports.transactionsGetByYear = function(req, res) {
+exports.transactionGetByYear = function(req, res) {
   let year = req.params.id;
   let startDate = `${year}-01-01`;
   let endDate = `${year}-12-31`;
@@ -16,10 +17,26 @@ exports.transactionsGetByYear = function(req, res) {
 };
 
 /**
- * GET /transactions/:id
+ * GET /transaction/:year/:month
  */
-exports.transactionGetById = function(req, res) {
+exports.transactionGetByYearAndMonth = function(req, res) {
+  let startDate = null;
+  let endDate = null;
 
+  startDate = `${req.params.year}-${req.params.month}-01`;
+  startDate = new Date(startDate);
+
+  startDate = moment(startDate);
+  endDate = moment(startDate).endOf('month');
+
+  console.log('startDate', startDate);
+  console.log('endDate', endDate);
+  Transaction.getTransactionByYearAndMonth(req.user.id, startDate, endDate)
+    .then(function(transactions) {
+      res.json(transactions);
+    }).catch(function(err) {
+      console.error(err);
+    });
 };
 
 /**

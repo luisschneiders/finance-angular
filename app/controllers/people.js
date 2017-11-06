@@ -9,7 +9,7 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-users',
-        title: 'Users',
+        title: 'all users',
         message:'Record Not Found!',
       },
       class: {
@@ -17,7 +17,7 @@ angular.module('MyApp')
         inactive: 'is-inactive'
       },
       top: {
-        title: 'people',
+        title: 'all users',
         url: '/user-new',
         show: true
       },

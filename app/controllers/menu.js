@@ -1,14 +1,15 @@
 angular.module('MyApp')
-  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', function($scope, $location, $window, $auth) {
+  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
     let defaultsApp = {
       logo: null,
       title: null,
       alt: null,
       width: 170,
-      year: new Date().getFullYear()
+      year: moment().format('YYYY'),
+      month: moment().format('MM')
     };
 
-    defaultsApp.logo = '/img/schneiders-tech-software-development-release.svg';
+    defaultsApp.logo = '/img/schneiders-tech-software-development.svg';
     defaultsApp.title = 'Your personal finance app';
     defaultsApp.alt = defaultsApp.title;
 

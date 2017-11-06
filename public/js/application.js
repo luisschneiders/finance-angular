@@ -37,7 +37,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'ResetCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
-      .when('/main/:id', {
+      .when('/main/:year', {
         templateUrl: 'partials/main.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
@@ -100,6 +100,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       .when('/user-new', {
         templateUrl: 'partials/people-edit.html',
         controller: 'PeopleNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/transactions/:year/:month', {
+        templateUrl: 'partials/transaction.html',
+        controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
@@ -586,18 +591,17 @@ angular.module('MyApp')
       if(value == 'd') {
         data.year = data.year - 1;
         $location.path(`/main/${data.year}`);
-        getGraphicData();
       } else {
         data.year = data.year + 1;
         $location.path(`/main/${data.year}`);
-        getGraphicData();
       }
     };
 
     function getGraphicData() {
       let transactions = MainServices.getTransactionsByYear(data.year);
       transactions.then(function(response) {
-        data.isNull = false;
+        data.transactionIsNull = false;
+        data.purchaseIsNull = false;
 
         if(response.data[0].length == 0) {//transaction
           data.transactionIsNull = true;
@@ -805,16 +809,17 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', function($scope, $location, $window, $auth) {
+  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
     let defaultsApp = {
       logo: null,
       title: null,
       alt: null,
       width: 170,
-      year: new Date().getFullYear()
+      year: moment().format('YYYY'),
+      month: moment().format('MM')
     };
 
-    defaultsApp.logo = '/img/schneiders-tech-software-development-release.svg';
+    defaultsApp.logo = '/img/schneiders-tech-software-development.svg';
     defaultsApp.title = 'Your personal finance app';
     defaultsApp.alt = defaultsApp.title;
 
@@ -847,7 +852,7 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-users',
-        title: 'people',
+        title: 'all users',
         message:'Record Not Found!',
       },
       top: {
@@ -971,7 +976,7 @@ angular.module('MyApp')
       isNull: false,
       notFound: {
         url: '/all-users',
-        title: 'Users',
+        title: 'all users',
         message:'Record Not Found!',
       },
       class: {
@@ -979,7 +984,7 @@ angular.module('MyApp')
         inactive: 'is-inactive'
       },
       top: {
-        title: 'people',
+        title: 'all users',
         url: '/user-new',
         show: true
       },
@@ -1350,6 +1355,74 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'DefaultServices', function($scope, $auth, $location, moment, TransactionServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      isNull: false,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'Transactions',
+        url: 'transaction-new',
+        show: true
+      },
+      isLoading: true,
+      monthAndYear: null,
+      currentPeriod: $location.path().substr(14), // to remove /transactions/
+      period: {
+        month: null,
+        year: null
+      }
+    };
+
+    DefaultServices.setTop(data.top);
+    getCurrentPeriodTransactions();
+
+    $scope.changePeriod = function(value) {
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+      if(value == 'd') {
+        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
+      } else {
+        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      }
+      data.period.year = parseInt(moment(data.monthAndYear).format('YYYY'));
+      data.period.month = parseInt(moment(data.monthAndYear).format('MM'));
+      $location.path(`/transactions/${data.period.year}/${data.period.month}`);
+    };
+
+    function getCurrentPeriodTransactions() {
+      let transactions;
+      DefaultServices.setMonthAndYear(data.currentPeriod);
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+      data.period.year = parseInt(moment(data.monthAndYear).format('YYYY'));
+      data.period.month = parseInt(moment(data.monthAndYear).format('MM'));
+      transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
+      transactions.then(function(response) {
+        console.log('response');
+        console.table(response.data);
+        data.isNull = false;
+
+        if(response.data.length == 0) {
+          data.isNull = true;
+        }
+
+
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting data: ', err);
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
   .factory('Account', ['$http', function($http) {
     return {
       updateProfile: function(data) {
@@ -1412,8 +1485,9 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-.factory('DefaultServices', ['$http', function($http) {
+.factory('DefaultServices', ['$http', 'moment', function($http, moment) {
   let top = {};
+  let monthAndYear = null;
   return {
     setTop: function(data) {
       top.title = data.title;
@@ -1422,6 +1496,14 @@ angular.module('MyApp')
     },
     getTop: function() {
       return top;
+    },
+    setMonthAndYear: function(data) {
+      data = '01-' + data.toString();
+      monthAndYear = data.split("-").reverse().join("-");
+      monthAndYear = new Date(monthAndYear);
+    },
+    getMonthAndYear: function() {
+      return monthAndYear;
     }
   }
 }]);
@@ -1530,6 +1612,18 @@ angular.module('MyApp')
     },
     add: function(data) {
       return $http.post(`/people/new`, data);
+    }
+  };
+}]);
+
+angular.module('MyApp')
+.factory('TransactionServices', ['$http', function($http) {
+  return {
+    getDefaultsApp: function(data) {
+
+    },
+    getTransactionsByYearAndMonth: function(period) {
+      return $http.get(`/transactions-by-year-and-month/${period.year}/${period.month}`);
     }
   };
 }]);

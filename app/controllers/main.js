@@ -82,6 +82,8 @@ angular.module('MyApp')
           case 'T':
             value.TotalAmountByLabel = value.TotalAmountByLabel / 2;
             break;
+          default:
+            value.TotalAmountByLabel;
         }
         return [value.TotalAmountByLabel];
       });
@@ -89,14 +91,16 @@ angular.module('MyApp')
       transactionsLabel = response.map(function(value){
         switch(value.transactionLabel){
           case 'C':
-            value.transactionLabel = 'INCOMES'
+            value.transactionLabel = 'INCOMES';
             break;
           case 'D':
-            value.transactionLabel = 'OUTCOMES'
+            value.transactionLabel = 'OUTCOMES';
             break;
           case 'T':
-            value.transactionLabel = 'TRANSFERS'
+            value.transactionLabel = 'TRANSFERS';
             break;
+          default:
+            value.transactionLabel = 'Label';
         }
         return [value.transactionLabel];
       });
@@ -112,6 +116,9 @@ angular.module('MyApp')
           case 'TRANSFERS':
             value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
             break;
+          default:
+            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+
         }
         return [value.pieChartColoursBackground];
       });
@@ -184,6 +191,8 @@ angular.module('MyApp')
           case '12':
             value.barChartLabelsMonths = 'Dec';
             break;
+          default:
+            value.barChartLabelsMonths = 'Month';
         }
         return [value.barChartLabelsMonths];
       });
@@ -229,6 +238,8 @@ angular.module('MyApp')
           case '12':
             value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
             break;
+          default:
+            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
         }
         return [value.barChartColoursBackground];
       });

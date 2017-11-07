@@ -25,12 +25,10 @@ exports.transactionGetByYearAndMonth = function(req, res) {
 
   startDate = `${req.params.year}-${req.params.month}-01`;
   startDate = new Date(startDate);
-
+// we use moment to set both startDate and endDate in the same format.
   startDate = moment(startDate);
   endDate = moment(startDate).endOf('month');
 
-  console.log('startDate', startDate);
-  console.log('endDate', endDate);
   Transaction.getTransactionByYearAndMonth(req.user.id, startDate, endDate)
     .then(function(transactions) {
       res.json(transactions);

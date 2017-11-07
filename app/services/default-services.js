@@ -12,12 +12,13 @@ angular.module('MyApp')
       return top;
     },
     setMonthAndYear: function(data) {
-      data = '01-' + data.toString();
-      monthAndYear = data.split("-").reverse().join("-");
-      monthAndYear = new Date(monthAndYear);
+      let date = null;
+      date = data.toString().split('/').join('-');
+      date = date + '-01';
+      monthAndYear = new Date(date);
     },
     getMonthAndYear: function() {
       return monthAndYear;
-    }
+    },
   }
 }]);

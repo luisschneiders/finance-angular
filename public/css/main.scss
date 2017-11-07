@@ -68,10 +68,23 @@ footer {
   background-color: #fff;
   border-top: 1px solid #e0e0e0;
 }
+a {
+  color: initial;
+  &:hover {
+    color: initial;
+  }
+}
+.cursor-pointer {
+  cursor: pointer;
+}
 .login-container {
   max-width: 555px;
 }
-
+.hover-element {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
 // Alerts
 // -------------------------
 .alert {
@@ -80,12 +93,20 @@ footer {
 
 // Panels
 // -------------------------
-.panel {
-  border: solid 1px rgba(160, 160, 160, 0.3);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+.panel-hover {
+  border-left: solid 3px $light-black;
+  &:hover {
+    border-left: solid 3px $dark-yellow;
+    @extend .hover-element;
+  }
 }
-.panel-heading + .panel-body {
-  padding-top: 0;
+.panel {
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+
+  .panel-heading{
+    border-radius: 0;
+  }
 }
 .panel-body {
   h1, h2, h3, h4, h5, h6 {
@@ -94,7 +115,7 @@ footer {
 }
 .panel-title {
   font-size: 18px;
-  color: #424242;
+  // color: #FFF;
 }
 
 // Forms
@@ -143,11 +164,11 @@ select {
 .is-inactive {
   color: $dark-yellow
 }
-.table-cursor {
-  cursor: pointer;
+.table-cursor, .panel-cursor {
+  @extend .cursor-pointer;
 }
 .title-border-left {
-  border-left: 3px solid $mid-yellow;
+  border-left: 3px solid $dark-yellow;
   padding-left: 5px;
 }
 .loading {
@@ -156,7 +177,15 @@ select {
 .select-period {
   font-size: 2rem;
   a {
-    padding: 0 10px 0 10px;
+    width: 40px;
+    height: 40px;
+    color: $light-gray;
+    border-radius: 2px;
+    background-color: $mid-black;
+    padding: 4px 8px 3px 8px;
+    &:hover {
+      @extend .hover-element;
+    }
   }
 }
 .field-required {

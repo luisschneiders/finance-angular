@@ -13,7 +13,25 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <span>Transactions Graphic:</span>
+            <span>Resume of the month:</span>
+          </div>
+          <div class="col-sm-offset-1 col-sm-10 col-md-offset-3 col-md-6" ng-show="data.isNull">
+            <h3 class="alert alert-danger text-center">{{::data.notFound.message}}</h3>
+          </div>
+          <div class="col-sm-offset-1 col-sm-10 col-md-offset-3 col-md-6" ng-repeat="transaction in data.transactions">
+            <div class="panel well panel-hover">
+              <div class="panel-heading">
+                <h3 class="panel-title text-uppercase">{{::transaction.transactionTypeDescription || 'Purchase'}}</h3>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-6">
+                    $ {{::transaction.TotalAmountByTransactionType | number:2 }}
+                  </div>
+                  <div class="col-sm-6 text-right"><a class="panel-cursor" ng-href="">See details...</a></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

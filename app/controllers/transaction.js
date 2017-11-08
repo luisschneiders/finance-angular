@@ -59,11 +59,11 @@ angular.module('MyApp')
       transactions.then(function(response) {
         data.isNull = false;
 
-        if(response.data.length == 0) {
+        if(Object.keys(response).length === 0) {
           data.isNull = true;
         }
 
-        data.transactions = response.data;
+        data.transactions = response;
         data.isLoading = false;
       }).catch(function(err) {
         console.warn('Error getting data: ', err);

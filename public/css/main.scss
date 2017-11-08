@@ -80,10 +80,15 @@ a {
 .login-container {
   max-width: 555px;
 }
-.hover-element {
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+.box-shadow {
+  -webkit-box-shadow: 0px 4px 5px -3px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 4px 5px -3px rgba(0,0,0,0.75);
+  box-shadow: 0px 4px 5px -3px rgba(0,0,0,0.75);
+}
+.hover-element-shadow {
+  -webkit-box-shadow: 0px 1px 8px -2px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 1px 8px -2px rgba(0,0,0,0.75);
+  box-shadow: 0px 1px 8px -2px rgba(0,0,0,0.75);
 }
 // Alerts
 // -------------------------
@@ -94,14 +99,13 @@ a {
 // Panels
 // -------------------------
 .panel-hover {
-  border-left: solid 3px $light-black;
   &:hover {
     border-left: solid 3px $dark-yellow;
-    @extend .hover-element;
   }
 }
 .panel {
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  border-left: solid 3px $light-black;
+  box-shadow: none;
   border-radius: 0;
 
   .panel-heading{
@@ -114,10 +118,12 @@ a {
   }
 }
 .panel-title {
-  font-size: 18px;
+  font-size: 2rem;
   // color: #FFF;
 }
-
+.panel-body-content {
+  font-size: 2rem;
+}
 // Forms
 // -------------------------
 textarea {
@@ -175,6 +181,7 @@ select {
   color: $mid-pink;
 }
 .select-period {
+  padding-top: 5px;
   font-size: 2rem;
   a {
     width: 40px;
@@ -184,7 +191,7 @@ select {
     background-color: $mid-black;
     padding: 4px 8px 3px 8px;
     &:hover {
-      @extend .hover-element;
+      @extend .hover-element-shadow;
     }
   }
 }

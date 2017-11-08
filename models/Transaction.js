@@ -19,13 +19,13 @@ const Transaction = bookshelf.Model.extend({
       endDate = moment(endDate).format('YYYY-MM-DD');
 
       return this.query(function(qr){
-        qr.select('transaction-type.transactionTypeDescription', 'transactionType', 'transactionLabel', 'transactionAmount', 'transactionInsertedBy', 'transactionFlag');
-        qr.sum('transactionAmount AS TotalAmountByTransactionType');
+        qr.select('transaction-type.transactionTypeDescription', 'transactions.id', 'transactionType', 'transactionLabel', 'transactionAmount', 'transactionInsertedBy', 'transactionFlag');
+        // qr.sum('transactionAmount AS TotalAmountByTransactionType');
         qr.leftJoin('transaction-type', 'transactions.transactionType', '=', 'transaction-type.id');
         qr.where({'transactionInsertedBy': user, 'transactionFlag': 'r'});
         qr.whereBetween('transactionDate', [startDate, endDate]);
         qr.whereRaw('(transactionAction <> "D" OR transactionLabel <> "T")');
-        qr.groupBy('transactionType');
+        // qr.groupBy('transactionType');
       }).fetchAll();
     }    
   });

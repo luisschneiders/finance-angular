@@ -8105,7 +8105,7 @@ button.close {
 
 .nav-side-menu {
   overflow: auto;
-  font-size: 14px;
+  font-size: 1.5rem;
   font-weight: 200;
   position: fixed;
   top: 0px;
@@ -8117,7 +8117,7 @@ button.close {
   line-height: 50px;
   display: block;
   text-align: center;
-  font-size: 14px;
+  font-size: 1.5rem;
   border-bottom: 1px solid #0099D8; }
 
 .nav-side-menu .toggle-btn {
@@ -8218,8 +8218,8 @@ button.close {
     display: block;
     cursor: pointer;
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 15px;
+    top: 7px;
     z-index: 10 !important;
     padding: 3px;
     background-color: #ffffff;
@@ -8227,7 +8227,7 @@ button.close {
     width: 40px;
     text-align: center; }
   .brand {
-    font-size: 22px;
+    font-size: 2rem;
     padding-left: 20px;
     line-height: 50px !important; } }
 
@@ -8474,19 +8474,21 @@ a {
 .login-container {
   max-width: 555px; }
 
-.hover-element, .panel-hover:hover, .select-period a:hover {
-  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75); }
+.box-shadow {
+  box-shadow: 0px 4px 5px -3px rgba(0, 0, 0, 0.75); }
+
+.hover-element-shadow, .select-period a:hover {
+  box-shadow: 0px 1px 8px -2px rgba(0, 0, 0, 0.75); }
 
 .alert {
   border-width: 0 0 0 3px; }
 
-.panel-hover {
-  border-left: solid 3px #636363; }
-  .panel-hover:hover {
-    border-left: solid 3px #fe9501; }
+.panel-hover:hover {
+  border-left: solid 3px #fe9501; }
 
 .panel {
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  border-left: solid 3px #636363;
+  box-shadow: none;
   border-radius: 0; }
   .panel .panel-heading {
     border-radius: 0; }
@@ -8495,7 +8497,10 @@ a {
   margin-top: 0; }
 
 .panel-title {
-  font-size: 18px; }
+  font-size: 2rem; }
+
+.panel-body-content {
+  font-size: 2rem; }
 
 textarea {
   resize: none; }
@@ -8549,6 +8554,7 @@ select {
   color: #e600e6; }
 
 .select-period {
+  padding-top: 5px;
   font-size: 2rem; }
   .select-period a {
     width: 40px;

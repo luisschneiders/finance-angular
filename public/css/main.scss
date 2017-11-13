@@ -90,6 +90,11 @@ a {
   -moz-box-shadow: 0px 1px 8px -2px rgba(0,0,0,0.75);
   box-shadow: 0px 1px 8px -2px rgba(0,0,0,0.75);
 }
+// Modals
+// -------------------------
+.modal-content {
+  border-radius: 2px;
+}
 // Alerts
 // -------------------------
 .alert {
@@ -168,7 +173,7 @@ select {
   color: $dark-green;
 }
 .is-inactive {
-  color: $dark-yellow
+  color: $dark-yellow;
 }
 .table-cursor, .panel-cursor {
   @extend .cursor-pointer;

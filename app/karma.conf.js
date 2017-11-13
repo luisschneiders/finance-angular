@@ -40,6 +40,7 @@ module.exports = function(config) {
     preprocessors: {
       'app.js': ['coverage'],
       'controllers/*.js': ['coverage'],
+      'controllers/**/*.js': ['coverage'],
       'services/*.js': ['coverage'],
       'directives/*.js': ['coverage']
     },

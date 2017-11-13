@@ -4,23 +4,43 @@ angular.module('MyApp')
     getTransactionsByYearAndMonth: function(period) {
       let data = $http.get(`/transactions-by-year-and-month/${period.year}/${period.month}`)
           .then(function(response) {
-            let groups = {};
-            let groupedBy = _.groupBy(response.data, function(type) {
+            let groupedBy = {};
+
+            groupedBy = _.groupBy(response.data, function(type) {
               return this.type = type.transactionType;
             });
-            groups = _.forEach(groupedBy, function(group) {
+
+            groupedBy = _.forEach(groupedBy, function(group) {
               group.TotalAmountByTransactionType = _.sum(group, function(amount) {
                 return amount.transactionAmount;
               });
               group.transactionTypeDescription = group[0].transactionTypeDescription;
             });
 
-            return groups;
+            groupedBy = _.forEach(groupedBy, function(items){
+              let removed = _.remove(items, function(arr) {
+                return delete this.arr;
+              })
+              return removed;
+            });
+
+            return {groupedBy: groupedBy, data: response.data};
           })
           .catch(function(err) {
             return err;
           });
       return data;
+    },
+    getDataByGroup: function(data, key) {
+      let transactions = {};
+
+      transactions = _.filter(data, function(item) {
+        if (item.transactionType == key) {
+          return item;
+        }
+      });
+
+      return transactions;
     }
   };
 }]);

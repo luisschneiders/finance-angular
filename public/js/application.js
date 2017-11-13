@@ -38,72 +38,72 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
       .when('/main/:year', {
-        templateUrl: 'partials/main.html',
+        templateUrl: 'partials/main/main.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-banks', {
-        templateUrl: 'partials/bank.html',
+        templateUrl: 'partials/bank/bank.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank/:id', {
-        templateUrl: 'partials/bank-edit.html',
+        templateUrl: 'partials/bank/bank-edit.html',
         controller: 'BankEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank-new', {
-        templateUrl: 'partials/bank-edit.html',
+        templateUrl: 'partials/bank/bank-edit.html',
         controller: 'BankNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-expenses-type', {
-        templateUrl: 'partials/expense-type.html',
+        templateUrl: 'partials/expense-type/expense-type.html',
         controller: 'ExpenseTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type/:id', {
-        templateUrl: 'partials/expense-type-edit.html',
+        templateUrl: 'partials/expense-type/expense-type-edit.html',
         controller: 'ExpenseTypeEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type-new', {
-        templateUrl: 'partials/expense-type-edit.html',
+        templateUrl: 'partials/expense-type/expense-type-edit.html',
         controller: 'ExpenseTypeNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-transactions-type', {
-        templateUrl: 'partials/transaction-type.html',
+        templateUrl: 'partials/transaction-type/transaction-type.html',
         controller: 'TransactionTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-type/:id', {
-        templateUrl: 'partials/transaction-type-edit.html',
+        templateUrl: 'partials/transaction-type/transaction-type-edit.html',
         controller: 'TransactionTypeEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-type-new', {
-        templateUrl: 'partials/transaction-type-edit.html',
+        templateUrl: 'partials/transaction-type/transaction-type-edit.html',
         controller: 'TransactionTypeNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-users', {
-        templateUrl: 'partials/people.html',
+        templateUrl: 'partials/people/people.html',
         controller: 'PeopleCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/user/:id', {
-        templateUrl: 'partials/people-edit.html',
+        templateUrl: 'partials/people/people-edit.html',
         controller: 'PeopleEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/user-new', {
-        templateUrl: 'partials/people-edit.html',
+        templateUrl: 'partials/people/people-edit.html',
         controller: 'PeopleNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transactions/:year/:month', {
-        templateUrl: 'partials/transaction.html',
+        templateUrl: 'partials/transaction/transaction.html',
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
@@ -120,7 +120,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
 
     function skipIfAuthenticated($location, $auth) {
       if ($auth.isAuthenticated()) {
-        $location.path('/main/:id');
+        $location.path('/main/:year');
       }
     }
 
@@ -134,6 +134,223 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }
+  }]);
+
+angular.module('MyApp')
+  .controller('ContactCtrl', ['$scope', 'Contact', function($scope, Contact) {
+    $scope.sendContactForm = function() {
+      Contact.send($scope.contact)
+        .then(function(response) {
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+  }]);
+
+angular.module('MyApp')
+  .controller('ForgotCtrl', ['$scope', 'Account', function($scope, Account) {
+    $scope.forgotPassword = function() {
+      Account.forgotPassword($scope.user)
+        .then(function(response) {
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+  }]);
+
+angular.module('MyApp')
+  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
+    let year = new Date().getFullYear();
+    $scope.login = function() {
+      $auth.login($scope.user)
+        .then(function(response) {
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          $location.path(`/main/${year}`);
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    $scope.authenticate = function(provider) {
+      $auth.authenticate(provider)
+        .then(function(response) {
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          $location.path(`/main/${year}`);
+        })
+        .catch(function(response) {
+          if (response.error) {
+            $scope.messages = {
+              error: [{ msg: response.error }]
+            };
+          } else if (response.data) {
+            $scope.messages = {
+              error: [response.data]
+            };
+          }
+        });
+    };
+  }]);
+
+angular.module('MyApp')
+  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'Account', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      top: {
+        title: 'Profile Information',
+        url: null,
+        show: false
+      }
+    };
+    DefaultServices.setTop(data.top);
+
+    $scope.profile = $rootScope.currentUser;
+
+    $scope.updateProfile = function() {
+      Account.updateProfile($scope.profile)
+        .then(function(response) {
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    $scope.changePassword = function() {
+      Account.changePassword($scope.profile)
+        .then(function(response) {
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    $scope.link = function(provider) {
+      $auth.link(provider)
+        .then(function(response) {
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $window.scrollTo(0, 0);
+          $scope.messages = {
+            error: [response.data]
+          };
+        });
+    };
+
+    $scope.unlink = function(provider) {
+      $auth.unlink(provider)
+        .then(function() {
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: [response.data]
+          };
+        });
+    };
+
+    $scope.deleteAccount = function() {
+      Account.deleteAccount()
+        .then(function() {
+          $auth.logout();
+          delete $window.localStorage.user;
+          $location.path('/');
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: [response.data]
+          };
+        });
+    };
+  }]);
+angular.module('MyApp')
+  .controller('ResetCtrl', ['$scope', 'Account', function($scope, Account) {
+    $scope.resetPassword = function() {
+      Account.resetPassword($scope.user)
+        .then(function(response) {
+          $scope.messages = {
+            success: [response.data]
+          };
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    }
+  }]);
+
+angular.module('MyApp')
+  .controller('SignupCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
+    $scope.signup = function() {
+      $auth.signup($scope.user)
+        .then(function(response) {
+          $auth.setToken(response);
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          $location.path('/');
+        })
+        .catch(function(response) {
+          $scope.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    $scope.authenticate = function(provider) {
+      $auth.authenticate(provider)
+        .then(function(response) {
+          $rootScope.currentUser = response.data.user;
+          $window.localStorage.user = JSON.stringify(response.data.user);
+          $location.path('/');
+        })
+        .catch(function(response) {
+          if (response.error) {
+            $scope.messages = {
+              error: [{ msg: response.error }]
+            };
+          } else if (response.data) {
+            $scope.messages = {
+              error: [response.data]
+            };
+          }
+        });
+    };
   }]);
 
 angular.module('MyApp')
@@ -309,23 +526,6 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ContactCtrl', ['$scope', 'Contact', function($scope, Contact) {
-    $scope.sendContactForm = function() {
-      Contact.send($scope.contact)
-        .then(function(response) {
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
-    };
-  }]);
-
-angular.module('MyApp')
   .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
@@ -492,61 +692,6 @@ angular.module('MyApp')
     };
 
     $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ForgotCtrl', ['$scope', 'Account', function($scope, Account) {
-    $scope.forgotPassword = function() {
-      Account.forgotPassword($scope.user)
-        .then(function(response) {
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
-    };
-  }]);
-
-angular.module('MyApp')
-  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
-    let year = new Date().getFullYear();
-    $scope.login = function() {
-      $auth.login($scope.user)
-        .then(function(response) {
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main/${year}`);
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
-    };
-
-    $scope.authenticate = function(provider) {
-      $auth.authenticate(provider)
-        .then(function(response) {
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main/${year}`);
-        })
-        .catch(function(response) {
-          if (response.error) {
-            $scope.messages = {
-              error: [{ msg: response.error }]
-            };
-          } else if (response.data) {
-            $scope.messages = {
-              error: [response.data]
-            };
-          }
-        });
-    };
   }]);
 
 angular.module('MyApp')
@@ -852,6 +997,22 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
+    let data = {
+      title: null,
+      url: null,
+      show: false
+    };
+    let top = DefaultServices.getTop();
+
+    data.title = top.title;
+    data.url = top.url;
+    data.show = top.show;
+
+    $scope.default = data;
+  }]);
+
+angular.module('MyApp')
   .controller('PeopleEditCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
@@ -1029,164 +1190,97 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'Account', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+  .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'DefaultServices',
+  function($scope, $auth, $location, moment, TransactionServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     let data = {
-      top: {
-        title: 'Profile Information',
+      modal: {
+        title: null,
+        transactions: null,
+      },
+      transactions: [],
+      template: {
+        url: 'partials/modal/transaction.tpl.html'
+      },
+      transactionsByGroup: {},
+      typeAction: [],
+      isNull: false,
+      notFound: {
         url: null,
-        show: false
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'Transactions',
+        url: 'transaction-new',
+        show: true
+      },
+      isLoading: true,
+      monthAndYear: null,
+      currentPeriod: $location.path().substr(14), // to remove /transactions/
+      period: {
+        month: null,
+        year: null
       }
     };
+
     DefaultServices.setTop(data.top);
 
-    $scope.profile = $rootScope.currentUser;
+    getCurrentPeriodTransactions();
 
-    $scope.updateProfile = function() {
-      Account.updateProfile($scope.profile)
-        .then(function(response) {
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
+    $scope.changePeriod = function(value) {
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+
+      if (value == 'd') {
+        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
+      } else {
+        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      }
+
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+      $location.path(`/transactions/${data.period.year}/${data.period.month}`);
     };
 
-    $scope.changePassword = function() {
-      Account.changePassword($scope.profile)
-        .then(function(response) {
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
+    function getCurrentPeriodTransactions() {
+      let transactions = null;
+      DefaultServices.setMonthAndYear(data.currentPeriod);
+
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+
+      transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
+      transactions.then(function(response) {
+        data.isNull = false;
+        console.log('response', response);
+        if (Object.keys(response.groupedBy).length === 0) {
+          data.isNull = true;
+        }
+
+        data.transactions = response.data;
+        data.transactionsByGroup = response.groupedBy;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting data: ', err);
+      });
     };
 
-    $scope.link = function(provider) {
-      $auth.link(provider)
-        .then(function(response) {
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $window.scrollTo(0, 0);
-          $scope.messages = {
-            error: [response.data]
-          };
-        });
+    $scope.deleteTransaction = function(id) {
+      console.log('Ill be in the services', id);
     };
 
-    $scope.unlink = function(provider) {
-      $auth.unlink(provider)
-        .then(function() {
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: [response.data]
-          };
-        });
-    };
 
-    $scope.deleteAccount = function() {
-      Account.deleteAccount()
-        .then(function() {
-          $auth.logout();
-          delete $window.localStorage.user;
-          $location.path('/');
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: [response.data]
-          };
-        });
-    };
-  }]);
-angular.module('MyApp')
-  .controller('ResetCtrl', ['$scope', 'Account', function($scope, Account) {
-    $scope.resetPassword = function() {
-      Account.resetPassword($scope.user)
-        .then(function(response) {
-          $scope.messages = {
-            success: [response.data]
-          };
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
+    $scope.seeDetails = function(key, title) {
+      let transactions = data.transactions;
+      data.modal.title = title.transactionTypeDescription;
+      data.modal.transactions = TransactionServices.getDataByGroup(transactions, key);
     }
-  }]);
 
-angular.module('MyApp')
-  .controller('SignupCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
-    $scope.signup = function() {
-      $auth.signup($scope.user)
-        .then(function(response) {
-          $auth.setToken(response);
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/');
-        })
-        .catch(function(response) {
-          $scope.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
-          };
-        });
-    };
-
-    $scope.authenticate = function(provider) {
-      $auth.authenticate(provider)
-        .then(function(response) {
-          $rootScope.currentUser = response.data.user;
-          $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/');
-        })
-        .catch(function(response) {
-          if (response.error) {
-            $scope.messages = {
-              error: [{ msg: response.error }]
-            };
-          } else if (response.data) {
-            $scope.messages = {
-              error: [response.data]
-            };
-          }
-        });
-    };
-  }]);
-
-angular.module('MyApp')
-  .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
-    let data = {
-      title: null,
-      url: null,
-      show: false
-    };
-    let top = DefaultServices.getTop();
-
-    data.title = top.title;
-    data.url = top.url;
-    data.show = top.show;
-
-    $scope.default = data;
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -1366,81 +1460,6 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
-  function($scope, $auth, $location, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      transactions: [],
-      typeAction: [],
-      isNull: false,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },
-      top: {
-        title: 'Transactions',
-        url: 'transaction-new',
-        show: true
-      },
-      isLoading: true,
-      monthAndYear: null,
-      currentPeriod: $location.path().substr(14), // to remove /transactions/
-      period: {
-        month: null,
-        year: null
-      }
-    };
-
-    DefaultServices.setTop(data.top);
-    data.typeAction = TransactionTypeServices.getTransactionTypeAction();
-
-    getCurrentPeriodTransactions();
-
-    $scope.changePeriod = function(value) {
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-
-      if(value == 'd') {
-        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
-      } else {
-        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
-      }
-
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/transactions/${data.period.year}/${data.period.month}`);
-    };
-
-    function getCurrentPeriodTransactions() {
-      let transactions = null;
-      DefaultServices.setMonthAndYear(data.currentPeriod);
-
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-
-      transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
-      transactions.then(function(response) {
-        data.isNull = false;
-
-        if(Object.keys(response).length === 0) {
-          data.isNull = true;
-        }
-
-        data.transactions = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
   .factory('Account', ['$http', function($http) {
     return {
       updateProfile: function(data) {
@@ -1523,7 +1542,7 @@ angular.module('MyApp')
     },
     getMonthAndYear: function() {
       return monthAndYear;
-    },
+    }
   }
 }]);
 
@@ -1641,23 +1660,43 @@ angular.module('MyApp')
     getTransactionsByYearAndMonth: function(period) {
       let data = $http.get(`/transactions-by-year-and-month/${period.year}/${period.month}`)
           .then(function(response) {
-            let groups = {};
-            let groupedBy = _.groupBy(response.data, function(type) {
+            let groupedBy = {};
+
+            groupedBy = _.groupBy(response.data, function(type) {
               return this.type = type.transactionType;
             });
-            groups = _.forEach(groupedBy, function(group) {
+
+            groupedBy = _.forEach(groupedBy, function(group) {
               group.TotalAmountByTransactionType = _.sum(group, function(amount) {
                 return amount.transactionAmount;
               });
               group.transactionTypeDescription = group[0].transactionTypeDescription;
             });
 
-            return groups;
+            groupedBy = _.forEach(groupedBy, function(items){
+              let removed = _.remove(items, function(arr) {
+                return delete this.arr;
+              })
+              return removed;
+            });
+
+            return {groupedBy: groupedBy, data: response.data};
           })
           .catch(function(err) {
             return err;
           });
       return data;
+    },
+    getDataByGroup: function(data, key) {
+      let transactions = {};
+
+      transactions = _.filter(data, function(item) {
+        if (item.transactionType == key) {
+          return item;
+        }
+      });
+
+      return transactions;
     }
   };
 }]);

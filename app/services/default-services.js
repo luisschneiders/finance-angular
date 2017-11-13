@@ -19,6 +19,6 @@ angular.module('MyApp')
     },
     getMonthAndYear: function() {
       return monthAndYear;
-    },
+    }
   }
 }]);

@@ -36,72 +36,72 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
       .when('/main/:year', {
-        templateUrl: 'partials/main.html',
+        templateUrl: 'partials/main/main.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-banks', {
-        templateUrl: 'partials/bank.html',
+        templateUrl: 'partials/bank/bank.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank/:id', {
-        templateUrl: 'partials/bank-edit.html',
+        templateUrl: 'partials/bank/bank-edit.html',
         controller: 'BankEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank-new', {
-        templateUrl: 'partials/bank-edit.html',
+        templateUrl: 'partials/bank/bank-edit.html',
         controller: 'BankNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-expenses-type', {
-        templateUrl: 'partials/expense-type.html',
+        templateUrl: 'partials/expense-type/expense-type.html',
         controller: 'ExpenseTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type/:id', {
-        templateUrl: 'partials/expense-type-edit.html',
+        templateUrl: 'partials/expense-type/expense-type-edit.html',
         controller: 'ExpenseTypeEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type-new', {
-        templateUrl: 'partials/expense-type-edit.html',
+        templateUrl: 'partials/expense-type/expense-type-edit.html',
         controller: 'ExpenseTypeNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-transactions-type', {
-        templateUrl: 'partials/transaction-type.html',
+        templateUrl: 'partials/transaction-type/transaction-type.html',
         controller: 'TransactionTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-type/:id', {
-        templateUrl: 'partials/transaction-type-edit.html',
+        templateUrl: 'partials/transaction-type/transaction-type-edit.html',
         controller: 'TransactionTypeEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-type-new', {
-        templateUrl: 'partials/transaction-type-edit.html',
+        templateUrl: 'partials/transaction-type/transaction-type-edit.html',
         controller: 'TransactionTypeNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-users', {
-        templateUrl: 'partials/people.html',
+        templateUrl: 'partials/people/people.html',
         controller: 'PeopleCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/user/:id', {
-        templateUrl: 'partials/people-edit.html',
+        templateUrl: 'partials/people/people-edit.html',
         controller: 'PeopleEditCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/user-new', {
-        templateUrl: 'partials/people-edit.html',
+        templateUrl: 'partials/people/people-edit.html',
         controller: 'PeopleNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transactions/:year/:month', {
-        templateUrl: 'partials/transaction.html',
+        templateUrl: 'partials/transaction/transaction.html',
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
@@ -118,7 +118,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
 
     function skipIfAuthenticated($location, $auth) {
       if ($auth.isAuthenticated()) {
-        $location.path('/main/:id');
+        $location.path('/main/:year');
       }
     }
 

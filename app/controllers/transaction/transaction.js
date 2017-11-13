@@ -1,12 +1,20 @@
 angular.module('MyApp')
-  .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
-  function($scope, $auth, $location, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
+  .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'DefaultServices',
+  function($scope, $auth, $location, moment, TransactionServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     let data = {
+      modal: {
+        title: null,
+        transactions: null,
+      },
       transactions: [],
+      template: {
+        url: 'partials/modal/transaction.tpl.html'
+      },
+      transactionsByGroup: {},
       typeAction: [],
       isNull: false,
       notFound: {
@@ -29,14 +37,13 @@ angular.module('MyApp')
     };
 
     DefaultServices.setTop(data.top);
-    data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
     getCurrentPeriodTransactions();
 
     $scope.changePeriod = function(value) {
       data.monthAndYear = DefaultServices.getMonthAndYear();
 
-      if(value == 'd') {
+      if (value == 'd') {
         data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
       } else {
         data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
@@ -58,17 +65,29 @@ angular.module('MyApp')
       transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
       transactions.then(function(response) {
         data.isNull = false;
-
-        if(Object.keys(response).length === 0) {
+        console.log('response', response);
+        if (Object.keys(response.groupedBy).length === 0) {
           data.isNull = true;
         }
 
-        data.transactions = response;
+        data.transactions = response.data;
+        data.transactionsByGroup = response.groupedBy;
         data.isLoading = false;
       }).catch(function(err) {
         console.warn('Error getting data: ', err);
       });
     };
+
+    $scope.deleteTransaction = function(id) {
+      console.log('Ill be in the services', id);
+    };
+
+
+    $scope.seeDetails = function(key, title) {
+      let transactions = data.transactions;
+      data.modal.title = title.transactionTypeDescription;
+      data.modal.transactions = TransactionServices.getDataByGroup(transactions, key);
+    }
 
     $scope.data = data;
   }]);

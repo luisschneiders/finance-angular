@@ -25,6 +25,7 @@ gulp.task('angular', function() {
   return gulp.src([
     'app/app.js',
     'app/controllers/*.js',
+    'app/controllers/**/*.js',
     'app/services/*.js',
     'app/directives/*.js'
   ])

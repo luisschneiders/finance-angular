@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'Account', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'AccountServices', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, AccountServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -16,7 +16,7 @@ angular.module('MyApp')
     $scope.profile = $rootScope.currentUser;
 
     $scope.updateProfile = function() {
-      Account.updateProfile($scope.profile)
+      AccountServices.updateProfile($scope.profile)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
@@ -32,7 +32,7 @@ angular.module('MyApp')
     };
 
     $scope.changePassword = function() {
-      Account.changePassword($scope.profile)
+      AccountServices.changePassword($scope.profile)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]
@@ -75,7 +75,7 @@ angular.module('MyApp')
     };
 
     $scope.deleteAccount = function() {
-      Account.deleteAccount()
+      AccountServices.deleteAccount()
         .then(function() {
           $auth.logout();
           delete $window.localStorage.user;

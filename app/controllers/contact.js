@@ -1,7 +1,7 @@
 angular.module('MyApp')
-  .controller('ContactCtrl', ['$scope', 'Contact', function($scope, Contact) {
+  .controller('ContactCtrl', ['$scope', 'ContactServices', function($scope, ContactServices) {
     $scope.sendContactForm = function() {
-      Contact.send($scope.contact)
+      ContactServices.send($scope.contact)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]

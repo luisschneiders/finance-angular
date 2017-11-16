@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .factory('Account', ['$http', function($http) {
+  .factory('AccountServices', ['$http', function($http) {
     return {
       updateProfile: function(data) {
         return $http.put('/account', data);

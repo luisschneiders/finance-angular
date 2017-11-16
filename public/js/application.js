@@ -137,9 +137,9 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
   }]);
 
 angular.module('MyApp')
-  .controller('ContactCtrl', ['$scope', 'Contact', function($scope, Contact) {
+  .controller('ContactCtrl', ['$scope', 'ContactServices', function($scope, ContactServices) {
     $scope.sendContactForm = function() {
-      Contact.send($scope.contact)
+      ContactServices.send($scope.contact)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]
@@ -154,9 +154,9 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ForgotCtrl', ['$scope', 'Account', function($scope, Account) {
+  .controller('ForgotCtrl', ['$scope', 'AccountServices', function($scope, AccountServices) {
     $scope.forgotPassword = function() {
-      Account.forgotPassword($scope.user)
+      AccountServices.forgotPassword($scope.user)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]
@@ -209,7 +209,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'Account', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, Account, DefaultServices) {
+  .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'AccountServices', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, AccountServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -226,7 +226,7 @@ angular.module('MyApp')
     $scope.profile = $rootScope.currentUser;
 
     $scope.updateProfile = function() {
-      Account.updateProfile($scope.profile)
+      AccountServices.updateProfile($scope.profile)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
@@ -242,7 +242,7 @@ angular.module('MyApp')
     };
 
     $scope.changePassword = function() {
-      Account.changePassword($scope.profile)
+      AccountServices.changePassword($scope.profile)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]
@@ -285,7 +285,7 @@ angular.module('MyApp')
     };
 
     $scope.deleteAccount = function() {
-      Account.deleteAccount()
+      AccountServices.deleteAccount()
         .then(function() {
           $auth.logout();
           delete $window.localStorage.user;
@@ -299,9 +299,9 @@ angular.module('MyApp')
     };
   }]);
 angular.module('MyApp')
-  .controller('ResetCtrl', ['$scope', 'Account', function($scope, Account) {
+  .controller('ResetCtrl', ['$scope', 'AccountServices', function($scope, AccountServices) {
     $scope.resetPassword = function() {
-      Account.resetPassword($scope.user)
+      AccountServices.resetPassword($scope.user)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]
@@ -1256,7 +1256,6 @@ angular.module('MyApp')
       transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
       transactions.then(function(response) {
         data.isNull = false;
-        console.log('response', response);
         if (Object.keys(response.groupedBy).length === 0) {
           data.isNull = true;
         }
@@ -1273,11 +1272,13 @@ angular.module('MyApp')
       console.log('Ill be in the services', id);
     };
 
-
     $scope.seeDetails = function(key, title) {
-      let transactions = data.transactions;
       data.modal.title = title.transactionTypeDescription;
-      data.modal.transactions = TransactionServices.getDataByGroup(transactions, key);
+      data.modal.transactions = _.filter(data.transactions, function(item) {
+        if (item.transactionType == key) {
+          return item;
+        }
+      });
     }
 
     $scope.data = data;
@@ -1460,7 +1461,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .factory('Account', ['$http', function($http) {
+  .factory('AccountServices', ['$http', function($http) {
     return {
       updateProfile: function(data) {
         return $http.put('/account', data);
@@ -1513,7 +1514,7 @@ angular.module('MyApp')
 }]);
 
 angular.module('MyApp')
-  .factory('Contact', ['$http', function($http) {
+  .factory('ContactServices', ['$http', function($http) {
     return {
       send: function(data) {
         return $http.post('/contact', data);
@@ -1686,17 +1687,6 @@ angular.module('MyApp')
             return err;
           });
       return data;
-    },
-    getDataByGroup: function(data, key) {
-      let transactions = {};
-
-      transactions = _.filter(data, function(item) {
-        if (item.transactionType == key) {
-          return item;
-        }
-      });
-
-      return transactions;
     }
   };
 }]);

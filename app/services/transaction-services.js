@@ -30,17 +30,6 @@ angular.module('MyApp')
             return err;
           });
       return data;
-    },
-    getDataByGroup: function(data, key) {
-      let transactions = {};
-
-      transactions = _.filter(data, function(item) {
-        if (item.transactionType == key) {
-          return item;
-        }
-      });
-
-      return transactions;
     }
   };
 }]);

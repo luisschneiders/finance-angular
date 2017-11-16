@@ -65,7 +65,6 @@ angular.module('MyApp')
       transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
       transactions.then(function(response) {
         data.isNull = false;
-        console.log('response', response);
         if (Object.keys(response.groupedBy).length === 0) {
           data.isNull = true;
         }
@@ -82,11 +81,13 @@ angular.module('MyApp')
       console.log('Ill be in the services', id);
     };
 
-
     $scope.seeDetails = function(key, title) {
-      let transactions = data.transactions;
       data.modal.title = title.transactionTypeDescription;
-      data.modal.transactions = TransactionServices.getDataByGroup(transactions, key);
+      data.modal.transactions = _.filter(data.transactions, function(item) {
+        if (item.transactionType == key) {
+          return item;
+        }
+      });
     }
 
     $scope.data = data;

@@ -1,7 +1,7 @@
 angular.module('MyApp')
-  .controller('ResetCtrl', ['$scope', 'Account', function($scope, Account) {
+  .controller('ResetCtrl', ['$scope', 'AccountServices', function($scope, AccountServices) {
     $scope.resetPassword = function() {
-      Account.resetPassword($scope.user)
+      AccountServices.resetPassword($scope.user)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]

@@ -1,7 +1,7 @@
 angular.module('MyApp')
-  .controller('ForgotCtrl', ['$scope', 'Account', function($scope, Account) {
+  .controller('ForgotCtrl', ['$scope', 'AccountServices', function($scope, AccountServices) {
     $scope.forgotPassword = function() {
-      Account.forgotPassword($scope.user)
+      AccountServices.forgotPassword($scope.user)
         .then(function(response) {
           $scope.messages = {
             success: [response.data]

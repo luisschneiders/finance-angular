@@ -105,6 +105,16 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/transaction-new', {
+        templateUrl: 'partials/transaction/transaction-edit.html',
+        controller: 'TransactionNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/purchases/:year/:month', {
+        templateUrl: 'partials/purchase/purchase.html',
+        controller: 'PurchaseCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });

@@ -107,6 +107,16 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/transaction-new', {
+        templateUrl: 'partials/transaction/transaction-edit.html',
+        controller: 'TransactionNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/purchases/:year/:month', {
+        templateUrl: 'partials/purchase/purchase.html',
+        controller: 'PurchaseCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });
@@ -1190,6 +1200,166 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', 'moment', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, moment, PurchaseServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      modal: {
+        title: null,
+        transactions: null,
+      },
+      purchases: [],
+      template: {
+        url: 'partials/modal/purchase.tpl.html'
+      },
+      purchasesByGroup: {},
+      typeAction: [],
+      isNull: false,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'Purchases',
+        url: 'purchase-new',
+        show: true
+      },
+      isLoading: true,
+      monthAndYear: null,
+      currentPeriod: $location.path().substr(10), // to remove /purchase/
+      period: {
+        month: null,
+        year: null
+      }
+    };
+
+    DefaultServices.setTop(data.top);
+
+    getCurrentPeriodPurchases();
+
+    $scope.changePeriod = function(value) {
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+
+      if (value == 'd') {
+        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
+      } else {
+        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      }
+
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
+    };
+
+    function getCurrentPeriodPurchases() {
+      let purchases = null;
+      DefaultServices.setMonthAndYear(data.currentPeriod);
+
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+
+      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
+      purchases.then(function(response) {
+        data.isNull = false;
+        if (Object.keys(response.groupedBy).length === 0) {
+          data.isNull = true;
+        }
+
+        data.purchases = response.data;
+        data.purchasesByGroup = response.groupedBy;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting data: ', err);
+      });
+    };
+
+    $scope.deletePurchase = function(id) {
+      console.log('Ill be in the services', id);
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.modal.title = title.expenseTypeDescription;
+      data.modal.purchases = _.filter(data.purchases, function(item) {
+        if (item.purchaseExpenseId == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('TransactionNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'TransactionTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, TransactionTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      transaction: {
+        // transactionTypeDescription: null,
+        // transactionTypeAction: null,
+        // transactionTypeIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the transaction-type-edit.html
+      top: {
+        title: 'new transaction',
+        url: '/transaction-new',
+        show: true
+      },
+      transactionType: null
+    };
+    let transactionType = null;
+
+    DefaultServices.setTop(data.top);
+
+    transactionType = TransactionTypeServices.getAllTransactionsType();
+    transactionType.then(function(response){
+      data.transactionType = response;
+    }).catch(function(response) {
+      console.warn('Error getting transaction type: ', response);
+      data.messages = {
+        error: Array.isArray(response.data) ? response.data : [response.data]
+      };
+    });
+
+    $scope.updateTransactionType = function($valid) {
+      let transactionTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      transactionTypeUpdated = TransactionTypeServices.add(data.transactionType);
+      transactionTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/transaction-type/${response.data.transactionType.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating transaction type: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
   .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'DefaultServices',
   function($scope, $auth, $location, moment, TransactionServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
@@ -1651,6 +1821,42 @@ angular.module('MyApp')
     },
     add: function(data) {
       return $http.post(`/people/new`, data);
+    }
+  };
+}]);
+
+angular.module('MyApp')
+.factory('PurchaseServices', ['$http', function($http) {
+  return {
+    getPurchasesByYearAndMonth: function(period) {
+      let data = $http.get(`/purchases-by-year-and-month/${period.year}/${period.month}`)
+          .then(function(response) {
+            let groupedBy = {};
+
+            groupedBy = _.groupBy(response.data, function(type) {
+              return this.type = type.purchaseExpenseId;
+            });
+
+            groupedBy = _.forEach(groupedBy, function(group) {
+              group.TotalAmountByExpenseType = _.sum(group, function(amount) {
+                return amount.purchaseAmount;
+              });
+              group.expenseTypeDescription = group[0].expenseTypeDescription;
+            });
+
+            groupedBy = _.forEach(groupedBy, function(items){
+              let removed = _.remove(items, function(arr) {
+                return delete this.arr;
+              })
+              return removed;
+            });
+
+            return {groupedBy: groupedBy, data: response.data};
+          })
+          .catch(function(err) {
+            return err;
+          });
+      return data;
     }
   };
 }]);

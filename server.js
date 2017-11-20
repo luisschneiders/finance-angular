@@ -108,6 +108,9 @@ app.get('/transactions-by-year-and-month/:year/:month', transactionController.tr
 // app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypePut);
 // app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
 
+// Purchase
+app.get('/purchases-by-year-and-month/:year/:month', purchaseController.purchaseGetByYearAndMonth);
+
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));
 });

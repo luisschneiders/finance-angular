@@ -27,7 +27,7 @@ const Transaction = bookshelf.Model.extend({
         qr.whereRaw('(transactionAction <> "D" OR transactionLabel <> "T")');
         // qr.groupBy('transactionType');
       }).fetchAll();
-    }    
+    }
   });
 
 module.exports = Transaction;

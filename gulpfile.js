@@ -48,11 +48,16 @@ gulp.task('vendor', function() {
     .pipe(gulp.dest('public/js/lib'));
 });
 
+gulp.task('misc', function () {
+  return gulp.src(['manifest.json'])
+    .pipe(gulp.dest('public/misc'));
+});
+
 gulp.task('watch', function() {
   gulp.watch('public/css/**/*.scss', ['sass']);
   gulp.watch('app/partials/**/*.html', ['templates']);
   gulp.watch('app/**/*.js', ['angular']);
 });
 
-gulp.task('build', ['sass', 'angular', 'vendor', 'templates']);
+gulp.task('build', ['sass', 'angular', 'vendor', 'templates', 'misc']);
 gulp.task('default', ['build', 'watch']);

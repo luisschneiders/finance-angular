@@ -29,7 +29,7 @@ angular.module('MyApp')
       },
       isLoading: true,
       monthAndYear: null,
-      currentPeriod: $location.path().substr(10), // to remove /purchase/
+      currentPeriod: $location.path().substr(11), // to remove /purchases/
       period: {
         month: null,
         year: null

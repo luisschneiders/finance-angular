@@ -1,7 +1,7 @@
 {
   "name": "finance-angular",
   "version": "1.0.0",
-  "description": "An App to control your finances",
+  "description": "App to control your finances",
   "scripts": {
     "build": "gulp build",
     "build:production": "gulp build --production",

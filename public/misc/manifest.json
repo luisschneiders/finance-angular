@@ -1,0 +1,12 @@
+{
+  "name": "finance-angular",
+  "version": "1.0.0",
+  "description": "App to control your finances.",
+  "short_name": "FinanceApp",
+  "author": "Luis Schneiders",
+  "manifest_version": 2,
+  "start_url": "http://local.developing:3000/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0057B8"  
+}

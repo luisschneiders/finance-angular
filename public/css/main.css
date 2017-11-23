@@ -8483,14 +8483,15 @@ a {
 .box-shadow {
   box-shadow: 0px 4px 5px -3px rgba(0, 0, 0, 0.75); }
 
-.hover-element-shadow, .select-period a:hover {
+.hover-element-shadow, .select-period .arrows:hover {
   box-shadow: 0px 1px 8px -2px rgba(0, 0, 0, 0.75); }
 
 .modal-content {
   border-radius: 2px; }
 
 .alert {
-  border-width: 0 0 0 3px; }
+  border-width: 0 0 0 3px;
+  border-radius: 0; }
 
 .panel-hover:hover {
   border-left: solid 3px #fe9501; }
@@ -8563,9 +8564,10 @@ select {
   color: #e600e6; }
 
 .select-period {
-  padding-top: 5px;
-  font-size: 2rem; }
-  .select-period a {
+  padding-top: 5px; }
+  .select-period strong {
+    margin: 0 10px; }
+  .select-period .arrows {
     width: 40px;
     height: 40px;
     color: #f0f0f0;
@@ -8575,6 +8577,18 @@ select {
 
 .field-required {
   border-color: #da3c0b; }
+
+.padding-top-bottom {
+  padding: 15px 0; }
+
+.padding-bottom {
+  padding-bottom: 15px; }
+
+.sum-amount {
+  background-color: #fe9501;
+  border-radius: 2px;
+  color: #fff;
+  padding: 2px; }
 
 @media (min-width: 767px) {
   #main {

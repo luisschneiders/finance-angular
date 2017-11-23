@@ -2,21 +2,19 @@
   <div class="row">
     <div class="col-sm-12">
       <div ng-include src="'partials/top.html'"></div>
-      <div class="text-center select-period">
-        <a ng-click="changePeriod('d')"><i class="fa fa-minus" aria-hidden="true"></i></a>
-        <span>{{data.currentPeriod}}</span>
-        <a ng-click="changePeriod('i')"><i class="fa fa-plus" aria-hidden="true"></i></a>
-      </div>
-      <div class="row">
-        <div class="col-sm-offset-1 col-sm-10 col-md-offset-3 col-md-6">
-          <div class="row">
-            <div class="col-xs-6">
-              <span>Resume of the month:</span>
-            </div>
-            <div class="col-xs-6 text-right">
-              <a class="cursor-pointer" title="Search by period" ng-href="">Custom search...</a>
-            </div>
+      <div class="row padding-top-bottom select-period">
+        <div class="col-xs-12 col-sm-4 col-sm-push-4">
+          <div class="padding-bottom text-center">
+            <a class="arrows" ng-click="changePeriod('d')"><i class="fa fa-minus" aria-hidden="true"></i></a>
+            <strong>{{data.currentPeriod}}</strong>
+            <a class="arrows" ng-click="changePeriod('i')"><i class="fa fa-plus" aria-hidden="true"></i></a>
           </div>
+        </div>
+        <div class="col-xs-6 col-sm-4 col-sm-pull-4">
+          <span>Total: </span><span class="sum-amount">${{data.purchasesByGroup | sumColumns: 'value.TotalAmountByExpenseType' | number:2 }}</span>
+        </div>
+        <div class="col-xs-6 col-sm-4 text-right">
+          <a class="cursor-pointer" title="Search by period" ng-href="">Custom search...</a>
         </div>
       </div>
       <div class="loading text-center" ng-show="data.isLoading">

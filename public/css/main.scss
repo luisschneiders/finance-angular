@@ -99,6 +99,7 @@ a {
 // -------------------------
 .alert {
   border-width: 0 0 0 3px;
+  border-radius: 0;
 }
 
 // Panels
@@ -187,8 +188,11 @@ select {
 }
 .select-period {
   padding-top: 5px;
-  font-size: 2rem;
-  a {
+
+  strong {
+    margin: 0 10px;
+  }
+  .arrows {
     width: 40px;
     height: 40px;
     color: $light-gray;
@@ -203,6 +207,19 @@ select {
 .field-required {
   border-color: $dark-orange;
 }
+.padding-top-bottom {
+  padding: 15px 0;
+}
+.padding-bottom {
+  padding-bottom: 15px;
+}
+.sum-amount {
+  background-color: $dark-yellow;
+  border-radius: 2px;
+  color: $alert-text-1-light;
+  padding: 2px;
+}
+
 @media (min-width: 767px) {
   #main {
       width:calc(100% - 200px);

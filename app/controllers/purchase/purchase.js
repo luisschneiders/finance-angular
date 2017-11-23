@@ -65,6 +65,7 @@ angular.module('MyApp')
       purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
       purchases.then(function(response) {
         data.isNull = false;
+
         if (Object.keys(response.groupedBy).length === 0) {
           data.isNull = true;
         }

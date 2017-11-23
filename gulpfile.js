@@ -27,7 +27,8 @@ gulp.task('angular', function() {
     'app/controllers/*.js',
     'app/controllers/**/*.js',
     'app/services/*.js',
-    'app/directives/*.js'
+    'app/directives/*.js',
+    'app/filters/*.js'
   ])
     .pipe(concat('application.js'))
     .pipe(ngAnnotate())

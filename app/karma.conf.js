@@ -18,6 +18,7 @@ module.exports = function(config) {
       'controllers/*.js',
       'services/*.js',
       'directives/*.js',
+      'filters/*.js',
       // Unit tests
       'test/unit/**/*.test.js'
     ],
@@ -42,7 +43,8 @@ module.exports = function(config) {
       'controllers/*.js': ['coverage'],
       'controllers/**/*.js': ['coverage'],
       'services/*.js': ['coverage'],
-      'directives/*.js': ['coverage']
+      'directives/*.js': ['coverage'],
+      'filters/*.js': ['coverage']
     },
 
     coverageReporter: {

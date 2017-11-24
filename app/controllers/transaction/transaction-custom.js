@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('TransactionCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
+  .controller('TransactionCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
@@ -26,43 +26,57 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },
       top: {
-        title: 'Transactions',
+        title: 'transactions custom search',
         url: 'transaction-new',
         show: true
       },
-      monthAndYear: null,
-      currentPeriod: $location.path().substr(14), // to remove /transactions/
       period: {
         month: null,
         year: null
       },
       customSearch: {}
     };
+    let customSearch = $location.path().substr(28); // to remove /custom-search-transactions/
     let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
-    
+    let customTransaction = null;
+    let refineSearch = customSearch.split('/');
+    let search = {
+      from: refineSearch[0],
+      to: refineSearch[1],
+      transactionType: refineSearch[2]
+    };
+
+    DefaultServices.setTop(data.top);
+//  check if date are valid
+    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
+      data.isLoading = false;
+      data.isNull = true;
+      data.notFound.message = 'Dates are not valid';
+      $scope.data = data;
+      return;
+    }
+
+    customTransaction = TransactionServices.getTransactionsByCustomSearch(search);
+
     transactionsType.then(function(response) {
       data.transactionsType = response;
     }).catch(function(err) {
       console.warn('Error getting transactions type: ', err);
     });
 
-    DefaultServices.setTop(data.top);
+    customTransaction.then(function(response){
+      data.isNull = false;
 
-    getCurrentPeriodTransactions();
-
-    $scope.changePeriod = function(value) {
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-
-      if (value == 'd') {
-        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
-      } else {
-        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      if (Object.keys(response.groupedBy).length === 0) {
+        data.isNull = true;
       }
 
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/transactions/${data.period.year}/${data.period.month}`);
-    };
+      data.transactions = response.data;
+      data.transactionsByGroup = response.groupedBy;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting transactions type: ', err);
+    });
 
     $scope.deleteTransaction = function(id) {
       console.log('Ill be in the services', id);
@@ -93,31 +107,7 @@ angular.module('MyApp')
       $(".modal").modal("hide");
       $timeout(function() {
         $location.path(`/custom-search-transactions/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.transactionType.toString()}`);
-      }, 500);
-    };
-
-    function getCurrentPeriodTransactions() {
-      let transactions = null;
-      DefaultServices.setMonthAndYear(data.currentPeriod);
-
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-
-      transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
-      transactions.then(function(response) {
-        data.isNull = false;
-
-        if (Object.keys(response.groupedBy).length === 0) {
-          data.isNull = true;
-        }
-
-        data.transactions = response.data;
-        data.transactionsByGroup = response.groupedBy;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
+      }, 500);      
     };
 
     $scope.data = data;

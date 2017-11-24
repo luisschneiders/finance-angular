@@ -1,10 +1,10 @@
 const TransactionType = require('../models/Transaction-Type');
 
 /**
- * GET /transactions-type
+ * GET /transactions-type/:isActive
  */
 exports.transactionTypeGetAll = function(req, res) {
-  TransactionType.getAll(req.user.id)
+  TransactionType.getAll(req.user.id, req.params.isActive)
   .then(function(transactionType) {
     res.json(transactionType);
   }).catch(function(err) {
@@ -28,8 +28,8 @@ exports.transactionTypeGetById = function(req, res) {
  * PUT /transactions-type/:id
  */
 exports.transactionTypePut = function(req, res) {
-  let transactionType;
-  let errors;
+  let transactionType = null;
+  let errors = null;
 
   req.assert('transactionTypeDescription', 'Description cannot be blank').notEmpty();
   req.assert('transactionTypeAction', 'Type cannot be blank').notEmpty();
@@ -57,8 +57,8 @@ exports.transactionTypePut = function(req, res) {
  * POST /transactions-type/new
  */
 exports.transactionTypePost = function(req, res) {
-  let transactionType;
-  let errors;
+  let transactionType = null;
+  let errors = null;
 
   req.assert('transactionTypeDescription', 'Description cannot be blank').notEmpty();
   req.assert('transactionTypeAction', 'Type cannot be blank').notEmpty();

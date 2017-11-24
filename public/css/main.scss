@@ -219,7 +219,14 @@ select {
   color: $alert-text-1-light;
   padding: 2px;
 }
-
+// datepicker - updates
+// -------------------------
+.ui-datepicker {
+  select.ui-datepicker-month, select.ui-datepicker-year {
+    width: auto;
+    padding: 0 5px;
+  }
+}
 @media (min-width: 767px) {
   #main {
       width:calc(100% - 200px);
@@ -239,4 +246,3 @@ select {
     z-index: 10;
   }
 }
-

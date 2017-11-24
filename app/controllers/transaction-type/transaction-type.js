@@ -22,9 +22,10 @@ angular.module('MyApp')
         show: true
       },
       isLoading: false,
-      typeAction: []
+      typeAction: [],
+      isActive: 0
     };
-    let transactionsType = TransactionTypeServices.getAllTransactionsType();
+    let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
 
     data.isLoading = true;
 

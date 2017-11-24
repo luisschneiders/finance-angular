@@ -77,7 +77,7 @@ app.put('/account', userController.ensureAuthenticated, userController.accountPu
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 
 // main
-app.get('/main-by-year/:id', mainController.mainGetByYear);
+app.get('/main-by-year/:year', mainController.mainGetByYear);
 
 // Banks
 app.get('/banks', bankController.bankGetAll);
@@ -92,7 +92,7 @@ app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeCon
 app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypePost);
 
 // Transaction Type
-app.get('/transactions-type', transactionTypeController.transactionTypeGetAll);
+app.get('/all-transactions-type/:isActive', transactionTypeController.transactionTypeGetAll);
 app.get('/transactions-type/:id', transactionTypeController.transactionTypeGetById);
 app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypePut);
 app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
@@ -105,6 +105,7 @@ app.post('/people/new', userController.ensureAuthenticated, peopleController.peo
 
 // Transaction
 app.get('/transactions-by-year-and-month/:year/:month', transactionController.transactionGetByYearAndMonth);
+app.get('/transactions-by-custom-search/:from&:to&:transactionType', transactionController.transactionGetByCustomSearch);
 // app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypePut);
 // app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
 

@@ -12,6 +12,7 @@ angular.module('MyApp')
       },
       isSaving: false,
       isNull: false, // it's required for the transaction-type-edit.html
+      isActive: 1,
       top: {
         title: 'new transaction',
         url: '/transaction-new',
@@ -19,11 +20,11 @@ angular.module('MyApp')
       },
       transactionType: null
     };
-    let transactionType = null;
+    let transactionType = transactionType || null;
 
     DefaultServices.setTop(data.top);
 
-    transactionType = TransactionTypeServices.getAllTransactionsType();
+    transactionType = TransactionTypeServices.getAllTransactionsType(data.isActive);
     transactionType.then(function(response){
       data.transactionType = response;
     }).catch(function(response) {
@@ -34,7 +35,7 @@ angular.module('MyApp')
     });
 
     $scope.updateTransactionType = function($valid) {
-      let transactionTypeUpdated;
+      let transactionTypeUpdated = transactionTypeUpdated || null;
       if (data.isSaving) {
         return;
       }

@@ -28,8 +28,8 @@ exports.expenseTypeGetById = function(req, res) {
  * PUT /expenses-type/:id
  */
 exports.expenseTypePut = function(req, res) {
-  let expenseType;
-  let errors;
+  let expenseType = null;
+  let errors = null;
 
   req.assert('expenseTypeDescription', 'Description cannot be blank').notEmpty();
   
@@ -56,8 +56,8 @@ exports.expenseTypePut = function(req, res) {
  * POST /expenses-type/new
  */
 exports.expenseTypePost = function(req, res) {
-  let expenseType;
-  let errors;
+  let expenseType = null;
+  let errors = null;
 
   req.assert('expenseTypeDescription', 'Description cannot be blank').notEmpty();
 

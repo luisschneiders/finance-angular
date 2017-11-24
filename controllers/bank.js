@@ -28,8 +28,8 @@ exports.bankGetById = function(req, res) {
  * PUT /banks/:id
  */
 exports.bankPut = function(req, res) {
-  let bank;
-  let errors;
+  let bank = null;
+  let errors = null;
 
   req.assert('bankDescription', 'Description cannot be blank').notEmpty();
   req.assert('bankAccount', 'Account cannot be blank').notEmpty();
@@ -59,8 +59,8 @@ exports.bankPut = function(req, res) {
  * POST /banks/new
  */
 exports.bankPost = function(req, res) {
-  let bank;
-  let errors;
+  let bank = null;
+  let errors = null;
 
   req.assert('bankDescription', 'Description cannot be blank').notEmpty();
   req.assert('bankAccount', 'Account cannot be blank').notEmpty();

@@ -27,7 +27,19 @@ const Transaction = bookshelf.Model.extend({
         qr.whereRaw('(transactionAction <> "D" OR transactionLabel <> "T")');
         // qr.groupBy('transactionType');
       }).fetchAll();
-    }
+    },
+    transactionGetByCustomSearch: function(user, startDate, endDate, transactionType) {
+      let refineTransactionType = [];
+      refineTransactionType = transactionType.split(',');
+
+      return this.query(function(qr) {
+        qr.select('transaction-type.transactionTypeDescription', 'transactions.id', 'transactionType', 'transactionLabel', 'transactionAmount', 'transactionComments', 'transactionDate');
+        qr.leftJoin('transaction-type', 'transactions.transactionType', '=', 'transaction-type.id');
+        qr.where({'transactionInsertedBy': user, 'transactionFlag': 'r'});
+        qr.whereBetween('transactionDate', [startDate, endDate]);
+        qr.whereIn('transactionType', refineTransactionType);
+      }).fetchAll();
+    }    
   });
 
 module.exports = Transaction;

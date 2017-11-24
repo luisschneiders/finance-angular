@@ -25,9 +25,9 @@ angular.module('MyApp')
         }
       ]
     },
-    getAllTransactionsType: function() {
+    getAllTransactionsType: function(isActive) {
       let actions = this.getTransactionTypeAction();
-      let transactionsType = $http.get('/transactions-type')
+      let transactionsType = $http.get(`/all-transactions-type/${isActive}`)
           .then(function(response){
             _.forEach(response.data, function(data) {
               _.find(actions, function(action){

@@ -12,6 +12,7 @@ module.exports = function(config) {
       'vendor/angular-moment.min.js.map',
       'vendor/lodash.min.js',
       'vendor/angular-lodash.js',
+      'vendor/jquery-ui.min.js',
       // App entry point
       'app.js',
       // App services, controllers, directives, filters, etc.

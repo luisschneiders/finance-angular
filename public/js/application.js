@@ -107,6 +107,12 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/custom-search-transactions/:from/:to/:transactionType', {
+      // .when('/custom-search-transactions/:from', {
+          templateUrl: 'partials/transaction/transaction-custom.html',
+        controller: 'TransactionCustomCtrl',
+        resolve: { loginRequired: loginRequired }
+      })      
       .when('/transaction-new', {
         templateUrl: 'partials/transaction/transaction-edit.html',
         controller: 'TransactionNewCtrl',
@@ -1296,6 +1302,121 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('TransactionCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      modal: {
+        title: null,
+        transactions: null,
+      },
+      transactions: [],
+      transactionsType: [],
+      template: {
+        url: null
+      },
+      transactionsByGroup: {},
+      typeAction: [],
+      isNull: false,
+      isActive: 1,
+      isLoading: true,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'transactions custom search',
+        url: 'transaction-new',
+        show: true
+      },
+      period: {
+        month: null,
+        year: null
+      },
+      customSearch: {}
+    };
+    let customSearch = $location.path().substr(28); // to remove /custom-search-transactions/
+    let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
+    let customTransaction = null;
+    let refineSearch = customSearch.split('/');
+    let search = {
+      from: refineSearch[0],
+      to: refineSearch[1],
+      transactionType: refineSearch[2]
+    };
+
+    DefaultServices.setTop(data.top);
+//  check if date are valid
+    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
+      data.isLoading = false;
+      data.isNull = true;
+      data.notFound.message = 'Dates are not valid';
+      $scope.data = data;
+      return;
+    }
+
+    customTransaction = TransactionServices.getTransactionsByCustomSearch(search);
+
+    transactionsType.then(function(response) {
+      data.transactionsType = response;
+    }).catch(function(err) {
+      console.warn('Error getting transactions type: ', err);
+    });
+
+    customTransaction.then(function(response){
+      data.isNull = false;
+
+      if (Object.keys(response.groupedBy).length === 0) {
+        data.isNull = true;
+      }
+
+      data.transactions = response.data;
+      data.transactionsByGroup = response.groupedBy;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting transactions type: ', err);
+    });
+
+    $scope.deleteTransaction = function(id) {
+      console.log('Ill be in the services', id);
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/transaction.tpl.html';
+      data.modal.title = title.transactionTypeDescription;
+      data.modal.transactions = _.filter(data.transactions, function(item) {
+        if (item.transactionType == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.customSearch = function(key) {
+      data.template.url = 'partials/modal/custom-search-transaction.tpl.html';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      if(!$valid) {
+        return;
+      }
+      if(data.customSearch.checked) {
+        data.customSearch.transactionType.push(0); // 0 = purchases        
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-transactions/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.transactionType.toString()}`);
+      }, 500);      
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
   .controller('TransactionNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'TransactionTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, TransactionTypeServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
@@ -1309,6 +1430,7 @@ angular.module('MyApp')
       },
       isSaving: false,
       isNull: false, // it's required for the transaction-type-edit.html
+      isActive: 1,
       top: {
         title: 'new transaction',
         url: '/transaction-new',
@@ -1316,11 +1438,11 @@ angular.module('MyApp')
       },
       transactionType: null
     };
-    let transactionType = null;
+    let transactionType = transactionType || null;
 
     DefaultServices.setTop(data.top);
 
-    transactionType = TransactionTypeServices.getAllTransactionsType();
+    transactionType = TransactionTypeServices.getAllTransactionsType(data.isActive);
     transactionType.then(function(response){
       data.transactionType = response;
     }).catch(function(response) {
@@ -1331,7 +1453,7 @@ angular.module('MyApp')
     });
 
     $scope.updateTransactionType = function($valid) {
-      let transactionTypeUpdated;
+      let transactionTypeUpdated = transactionTypeUpdated || null;
       if (data.isSaving) {
         return;
       }
@@ -1361,8 +1483,8 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('TransactionCtrl', ['$scope', '$auth', '$location', 'moment', 'TransactionServices', 'DefaultServices',
-  function($scope, $auth, $location, moment, TransactionServices, DefaultServices) {
+  .controller('TransactionCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -1373,12 +1495,15 @@ angular.module('MyApp')
         transactions: null,
       },
       transactions: [],
+      transactionsType: [],
       template: {
-        url: 'partials/modal/transaction.tpl.html'
+        url: null
       },
       transactionsByGroup: {},
       typeAction: [],
       isNull: false,
+      isActive: 1,
+      isLoading: true,
       notFound: {
         url: null,
         title: null,
@@ -1389,14 +1514,21 @@ angular.module('MyApp')
         url: 'transaction-new',
         show: true
       },
-      isLoading: true,
       monthAndYear: null,
       currentPeriod: $location.path().substr(14), // to remove /transactions/
       period: {
         month: null,
         year: null
-      }
+      },
+      customSearch: {}
     };
+    let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
+    
+    transactionsType.then(function(response) {
+      data.transactionsType = response;
+    }).catch(function(err) {
+      console.warn('Error getting transactions type: ', err);
+    });
 
     DefaultServices.setTop(data.top);
 
@@ -1416,6 +1548,38 @@ angular.module('MyApp')
       $location.path(`/transactions/${data.period.year}/${data.period.month}`);
     };
 
+    $scope.deleteTransaction = function(id) {
+      console.log('Ill be in the services', id);
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/transaction.tpl.html';
+      data.modal.title = title.transactionTypeDescription;
+      data.modal.transactions = _.filter(data.transactions, function(item) {
+        if (item.transactionType == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.customSearch = function(key) {
+      data.template.url = 'partials/modal/custom-search-transaction.tpl.html';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      if(!$valid) {
+        return;
+      }
+      if(data.customSearch.checked) {
+        data.customSearch.transactionType.push(0); // 0 = purchases        
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-transactions/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.transactionType.toString()}`);
+      }, 500);
+    };
+
     function getCurrentPeriodTransactions() {
       let transactions = null;
       DefaultServices.setMonthAndYear(data.currentPeriod);
@@ -1427,6 +1591,7 @@ angular.module('MyApp')
       transactions = TransactionServices.getTransactionsByYearAndMonth(data.period);
       transactions.then(function(response) {
         data.isNull = false;
+
         if (Object.keys(response.groupedBy).length === 0) {
           data.isNull = true;
         }
@@ -1438,19 +1603,6 @@ angular.module('MyApp')
         console.warn('Error getting data: ', err);
       });
     };
-
-    $scope.deleteTransaction = function(id) {
-      console.log('Ill be in the services', id);
-    };
-
-    $scope.seeDetails = function(key, title) {
-      data.modal.title = title.transactionTypeDescription;
-      data.modal.transactions = _.filter(data.transactions, function(item) {
-        if (item.transactionType == key) {
-          return item;
-        }
-      });
-    }
 
     $scope.data = data;
   }]);
@@ -1601,9 +1753,10 @@ angular.module('MyApp')
         show: true
       },
       isLoading: false,
-      typeAction: []
+      typeAction: [],
+      isActive: 0
     };
-    let transactionsType = TransactionTypeServices.getAllTransactionsType();
+    let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
 
     data.isLoading = true;
 
@@ -1894,6 +2047,36 @@ angular.module('MyApp')
             return err;
           });
       return data;
+    },
+    getTransactionsByCustomSearch: function(customSearch) {
+      let data = $http.get(`/transactions-by-custom-search/${customSearch.from}&${customSearch.to}&${customSearch.transactionType}`)
+          .then(function(response) {
+            let groupedBy = {};
+
+            groupedBy = _.groupBy(response.data, function(type) {
+              return this.type = type.transactionType;
+            });
+
+            groupedBy = _.forEach(groupedBy, function(group) {
+              group.TotalAmountByTransactionType = _.sum(group, function(amount) {
+                return amount.transactionAmount;
+              });
+              group.transactionTypeDescription = group[0].transactionTypeDescription;
+            });
+
+            groupedBy = _.forEach(groupedBy, function(items){
+              let removed = _.remove(items, function(arr) {
+                return delete this.arr;
+              })
+              return removed;
+            });
+
+            return {groupedBy: groupedBy, data: response.data};
+          })
+          .catch(function(err) {
+            return err;
+          });
+      return data;
     }
   };
 }]);
@@ -1925,9 +2108,9 @@ angular.module('MyApp')
         }
       ]
     },
-    getAllTransactionsType: function() {
+    getAllTransactionsType: function(isActive) {
       let actions = this.getTransactionTypeAction();
-      let transactionsType = $http.get('/transactions-type')
+      let transactionsType = $http.get(`/all-transactions-type/${isActive}`)
           .then(function(response){
             _.forEach(response.data, function(data) {
               _.find(actions, function(action){
@@ -1985,6 +2168,25 @@ angular.module('MyApp')
     };
   }]);
   (function($){$.fn.priceFormat=function(options){var defaults={prefix:'US$ ',suffix:'',centsSeparator:'.',thousandsSeparator:',',limit:false,centsLimit:2,clearPrefix:false,clearSufix:false,allowNegative:false,insertPlusSign:false};var options=$.extend(defaults,options);return this.each(function(){var obj=$(this);var is_number=/[0-9]/;var prefix=options.prefix;var suffix=options.suffix;var centsSeparator=options.centsSeparator;var thousandsSeparator=options.thousandsSeparator;var limit=options.limit;var centsLimit=options.centsLimit;var clearPrefix=options.clearPrefix;var clearSuffix=options.clearSuffix;var allowNegative=options.allowNegative;var insertPlusSign=options.insertPlusSign;if(insertPlusSign)allowNegative=true;function to_numbers(str){var formatted='';for(var i=0;i<(str.length);i++){char_=str.charAt(i);if(formatted.length==0&&char_==0)char_=false;if(char_&&char_.match(is_number)){if(limit){if(formatted.length<limit)formatted=formatted+char_}else{formatted=formatted+char_}}}return formatted}function fill_with_zeroes(str){while(str.length<(centsLimit+1))str='0'+str;return str}function price_format(str){var formatted=fill_with_zeroes(to_numbers(str));var thousandsFormatted='';var thousandsCount=0;if(centsLimit==0){centsSeparator="";centsVal=""}var centsVal=formatted.substr(formatted.length-centsLimit,centsLimit);var integerVal=formatted.substr(0,formatted.length-centsLimit);formatted=(centsLimit==0)?integerVal:integerVal+centsSeparator+centsVal;if(thousandsSeparator||$.trim(thousandsSeparator)!=""){for(var j=integerVal.length;j>0;j--){char_=integerVal.substr(j-1,1);thousandsCount++;if(thousandsCount%3==0)char_=thousandsSeparator+char_;thousandsFormatted=char_+thousandsFormatted}if(thousandsFormatted.substr(0,1)==thousandsSeparator)thousandsFormatted=thousandsFormatted.substring(1,thousandsFormatted.length);formatted=(centsLimit==0)?thousandsFormatted:thousandsFormatted+centsSeparator+centsVal}if(allowNegative&&(integerVal!=0||centsVal!=0)){if(str.indexOf('-')!=-1&&str.indexOf('+')<str.indexOf('-')){formatted='-'+formatted}else{if(!insertPlusSign)formatted=''+formatted;else formatted='+'+formatted}}if(prefix)formatted=prefix+formatted;if(suffix)formatted=formatted+suffix;return formatted}function key_check(e){var code=(e.keyCode?e.keyCode:e.which);var typed=String.fromCharCode(code);var functional=false;var str=obj.val();var newValue=price_format(str+typed);if((code>=48&&code<=57)||(code>=96&&code<=105))functional=true;if(code==8)functional=true;if(code==9)functional=true;if(code==13)functional=true;if(code==46)functional=true;if(code==37)functional=true;if(code==39)functional=true;if(allowNegative&&(code==189||code==109))functional=true;if(insertPlusSign&&(code==187||code==107))functional=true;if(!functional){e.preventDefault();e.stopPropagation();if(str!=newValue)obj.val(newValue)}}function price_it(){var str=obj.val();var price=price_format(str);if(str!=price)obj.val(price)}function add_prefix(){var val=obj.val();obj.val(prefix+val)}function add_suffix(){var val=obj.val();obj.val(val+suffix)}function clear_prefix(){if($.trim(prefix)!=''&&clearPrefix){var array=obj.val().split(prefix);obj.val(array[1])}}function clear_suffix(){if($.trim(suffix)!=''&&clearSuffix){var array=obj.val().split(suffix);obj.val(array[0])}}$(this).bind('keydown.price_format',key_check);$(this).bind('keyup.price_format',price_it);$(this).bind('focusout.price_format',price_it);if(clearPrefix){$(this).bind('focusout.price_format',function(){clear_prefix()});$(this).bind('focusin.price_format',function(){add_prefix()})}if(clearSuffix){$(this).bind('focusout.price_format',function(){clear_suffix()});$(this).bind('focusin.price_format',function(){add_suffix()})}if($(this).val().length>0){price_it();clear_prefix();clear_suffix()}})};$.fn.unpriceFormat=function(){return $(this).unbind(".price_format")};$.fn.unmask=function(){var field=$(this).val();var result="";for(var f in field){if(!isNaN(field[f])||field[f]=="-")result+=field[f]}return result}})(jQuery);
+angular.module('MyApp')
+  .directive('calendar', function() {
+    return {
+      require: 'ngModel',
+      link: function (scope, el, attr, ngModel) {
+        $(el).datepicker({
+          dateFormat: 'yy-mm-dd',
+          changeMonth: true,
+          changeYear: true,
+          onSelect: function (dateText) {
+            scope.$apply(function () {
+              ngModel.$setViewValue(dateText);
+            });
+          }
+        });
+      }
+    };
+  });
+
 angular.module('MyApp')
   .filter('sumColumns', function() {
     return function(collection) {

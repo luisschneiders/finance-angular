@@ -16,7 +16,6 @@ angular.module('MyApp')
         url: null
       },
       transactionsByGroup: {},
-      typeAction: [],
       isNull: false,
       isActive: 1,
       isLoading: true,
@@ -29,10 +28,6 @@ angular.module('MyApp')
         title: 'transactions custom search',
         url: 'transaction-new',
         show: true
-      },
-      period: {
-        month: null,
-        year: null
       },
       customSearch: {}
     };

@@ -5,11 +5,6 @@ angular.module('MyApp')
       return;
     }
     let data = {
-      transaction: {
-        // transactionTypeDescription: null,
-        // transactionTypeAction: null,
-        // transactionTypeIsActive: 1
-      },
       isSaving: false,
       isNull: false, // it's required for the transaction-type-edit.html
       isActive: 1,
@@ -20,7 +15,7 @@ angular.module('MyApp')
       },
       transactionType: null
     };
-    let transactionType = transactionType || null;
+    let transactionType = null;
 
     DefaultServices.setTop(data.top);
 

@@ -106,11 +106,10 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/custom-search-transactions/:from/:to/:transactionType', {
-      // .when('/custom-search-transactions/:from', {
-          templateUrl: 'partials/transaction/transaction-custom.html',
+        templateUrl: 'partials/transaction/transaction-custom.html',
         controller: 'TransactionCustomCtrl',
         resolve: { loginRequired: loginRequired }
-      })      
+      })
       .when('/transaction-new', {
         templateUrl: 'partials/transaction/transaction-edit.html',
         controller: 'TransactionNewCtrl',
@@ -119,6 +118,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       .when('/purchases/:year/:month', {
         templateUrl: 'partials/purchase/purchase.html',
         controller: 'PurchaseCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/custom-search-purchases/:from/:to/:expenseType', {
+        templateUrl: 'partials/purchase/purchase-custom.html',
+        controller: 'PurchaseCustomCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({

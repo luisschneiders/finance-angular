@@ -4,7 +4,10 @@ const ExpenseType = bookshelf.Model.extend({
     tableName: 'expense-type',
     hasTimestamps: true,
   },{
-    getAll: function(user) {
+    getAll: function(user, status) {
+      if (status == 1) {
+        return this.where({'expenseTypeInsertedBy': user, 'expenseTypeIsActive': status}).fetchAll();
+      }
       return this.where('expenseTypeInsertedBy', user).fetchAll();
     },
     getById: function(user, expenseType) {

@@ -17,7 +17,7 @@ angular.module('MyApp')
       },
       transactionsByGroup: {},
       isNull: false,
-      isActive: 1,
+      isActive: 0,
       isLoading: true,
       notFound: {
         url: null,
@@ -41,6 +41,7 @@ angular.module('MyApp')
       transactionType: refineSearch[2]
     };
 
+    data.customSearch.active = 1;
     DefaultServices.setTop(data.top);
 //  check if date are valid
     if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {

@@ -5,16 +5,16 @@
       <div class="row padding-top-bottom select-period">
         <div class="col-xs-12 col-sm-4 col-sm-push-4">
           <div class="padding-bottom text-center">
-            <a class="arrows" ng-click="changePeriod('d')"><i class="fa fa-minus" aria-hidden="true"></i></a>
+            <a class="arrows" ng-click="changePeriod('d')"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
             <strong>{{data.currentPeriod}}</strong>
-            <a class="arrows" ng-click="changePeriod('i')"><i class="fa fa-plus" aria-hidden="true"></i></a>
+            <a class="arrows" ng-click="changePeriod('i')"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
           </div>
         </div>
         <div class="col-xs-6 col-sm-4 col-sm-pull-4">
           <span>Total: </span><span class="sum-amount">${{data.purchasesByGroup | sumColumns: 'value.TotalAmountByExpenseType' | number:2 }}</span>
         </div>
         <div class="col-xs-6 col-sm-4 text-right">
-          <a class="cursor-pointer" title="Search by period" ng-href="">Custom search...</a>
+          <a class="cursor-pointer" title="Search by period" data-toggle="modal" data-target="#myModal" ng-click="customSearch()">Custom search...</a>
         </div>
       </div>
       <div class="loading text-center" ng-show="data.isLoading">

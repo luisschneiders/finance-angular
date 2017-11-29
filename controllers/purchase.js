@@ -38,6 +38,26 @@ exports.purchaseGetByYearAndMonth = function(req, res) {
 };
 
 /**
+ * GET /purchases-by-custom-search/:from&:to&:expenseType
+ */
+exports.purchaseGetByCustomSearch = function(req, res) {
+  let startDate = null;
+  let endDate = null;
+  let expenseType = null;
+
+  startDate = req.params.from;
+  endDate = req.params.to;
+  expenseType = req.params.expenseType;
+
+  Purchase.getPurchaseByCustomSearch(req.user.id, startDate, endDate, expenseType)
+    .then(function(purchases) {
+      res.json(purchases);
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
  * GET /purchases/:id
  */
 exports.transactionGetById = function(req, res) {

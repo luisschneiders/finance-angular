@@ -39,7 +39,7 @@ const Transaction = bookshelf.Model.extend({
         qr.whereBetween('transactionDate', [startDate, endDate]);
         qr.whereIn('transactionType', refineTransactionType);
       }).fetchAll();
-    }    
+    }
   });
 
 module.exports = Transaction;

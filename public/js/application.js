@@ -108,11 +108,10 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/custom-search-transactions/:from/:to/:transactionType', {
-      // .when('/custom-search-transactions/:from', {
-          templateUrl: 'partials/transaction/transaction-custom.html',
+        templateUrl: 'partials/transaction/transaction-custom.html',
         controller: 'TransactionCustomCtrl',
         resolve: { loginRequired: loginRequired }
-      })      
+      })
       .when('/transaction-new', {
         templateUrl: 'partials/transaction/transaction-edit.html',
         controller: 'TransactionNewCtrl',
@@ -121,6 +120,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       .when('/purchases/:year/:month', {
         templateUrl: 'partials/purchase/purchase.html',
         controller: 'PurchaseCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/custom-search-purchases/:from/:to/:expenseType', {
+        templateUrl: 'partials/purchase/purchase-custom.html',
+        controller: 'PurchaseCustomCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
@@ -681,11 +685,10 @@ angular.module('MyApp')
         url: '/expense-type-new',
         show: true
       },
-      isLoading: false
+      isLoading: true,
+      isActive: 0
     };
-    let expensesType = ExpenseTypeServices.getAllExpensesType();
-
-    data.isLoading = true;
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
 
     DefaultServices.setTop(data.top);
 
@@ -1206,8 +1209,119 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', 'moment', 'PurchaseServices', 'DefaultServices',
-  function($scope, $auth, $location, moment, PurchaseServices, DefaultServices) {
+  .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      modal: {
+        title: null,
+        purchases: null,
+      },
+      purchases: [],
+      expensesType: [],
+      template: {
+        url: null
+      },
+      purchasesByGroup: {},
+      isNull: false,
+      isActive: 0,
+      isLoading: true,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'purchase custom search',
+        url: 'purchase-new',
+        show: true
+      },
+      customSearch: {}
+    };
+    let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    let customPurchase = null;
+    let refineSearch = customSearch.split('/');
+    let search = {
+      from: refineSearch[0],
+      to: refineSearch[1],
+      expenseType: refineSearch[2]
+    };
+    
+    data.customSearch.active = 1;
+    DefaultServices.setTop(data.top);
+//  check if date are valid
+    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
+      data.isLoading = false;
+      data.isNull = true;
+      data.notFound.message = 'Dates are not valid';
+      $scope.data = data;
+      return;
+    }
+
+    customPurchase = PurchaseServices.getPurchasesByCustomSearch(search);
+
+    expensesType.then(function(response) {
+      data.expensesType = response;
+    }).catch(function(err) {
+      console.warn('Error getting expenses type: ', err);
+    });
+
+    customPurchase.then(function(response){
+      data.isNull = false;
+
+      if (Object.keys(response.groupedBy).length === 0) {
+        data.isNull = true;
+      }
+
+      data.purchases = response.data;
+      data.purchasesByGroup = response.groupedBy;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting purchases: ', err);
+    });
+
+    $scope.deletePurchase = function(id) {
+      console.log('Ill be in the services', id);
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/purchase.tpl.html';
+      data.modal.title = title.expenseTypeDescription;
+      data.modal.purchases = _.filter(data.purchases, function(item) {
+        if (item.purchaseExpenseId == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.customSearch = function(key) {
+      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      if(!$valid) {
+        return;
+      }
+      if(data.customSearch.checked) {
+        data.customSearch.expenseType = 'all'
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-purchases/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.expenseType.toString()}`);
+      }, 500);      
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -1218,12 +1332,15 @@ angular.module('MyApp')
         transactions: null,
       },
       purchases: [],
+      expensesType: [],
       template: {
-        url: 'partials/modal/purchase.tpl.html'
+        url: null
       },
       purchasesByGroup: {},
       typeAction: [],
       isNull: false,
+      isLoading: true,
+      isActive: 0,
       notFound: {
         url: null,
         title: null,
@@ -1234,14 +1351,22 @@ angular.module('MyApp')
         url: 'purchase-new',
         show: true
       },
-      isLoading: true,
       monthAndYear: null,
       currentPeriod: $location.path().substr(11), // to remove /purchases/
       period: {
         month: null,
         year: null
-      }
+      },
+      customSearch: {}
     };
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    data.customSearch.active = 1;
+
+    expensesType.then(function(response) {
+      data.expensesType = response;
+    }).catch(function(err) {
+      console.warn('Error getting expenses type: ', err);
+    });
 
     DefaultServices.setTop(data.top);
 
@@ -1290,6 +1415,7 @@ angular.module('MyApp')
     };
 
     $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/purchase.tpl.html';
       data.modal.title = title.expenseTypeDescription;
       data.modal.purchases = _.filter(data.purchases, function(item) {
         if (item.purchaseExpenseId == key) {
@@ -1297,6 +1423,24 @@ angular.module('MyApp')
         }
       });
     }
+
+    $scope.customSearch = function() {
+      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      if(!$valid) {
+        return;
+      }
+      if(data.customSearch.checked) {
+        data.customSearch.expenseType = 'all'
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-purchases/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.expenseType.toString()}`);
+      }, 500);
+    };
 
     $scope.data = data;
   }]);
@@ -1320,7 +1464,7 @@ angular.module('MyApp')
       },
       transactionsByGroup: {},
       isNull: false,
-      isActive: 1,
+      isActive: 0,
       isLoading: true,
       notFound: {
         url: null,
@@ -1344,6 +1488,7 @@ angular.module('MyApp')
       transactionType: refineSearch[2]
     };
 
+    data.customSearch.active = 1;
     DefaultServices.setTop(data.top);
 //  check if date are valid
     if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
@@ -1492,7 +1637,7 @@ angular.module('MyApp')
       transactionsByGroup: {},
       typeAction: [],
       isNull: false,
-      isActive: 1,
+      isActive: 0,
       isLoading: true,
       notFound: {
         url: null,
@@ -1513,7 +1658,8 @@ angular.module('MyApp')
       customSearch: {}
     };
     let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
-    
+    data.customSearch.active = 1;
+
     transactionsType.then(function(response) {
       data.transactionsType = response;
     }).catch(function(err) {
@@ -1552,7 +1698,7 @@ angular.module('MyApp')
       });
     }
 
-    $scope.customSearch = function(key) {
+    $scope.customSearch = function() {
       data.template.url = 'partials/modal/custom-search-transaction.tpl.html';
       data.modal.title = 'Custom Search';
     };
@@ -1864,8 +2010,8 @@ angular.module('MyApp')
 angular.module('MyApp')
 .factory('ExpenseTypeServices', ['$http', function($http) {
   return {
-    getAllExpensesType: function() {
-      let expensesType = $http.get('/expenses-type')
+    getAllExpensesType: function(isActive) {
+      let expensesType = $http.get(`/all-expenses-type/${isActive}`)
           .then(function(response){
             return response.data;
           })
@@ -2001,7 +2147,37 @@ angular.module('MyApp')
             return err;
           });
       return data;
-    }
+    },
+    getPurchasesByCustomSearch: function(customSearch) {
+      let data = $http.get(`/purchases-by-custom-search/${customSearch.from}&${customSearch.to}&${customSearch.expenseType}`)
+          .then(function(response) {
+            let groupedBy = {};
+
+            groupedBy = _.groupBy(response.data, function(type) {
+              return this.type = type.purchaseExpenseId;
+            });
+
+            groupedBy = _.forEach(groupedBy, function(group) {
+              group.TotalAmountByExpenseType = _.sum(group, function(amount) {
+                return amount.purchaseAmount;
+              });
+              group.expenseTypeDescription = group[0].expenseTypeDescription;
+            });
+
+            groupedBy = _.forEach(groupedBy, function(items){
+              let removed = _.remove(items, function(arr) {
+                return delete this.arr;
+              })
+              return removed;
+            });
+
+            return {groupedBy: groupedBy, data: response.data};
+          })
+          .catch(function(err) {
+            return err;
+          });
+      return data;
+    }    
   };
 }]);
 

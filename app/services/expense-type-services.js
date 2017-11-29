@@ -1,8 +1,8 @@
 angular.module('MyApp')
 .factory('ExpenseTypeServices', ['$http', function($http) {
   return {
-    getAllExpensesType: function() {
-      let expensesType = $http.get('/expenses-type')
+    getAllExpensesType: function(isActive) {
+      let expensesType = $http.get(`/all-expenses-type/${isActive}`)
           .then(function(response){
             return response.data;
           })

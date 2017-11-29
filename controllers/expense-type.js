@@ -4,7 +4,7 @@ const ExpenseType = require('../models/Expense-Type');
  * GET /expenses-type
  */
 exports.expenseTypeGetAll = function(req, res) {
-  ExpenseType.getAll(req.user.id)
+  ExpenseType.getAll(req.user.id, req.params.isActive)
   .then(function(expenseType) {
     res.json(expenseType);
   }).catch(function(err) {

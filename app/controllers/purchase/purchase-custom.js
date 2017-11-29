@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
@@ -8,7 +8,7 @@ angular.module('MyApp')
     let data = {
       modal: {
         title: null,
-        transactions: null,
+        purchases: null,
       },
       purchases: [],
       expensesType: [],
@@ -16,30 +16,43 @@ angular.module('MyApp')
         url: null
       },
       purchasesByGroup: {},
-      typeAction: [],
       isNull: false,
-      isLoading: true,
       isActive: 0,
+      isLoading: true,
       notFound: {
         url: null,
         title: null,
         message:'No data found for the period!',
       },
       top: {
-        title: 'Purchases',
+        title: 'purchase custom search',
         url: 'purchase-new',
         show: true
       },
-      monthAndYear: null,
-      currentPeriod: $location.path().substr(11), // to remove /purchases/
-      period: {
-        month: null,
-        year: null
-      },
       customSearch: {}
     };
+    let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    let customPurchase = null;
+    let refineSearch = customSearch.split('/');
+    let search = {
+      from: refineSearch[0],
+      to: refineSearch[1],
+      expenseType: refineSearch[2]
+    };
+    
     data.customSearch.active = 1;
+    DefaultServices.setTop(data.top);
+//  check if date are valid
+    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
+      data.isLoading = false;
+      data.isNull = true;
+      data.notFound.message = 'Dates are not valid';
+      $scope.data = data;
+      return;
+    }
+
+    customPurchase = PurchaseServices.getPurchasesByCustomSearch(search);
 
     expensesType.then(function(response) {
       data.expensesType = response;
@@ -47,47 +60,19 @@ angular.module('MyApp')
       console.warn('Error getting expenses type: ', err);
     });
 
-    DefaultServices.setTop(data.top);
+    customPurchase.then(function(response){
+      data.isNull = false;
 
-    getCurrentPeriodPurchases();
-
-    $scope.changePeriod = function(value) {
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-
-      if (value == 'd') {
-        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
-      } else {
-        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      if (Object.keys(response.groupedBy).length === 0) {
+        data.isNull = true;
       }
 
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
-    };
-
-    function getCurrentPeriodPurchases() {
-      let purchases = null;
-      DefaultServices.setMonthAndYear(data.currentPeriod);
-
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-
-      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
-      purchases.then(function(response) {
-        data.isNull = false;
-
-        if (Object.keys(response.groupedBy).length === 0) {
-          data.isNull = true;
-        }
-
-        data.purchases = response.data;
-        data.purchasesByGroup = response.groupedBy;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
-    };
+      data.purchases = response.data;
+      data.purchasesByGroup = response.groupedBy;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting purchases: ', err);
+    });
 
     $scope.deletePurchase = function(id) {
       console.log('Ill be in the services', id);
@@ -103,7 +88,7 @@ angular.module('MyApp')
       });
     }
 
-    $scope.customSearch = function() {
+    $scope.customSearch = function(key) {
       data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
       data.modal.title = 'Custom Search';
     };
@@ -118,7 +103,7 @@ angular.module('MyApp')
       $(".modal").modal("hide");
       $timeout(function() {
         $location.path(`/custom-search-purchases/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.expenseType.toString()}`);
-      }, 500);
+      }, 500);      
     };
 
     $scope.data = data;

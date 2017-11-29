@@ -86,7 +86,7 @@ app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut
 app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);
 
 // Expense Type
-app.get('/expenses-type', expenseTypeController.expenseTypeGetAll);
+app.get('/all-expenses-type/:isActive', expenseTypeController.expenseTypeGetAll);
 app.get('/expenses-type/:id', expenseTypeController.expenseTypeGetById);
 app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeController.expenseTypePut);
 app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypePost);
@@ -111,6 +111,7 @@ app.get('/transactions-by-custom-search/:from&:to&:transactionType', transaction
 
 // Purchase
 app.get('/purchases-by-year-and-month/:year/:month', purchaseController.purchaseGetByYearAndMonth);
+app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController.purchaseGetByCustomSearch);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

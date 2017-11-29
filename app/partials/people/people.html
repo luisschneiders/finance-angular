@@ -9,7 +9,7 @@
           <table class="table table-responsive table-hover">
             <thead>
               <tr>
-                <th>Name</th>
+                <th><input type="text" placeholder="Search..." ng-model="peopleDescription" class="search-input"></th>
                 <th>Type</th>
                 <th class="text-center">Active</th>
                 <th class="text-center">Edit</th>
@@ -22,7 +22,7 @@
                   <span class="sr-only">Loading...</span>
                 </td>
               </tr>
-              <tr ng-repeat="item in data.people | orderBy: '-peopleIsActive' " ng-click="editPeople(item.id)">
+              <tr ng-repeat="item in data.people | orderBy: 'peopleDescription' | filter:peopleDescription" ng-click="editPeople(item.id)">
                 <td data-title="Name" class="text-uppercase">{{::item.peopleDescription}}</td>
                 <td data-title="Type" class="text-uppercase">{{::item.peopleTypeDescription}}</td>
                 <td data-title="Active"  class="text-center" ng-class="item.peopleIsActive == 1 ? data.class.active : data.class.inactive">{{::item.peopleIsActive == 1 ? "Yes" : "No"  }}</td>

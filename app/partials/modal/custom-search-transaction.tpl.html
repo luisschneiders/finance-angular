@@ -19,14 +19,15 @@
     <div class="form-group">
       <label for="transactionType" class="col-sm-3">Transaction Type</label>
       <div class="col-sm-7">
+        <input type="checkbox" name="transactionsActive" id="transactionsActive" ng-true-value="1" ng-false-value="0" ng-model='data.customSearch.active'> Active          
         <select name="multipleSelect" id="transactionType" class="form-control" ng-model="data.customSearch.transactionType" multiple
-        ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType">
+        ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType | orderBy:'transactionTypeDescription' | filter:{transactionTypeIsActive: data.customSearch.active}">
         </select>
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-7 col-sm-offset-3">
-        <input type="checkbox" name="purchases" id="purchases" ng-model='data.customSearch.checked'> List all purchases of the period
+        <input type="checkbox" name="purchases" id="purchases" ng-model='data.customSearch.checked'> List purchases of the period
       </div>
     </div>
   </div>

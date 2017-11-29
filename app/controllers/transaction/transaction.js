@@ -18,7 +18,7 @@ angular.module('MyApp')
       transactionsByGroup: {},
       typeAction: [],
       isNull: false,
-      isActive: 1,
+      isActive: 0,
       isLoading: true,
       notFound: {
         url: null,
@@ -39,7 +39,8 @@ angular.module('MyApp')
       customSearch: {}
     };
     let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
-    
+    data.customSearch.active = 1;
+
     transactionsType.then(function(response) {
       data.transactionsType = response;
     }).catch(function(err) {
@@ -78,7 +79,7 @@ angular.module('MyApp')
       });
     }
 
-    $scope.customSearch = function(key) {
+    $scope.customSearch = function() {
       data.template.url = 'partials/modal/custom-search-transaction.tpl.html';
       data.modal.title = 'Custom Search';
     };

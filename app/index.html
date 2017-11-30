@@ -13,9 +13,16 @@
   <link rel="stylesheet" href="/css/main.css"/>
 </head>
 <body ng-app="MyApp">
-  <div ng-include src="'partials/menu.html'"></div>
+  <section ng-include src="'partials/menu.html'"></section>
+  <section class="container-fluid container-top">
+    <div class="row">
+      <div class="col-sm-12">
+        <div ng-include src="'partials/top.html'"></div>
+      </div>
+    </div>
+  </section>
   <main id="main" ng-view></main>
-  <div ng-include src="'partials/footer.html'"></div>
+  <section ng-include src="'partials/footer.html'"></section>
   <script src="/js/lib/jquery.js"></script>
   <script src="/js/lib/jquery-ui.min.js"></script>
   <script src="/js/lib/bootstrap.js"></script>

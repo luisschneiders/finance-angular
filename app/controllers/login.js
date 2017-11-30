@@ -1,12 +1,22 @@
 angular.module('MyApp')
-  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
-    let year = new Date().getFullYear();
+  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, DefaultServices) {
+    let data = {
+      top: {
+        title: null,
+        url: null,
+        show: false
+      },
+      year: new Date().getFullYear()
+    };
+
+    DefaultServices.setTop(data.top);
+
     $scope.login = function() {
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main/${year}`);
+          $location.path(`/main/${data.year}`);
         })
         .catch(function(response) {
           $scope.messages = {
@@ -20,7 +30,7 @@ angular.module('MyApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main/${year}`);
+          $location.path(`/main/${data.year}`);
         })
         .catch(function(response) {
           if (response.error) {
@@ -34,4 +44,6 @@ angular.module('MyApp')
           }
         });
     };
+
+    $scope.data = data;
   }]);

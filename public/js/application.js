@@ -150,7 +150,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       }
     }
   }])
-  .run(["$rootScope", "$window", function($rootScope, $window) {
+  .run(["$rootScope", "$window", "DefaultServices", function($rootScope, $window, DefaultServices) {
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }
@@ -191,14 +191,24 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', function($scope, $rootScope, $location, $window, $auth) {
-    let year = new Date().getFullYear();
+  .controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$window', '$auth', 'DefaultServices', function($scope, $rootScope, $location, $window, $auth, DefaultServices) {
+    let data = {
+      top: {
+        title: null,
+        url: null,
+        show: false
+      },
+      year: new Date().getFullYear()
+    };
+
+    DefaultServices.setTop(data.top);
+
     $scope.login = function() {
       $auth.login($scope.user)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main/${year}`);
+          $location.path(`/main/${data.year}`);
         })
         .catch(function(response) {
           $scope.messages = {
@@ -212,7 +222,7 @@ angular.module('MyApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main/${year}`);
+          $location.path(`/main/${data.year}`);
         })
         .catch(function(response) {
           if (response.error) {
@@ -226,6 +236,8 @@ angular.module('MyApp')
           }
         });
     };
+
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -1017,16 +1029,7 @@ angular.module('MyApp')
 
 angular.module('MyApp')
   .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
-    let data = {
-      title: null,
-      url: null,
-      show: false
-    };
-    let top = DefaultServices.getTop();
-
-    data.title = top.title;
-    data.url = top.url;
-    data.show = top.show;
+    let data = DefaultServices.getTop();
 
     $scope.default = data;
   }]);

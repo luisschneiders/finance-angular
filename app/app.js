@@ -148,7 +148,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       }
     }
   })
-  .run(function($rootScope, $window) {
+  .run(function($rootScope, $window, DefaultServices) {
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }

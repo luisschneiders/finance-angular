@@ -14,14 +14,17 @@
 </head>
 <body ng-app="MyApp">
   <section ng-include src="'partials/menu.html'"></section>
-  <section class="container-fluid container-top">
+  <section class="container-fluid custom-container">
     <div class="row">
       <div class="col-sm-12">
-        <div ng-include src="'partials/top.html'"></div>
+        <div ng-include src="'partials/main/top.html'"></div>
+      </div>
+      <div class="col-sm-12">
+          <main id="main" ng-view></main>
       </div>
     </div>
   </section>
-  <main id="main" ng-view></main>
+  </section>
   <section ng-include src="'partials/footer.html'"></section>
   <script src="/js/lib/jquery.js"></script>
   <script src="/js/lib/jquery-ui.min.js"></script>

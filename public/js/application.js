@@ -726,6 +726,15 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('FeedCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
+    let data = {
+      title: 'Educational Ads...'
+    }
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
   .controller('MainCtrl', ['$scope', '$auth', '$location', 'moment', 'MainServices', 'DefaultServices', function($scope, $auth, $location, moment, MainServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');

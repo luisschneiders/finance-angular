@@ -4,35 +4,45 @@
 </div>
 <form name="standardForm" ng-submit="customSearchForm(standardForm.$valid)" class="form-horizontal">
   <div class="modal-body">
-    <div class="form-group">
-      <label for="dateStart" class="col-sm-3">From</label>
-      <div class="col-sm-7">
-        <input type="text" name="dateStart" id="dateStart" class="form-control" ng-model='data.customSearch.from' calendar required/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="dateEnd" class="col-sm-3">To</label>
-      <div class="col-sm-7">
-        <input type="text" name="dateEnd" id="dateEnd" class="form-control" ng-model='data.customSearch.to' calendar required/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="transactionType" class="col-sm-3">Transaction Type</label>
-      <div class="col-sm-7">
-        <input type="checkbox" name="transactionsActive" id="transactionsActive" ng-true-value="1" ng-false-value="0" ng-model='data.customSearch.active'> Active          
-        <select name="multipleSelect" id="transactionType" class="form-control" ng-model="data.customSearch.transactionType" multiple
-        ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType | orderBy:'transactionTypeDescription' | filter:{transactionTypeIsActive: data.customSearch.active}">
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-7 col-sm-offset-3">
-        <input type="checkbox" name="purchases" id="purchases" ng-model='data.customSearch.checked'> List purchases of the period
-      </div>
+    <div class="row">
+        <div class="col-sm-9">    
+          <div class="form-group">
+            <label for="dateStart" class="col-sm-3">From</label>
+            <div class="col-sm-9">
+              <input type="text" name="dateStart" id="dateStart" class="form-control" ng-model='data.customSearch.from' calendar required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="dateEnd" class="col-sm-3">To</label>
+            <div class="col-sm-9">
+              <input type="text" name="dateEnd" id="dateEnd" class="form-control" ng-model='data.customSearch.to' calendar required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="transactionType" class="col-sm-3">Transaction Type</label>
+            <div class="col-sm-9">
+              <input type="checkbox" name="transactionsActive" id="transactionsActive" ng-true-value="1" ng-false-value="0" ng-model='data.customSearch.active'> Active
+              <select name="multipleSelect" id="transactionType" class="form-control" ng-model="data.customSearch.transactionType" multiple
+              ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType | orderBy:'transactionTypeDescription' | filter:{transactionTypeIsActive: data.customSearch.active}">
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-9 col-sm-offset-3">
+              <input type="checkbox" name="purchases" id="purchases" ng-model='data.customSearch.checked'> List purchases of the period
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="text-center icon-educational">
+            <div><i class="fa fa-graduation-cap fa-lg" aria-hidden="true"></i></div>
+            <div class="padding-top-bottom">Educational Ads...</div>
+          </div>
+        </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" id="closeModal" class="btn btn-primary">Search</button>    
+    <button type="submit" id="closeModal" class="btn btn-primary">Search</button>
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
   </div>
 </form>

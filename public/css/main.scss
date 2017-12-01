@@ -234,19 +234,19 @@ select {
   outline: 0;
   border-bottom: solid 1px $dark-yellow;
 }
-.default-layout {
-  width:calc(100% - 200px);
-  float: right;
-  display: flex;
+.icon-educational {
+  i {
+    font-size: 8rem;
+  }
 }
 @media (min-width: 767px) {
   #main {
-      @extend .default-layout;
-      margin-top: 58px;
-      margin-bottom: 44px;
+    margin-top: 58px;
+    margin-bottom: 44px;
   }
-  .container-top {
-    @extend .default-layout;
+  .custom-container{
+    width:calc(100% - 200px);
+    float: right;
   }
   .fixed-row {
     border-bottom: 1px solid $mid-gray;

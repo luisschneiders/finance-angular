@@ -1,5 +1,4 @@
-<div class="container">
-  <!-- <div ng-include src="'partials/top.html'"></div> -->
+<div class="container-fluid">
   <div ng-if="messages.error" role="alert" class="alert alert-danger">
     <div ng-repeat="error in messages.error">{{error.msg}}</div>
   </div>
@@ -55,7 +54,7 @@
     </div>
   </form>
   <form ng-submit="changePassword()" class="form-horizontal">
-    <legend><h4 class="text-capitalize title-border-left">Password</h4></legend>
+    <legend><h5 class="text-capitalize title-border-left">Password</h5></legend>
     <div class="form-group">
       <label for="password" class="col-sm-3">New Password</label>
       <div class="col-sm-7">
@@ -75,7 +74,7 @@
     </div>
   </form>
   <div class="form-horizontal">
-    <legend><h4 class="text-capitalize title-border-left">Linked Accounts</h4></legend>
+    <legend><h5 class="text-capitalize title-border-left">Linked Accounts</h5></legend>
     <div class="form-group">
       <div class="col-sm-offset-3 col-sm-4">
         <p>
@@ -86,7 +85,7 @@
     </div>
   </div>
   <form ng-submit="deleteAccount()" class="form-horizontal">
-    <legend><h4 class="text-capitalize title-border-left">Account</h4></legend>
+    <legend><h5 class="text-capitalize title-border-left">Account</h5></legend>
     <div class="form-group">
       <p class="col-sm-offset-3 col-sm-9">You can delete your account, but keep in mind this action is irreversible.</p>
       <div class="col-sm-offset-3 col-sm-9">

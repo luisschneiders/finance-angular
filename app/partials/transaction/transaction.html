@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
   <div class="row">
     <div class="col-sm-12">
       <div class="row padding-top-bottom select-period">
@@ -21,10 +21,10 @@
         <span class="sr-only">Loading...</span>
       </div>
       <div class="row">
-        <div class="col-sm-offset-1 col-sm-10 col-md-offset-3 col-md-6" ng-show="data.isNull">
+        <div class="col-sm-12" ng-show="data.isNull">
           <h3 class="alert alert-danger text-center">{{::data.notFound.message}}</h3>
         </div>
-        <div class="col-sm-offset-1 col-sm-10 col-md-offset-3 col-md-6" ng-repeat="(key, value) in data.transactionsByGroup">
+        <div class="col-sm-12" ng-repeat="(key, value) in data.transactionsByGroup">
           <div class="panel well box-shadow panel-hover">
             <div class="panel-heading">
               <h3 class="panel-title text-uppercase">{{::value.transactionTypeDescription || 'Purchase'}}</h3>

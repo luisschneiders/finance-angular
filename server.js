@@ -10,14 +10,22 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const request = require('request');
 const favicon = require('serve-favicon');
+const https = require('https');
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync( './localhost.key' ),
+  cert: fs.readFileSync( './localhost.cert' ),
+  requestCert: false,
+  rejectUnauthorized: false
+};
 
 // Load environment variables from .env file
 dotenv.load();
 
 // Models
 let User = require('./models/User');
-
-const app = express();
+let app = express();
+let server = https.createServer(options, app);
 // Controllers
 let mainController = require('./controllers/main');
 let userController = require('./controllers/user');
@@ -129,8 +137,8 @@ if (app.get('env') === 'production') {
   });
 }
 
-app.listen(app.get('port'), function() {
+server.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-module.exports = app;
+module.exports = server;

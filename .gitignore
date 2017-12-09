@@ -17,6 +17,8 @@ coverage
 
 # API keys
 .env
+.cert
+.key
 
 # Dependency directory
 node_modules

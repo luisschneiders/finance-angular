@@ -41,6 +41,7 @@
 @import "carousel";
 @import "no-table";
 @import "button";
+@import "flex";
 
 .font-family {
   font-family: 'ralewayregular';
@@ -236,8 +237,17 @@ select {
 }
 .icon-educational {
   i {
-    font-size: 8rem;
+    font-size: 5rem;
   }
+}
+.feed {
+  border-top: solid 2px $dark-gray;
+  margin: 15px 0;
+  padding: 15px;
+}
+.feed-content {
+  padding: 15px;
+  background: $light-gray;
 }
 @media (min-width: 767px) {
   #main {

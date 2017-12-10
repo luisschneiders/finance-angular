@@ -13,7 +13,8 @@ angular.module('MyApp')
       purchases: [],
       expensesType: [],
       template: {
-        url: null
+        url: null,
+        class: null
       },
       purchasesByGroup: {},
       typeAction: [],
@@ -95,6 +96,7 @@ angular.module('MyApp')
 
     $scope.seeDetails = function(key, title) {
       data.template.url = 'partials/modal/purchase.tpl.html';
+      data.template.class = 'modal-dialog modal-lg';
       data.modal.title = title.expenseTypeDescription;
       data.modal.purchases = _.filter(data.purchases, function(item) {
         if (item.purchaseExpenseId == key) {
@@ -105,6 +107,7 @@ angular.module('MyApp')
 
     $scope.customSearch = function() {
       data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.template.class = 'modal-dialog';
       data.modal.title = 'Custom Search';
     };
 

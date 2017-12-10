@@ -1,8 +1,4 @@
 angular.module('MyApp')
-  .controller('FeedCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
-    let data = {
-      title: 'Educational Ads...'
-    }
+  .controller('FeedCtrl', ['$scope', '$location', 'FeedServices', function($scope, $location, FeedServices) {
 
-    $scope.data = data;
   }]);

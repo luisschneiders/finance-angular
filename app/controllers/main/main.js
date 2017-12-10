@@ -34,7 +34,7 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
 
     getGraphicData();
-    
+
     $scope.changePeriod = function(value) {
       data.year = parseInt(data.year);
       if(value == 'd') {
@@ -91,13 +91,13 @@ angular.module('MyApp')
       transactionsLabel = response.map(function(value){
         switch(value.transactionLabel){
           case 'C':
-            value.transactionLabel = 'INCOMES';
+            value.transactionLabel = 'Incomes';
             break;
           case 'D':
-            value.transactionLabel = 'OUTCOMES';
+            value.transactionLabel = 'Outcomes';
             break;
           case 'T':
-            value.transactionLabel = 'TRANSFERS';
+            value.transactionLabel = 'Transfers';
             break;
           default:
             value.transactionLabel = 'Label';
@@ -107,13 +107,13 @@ angular.module('MyApp')
 
       pieChartColoursBackground = response.map(function(value){
         switch(value.transactionLabel){
-          case 'INCOMES':
+          case 'Incomes':
             value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
             break;
-          case 'OUTCOMES':
+          case 'Outcomes':
             value.pieChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
             break;
-          case 'TRANSFERS':
+          case 'Transfers':
             value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
             break;
           default:

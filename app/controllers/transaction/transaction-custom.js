@@ -13,7 +13,8 @@ angular.module('MyApp')
       transactions: [],
       transactionsType: [],
       template: {
-        url: null
+        url: null,
+        class: null
       },
       transactionsByGroup: {},
       isNull: false,
@@ -80,6 +81,7 @@ angular.module('MyApp')
 
     $scope.seeDetails = function(key, title) {
       data.template.url = 'partials/modal/transaction.tpl.html';
+      data.template.class = 'modal-dialog modal-lg';
       data.modal.title = title.transactionTypeDescription;
       data.modal.transactions = _.filter(data.transactions, function(item) {
         if (item.transactionType == key) {
@@ -90,6 +92,7 @@ angular.module('MyApp')
 
     $scope.customSearch = function(key) {
       data.template.url = 'partials/modal/custom-search-transaction.tpl.html';
+      data.template.class = 'modal-dialog';
       data.modal.title = 'Custom Search';
     };
 

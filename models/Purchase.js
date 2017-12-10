@@ -15,32 +15,45 @@ const Purchase = bookshelf.Model.extend({
       }).fetchAll();
     },
     getPurchaseByYearAndMonth: function(user, startDate, endDate) {
+      let options = null;
+
       startDate = moment(startDate).format('YYYY-MM-DD');
       endDate = moment(endDate).format('YYYY-MM-DD');
+      options = new Options(user, startDate, endDate);
 
       return this.query(function(qr){
-        qr.select('expense-type.expenseTypeDescription', 'purchase.id', 'purchaseExpenseId', 'purchaseAmount', 'purchaseComments', 'purchaseDate');
-        qr.leftJoin('expense-type', 'purchase.purchaseExpenseId', '=', 'expense-type.id');
-        qr.where({'purchaseInsertedBy': user, 'purchaseFlag': 'r'});
-        qr.whereBetween('purchaseDate', [startDate, endDate]);
+        queryPurchases(qr, options);
       }).fetchAll();
     },
     getPurchaseByCustomSearch: function(user, startDate, endDate, expenseType) {
+      let options = new Options(user, startDate, endDate);
       let refineExpenseType = [];
       let allExpensesType = 'all';
+
       refineExpenseType = expenseType.split(',');
 
       return this.query(function(qr){
-        qr.select('expense-type.expenseTypeDescription', 'purchase.id', 'purchaseExpenseId', 'purchaseAmount', 'purchaseComments', 'purchaseDate');
-        qr.leftJoin('expense-type', 'purchase.purchaseExpenseId', '=', 'expense-type.id');
-        qr.where({'purchaseInsertedBy': user, 'purchaseFlag': 'r'});
-        qr.whereBetween('purchaseDate', [startDate, endDate]);
-
-        if (refineExpenseType[0] != allExpensesType) {
+        queryPurchases(qr, options);
+        if (refineExpenseType[0] !== allExpensesType) {
           qr.whereIn('purchaseExpenseId', refineExpenseType);
         }
       }).fetchAll();
     }
   });
+class Options {
+  constructor(user, startDate, endDate) {
+    this.user = user;
+    this.startDate = startDate;
+    this.endDate = endDate;
+  }
+}
+function queryPurchases(qr, options) {
+  qr.select('expense-type.expenseTypeDescription', 'banks.bankDescription', 'purchase.id', 'purchaseExpenseId', 'purchaseAmount', 'purchaseComments', 'purchaseDate');
+  qr.leftJoin('expense-type', 'purchase.purchaseExpenseId', '=', 'expense-type.id');
+  qr.leftJoin('banks', 'purchase.purchaseBank', '=', 'banks.id');
+  qr.where({'purchaseInsertedBy': options.user, 'purchaseFlag': 'r'});
+  qr.whereBetween('purchaseDate', [options.startDate, options.endDate]);
+  return qr;
+};
 
 module.exports = Purchase;

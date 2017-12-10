@@ -13,8 +13,8 @@ const favicon = require('serve-favicon');
 const https = require('https');
 const fs = require('fs');
 const options = {
-  key: fs.readFileSync( './cert/localhost.key' ),
-  cert: fs.readFileSync( './cert/localhost.cert' ),
+  key: fs.readFileSync('./cert/localhost.key'),
+  cert: fs.readFileSync('./cert/localhost.cert'),
   requestCert: false,
   rejectUnauthorized: false
 };

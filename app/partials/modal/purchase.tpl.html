@@ -22,7 +22,7 @@
           <tr ng-repeat="item in data.modal.purchases | orderBy: '-purchaseDate'">
             <td data-title="Details">
               <div>{{::item.purchaseDate | date: "dd/MM/yyyy"}}</div>
-              <div>{{::item.purchaseComments}}</div>
+              <div>{{::item.purchaseComments + ' (Debit from: ' + item.bankDescription + ')'}}</div>
             </td>
             <td data-title="Amount" class="text-right">{{::item.purchaseAmount | number: 2}}</td>
             <td data-title="Action" class="text-center">

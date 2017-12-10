@@ -83,6 +83,7 @@ angular.module('MyApp')
         }
 
         data.purchases = response.data;
+        console.table(data.purchases);
         data.purchasesByGroup = response.groupedBy;
         data.isLoading = false;
       }).catch(function(err) {

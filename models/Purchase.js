@@ -34,9 +34,7 @@ const Purchase = bookshelf.Model.extend({
 
       return this.query(function(qr){
         queryPurchases(qr, options);
-        if (refineExpenseType[0] !== allExpensesType) {
-          qr.whereIn('purchaseExpenseId', refineExpenseType);
-        }
+        qr.whereIn('purchaseExpenseId', refineExpenseType);
       }).fetchAll();
     }
   });
@@ -47,6 +45,7 @@ class Options {
     this.endDate = endDate;
   }
 }
+
 function queryPurchases(qr, options) {
   qr.select('expense-type.expenseTypeDescription', 'banks.bankDescription', 'purchase.id', 'purchaseExpenseId', 'purchaseAmount', 'purchaseComments', 'purchaseDate');
   qr.leftJoin('expense-type', 'purchase.purchaseExpenseId', '=', 'expense-type.id');

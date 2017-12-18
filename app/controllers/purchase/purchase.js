@@ -83,11 +83,19 @@ angular.module('MyApp')
         }
 
         data.purchases = response.data;
-        console.table(data.purchases);
         data.purchasesByGroup = response.groupedBy;
         data.isLoading = false;
       }).catch(function(err) {
         console.warn('Error getting data: ', err);
+      });
+    };
+
+    function setExpensesType() {
+      data.customSearch.expenseType = [];
+      _.forEach(data.expensesType, function(expense) {
+        if (expense.expenseTypeIsActive === data.customSearch.active) {
+          data.customSearch.expenseType.push(expense.id);
+        }
       });
     };
 
@@ -113,15 +121,16 @@ angular.module('MyApp')
     };
 
     $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
       if(!$valid) {
         return;
       }
-      if(data.customSearch.checked) {
-        data.customSearch.expenseType = 'all'
+      if(data.customSearch.checked || data.customSearch.expenseType == undefined) {
+        setExpensesType();
       }
       $(".modal").modal("hide");
       $timeout(function() {
-        $location.path(`/custom-search-purchases/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.expenseType.toString()}`);
+        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
       }, 500);
     };
 

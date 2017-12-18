@@ -35,7 +35,7 @@ angular.module('MyApp')
     let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
     let customPurchase = null;
-    let refineSearch = customSearch.split('/');
+    let refineSearch = customSearch.split('&');
     let search = {
       from: refineSearch[0],
       to: refineSearch[1],
@@ -75,6 +75,15 @@ angular.module('MyApp')
       console.warn('Error getting purchases: ', err);
     });
 
+    function setExpensesType() {
+      data.customSearch.expenseType = [];
+      _.forEach(data.expensesType, function(expense) {
+        if (expense.expenseTypeIsActive === data.customSearch.active) {
+          data.customSearch.expenseType.push(expense.id);
+        }
+      });
+    };
+
     $scope.deletePurchase = function(id) {
       console.log('Ill be in the services', id);
     };
@@ -97,15 +106,16 @@ angular.module('MyApp')
     };
 
     $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
       if(!$valid) {
         return;
       }
-      if(data.customSearch.checked) {
-        data.customSearch.expenseType = 'all'
+      if(data.customSearch.checked || data.customSearch.expenseType == undefined) {
+        setExpensesType();
       }
       $(".modal").modal("hide");
       $timeout(function() {
-        $location.path(`/custom-search-purchases/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.expenseType.toString()}`);
+        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
       }, 500);      
     };
 

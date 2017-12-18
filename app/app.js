@@ -105,7 +105,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/custom-search-transactions/:from/:to/:transactionType', {
+      .when('/custom-search-transactions=:from&:to&:transactionType', {
         templateUrl: 'partials/transaction/transaction-custom.html',
         controller: 'TransactionCustomCtrl',
         resolve: { loginRequired: loginRequired }
@@ -120,7 +120,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PurchaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/custom-search-purchases/:from/:to/:expenseType', {
+      .when('/custom-search-purchases=:from&:to&:expenseType', {
         templateUrl: 'partials/purchase/purchase-custom.html',
         controller: 'PurchaseCustomCtrl',
         resolve: { loginRequired: loginRequired }

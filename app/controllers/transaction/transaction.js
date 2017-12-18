@@ -88,15 +88,19 @@ angular.module('MyApp')
     };
 
     $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
       if(!$valid) {
         return;
+      }
+      if(data.customSearch.transactionsChecked || data.customSearch.transactionType == undefined) {
+        setTransactionType();
       }
       if(data.customSearch.checked) {
         data.customSearch.transactionType.push(0); // 0 = purchases        
       }
       $(".modal").modal("hide");
       $timeout(function() {
-        $location.path(`/custom-search-transactions/${data.customSearch.from}/${data.customSearch.to}/${data.customSearch.transactionType.toString()}`);
+        $location.path(`/custom-search-transactions=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.transactionType.toString()}`);
       }, 500);
     };
 
@@ -121,6 +125,15 @@ angular.module('MyApp')
         data.isLoading = false;
       }).catch(function(err) {
         console.warn('Error getting data: ', err);
+      });
+    };
+
+    function setTransactionType() {
+      data.customSearch.transactionType = [];
+      _.forEach(data.transactionsType, function(transaction) {
+        if (transaction.transactionTypeIsActive === data.customSearch.active) {
+          data.customSearch.transactionType.push(transaction.id);
+        }
       });
     };
 

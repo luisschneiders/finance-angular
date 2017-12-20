@@ -84,10 +84,6 @@ angular.module('MyApp')
       });
     };
 
-    $scope.deletePurchase = function(id) {
-      console.log('Ill be in the services', id);
-    };
-
     $scope.seeDetails = function(key, title) {
       data.template.url = 'partials/modal/purchase.tpl.html';
       data.template.class = 'modal-dialog modal-lg';
@@ -110,7 +106,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.checked || data.customSearch.expenseType == undefined) {
+      if(data.customSearch.expenseType == undefined) {
         setExpensesType();
       }
       $(".modal").modal("hide");

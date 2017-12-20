@@ -92,7 +92,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.transactionsChecked || data.customSearch.transactionType == undefined) {
+      if(data.customSearch.transactionType == undefined) {
         setTransactionType();
       }
       if(data.customSearch.checked) {

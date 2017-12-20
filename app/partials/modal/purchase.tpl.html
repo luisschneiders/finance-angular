@@ -9,7 +9,6 @@
           <tr>
             <th>Details</th>
             <th class="text-right">Amount</th>
-            <th class="text-center">Action</th>
           </tr>
         </thead>
         <tbody >
@@ -25,9 +24,6 @@
               <div>{{::item.purchaseComments + ' (Debit from: ' + item.bankDescription + ')'}}</div>
             </td>
             <td data-title="Amount" class="text-right">{{::item.purchaseAmount | number: 2}}</td>
-            <td data-title="Action" class="text-center">
-              <a class="cursor-pointer" title="Delete" ng-click="deletePurchase(item.id)"><i class="fa fa-trash fa-lg icon-delete"></i></a>
-            </td>
           </tr>
         </tbody>
     </table>

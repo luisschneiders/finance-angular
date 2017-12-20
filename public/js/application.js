@@ -726,183 +726,6 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('PeopleEditCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      people: null,
-      isSaving: false,
-      isNull: false,
-      notFound: {
-        url: '/all-users',
-        title: 'all users',
-        message:'Record Not Found!',
-      },
-      top: {
-        title: 'update user',
-        url: '/user-new',
-        show: true
-      },
-      typeAction: [],
-      messages: {}
-    };
-    let id = $location.path().substr(6); // to remove /user/
-    let people = PeopleServices.getPeopleById(id);
-
-    DefaultServices.setTop(data.top);
-    data.typeAction = PeopleServices.getPeopleType();
-
-    people.then(function(response) {
-      if (!response) {
-        data.isNull = true;
-        return;
-      }
-      data.isNull = false;
-      data.people = response;
-    }).catch(function(err) {
-      console.warn('Error getting user: ', err);
-    });
-
-    $scope.updatePeople = function($valid) {
-      let peopleUpdated;
-      if (data.isSaving) {
-        return;
-      }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      peopleUpdated = PeopleServices.update(data.people);
-      peopleUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-      }).catch(function(response) {
-        console.warn('Error updating user: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    $scope.data = data;
-  }]);
-
-'use strict';
-
-angular.module('MyApp')
-  .controller('PeopleNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $timeout, PeopleServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      people: {
-        peopleDescription: null,
-        peopleRates: null,
-        peopleType: null,
-        peopleIsActive: 1
-      },
-      isSaving: false,
-      isNull: false, // it's required for the transaction-type-edit.html
-      top: {
-        title: 'new user',
-        url: '/user-new',
-        show: true
-      },
-      typeAction: []
-    };
-
-    DefaultServices.setTop(data.top);
-    data.typeAction = PeopleServices.getPeopleType();
-
-    $scope.updatePeople = function($valid) {
-      let peopleUpdated;
-      if (data.isSaving) {
-        return;
-      }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      peopleUpdated = PeopleServices.add(data.people);
-      peopleUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        $timeout(function() {
-          $location.path(`/user/${response.data.people.id}`);
-        }, 1000);
-      }).catch(function(response) {
-        console.warn('Error updating user: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      people: [],
-      isNull: false,
-      notFound: {
-        url: '/all-users',
-        title: 'all users',
-        message:'Record Not Found!',
-      },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
-      top: {
-        title: 'all users',
-        url: '/user-new',
-        show: true
-      },
-      isLoading: false
-    };
-    let people = PeopleServices.getAllPeople();
-
-    data.isLoading = true;
-
-    DefaultServices.setTop(data.top);
-
-    people.then(function(response) {
-      let top = {};
-      if(!response || response.length == 0) {
-        data.isNull = true;
-        data.isLoading = false;
-        return;
-      }
-      data.people = response;
-      top = DefaultServices.getTop();
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting users: ', err);
-    });
-
-    $scope.editPeople = function(id) {
-      $location.path(`/user/${id}`);
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
   .controller('FeedCtrl', ['$scope', '$location', 'FeedServices', function($scope, $location, FeedServices) {
 
   }]);
@@ -1217,6 +1040,183 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('PeopleEditCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      people: null,
+      isSaving: false,
+      isNull: false,
+      notFound: {
+        url: '/all-users',
+        title: 'all users',
+        message:'Record Not Found!',
+      },
+      top: {
+        title: 'update user',
+        url: '/user-new',
+        show: true
+      },
+      typeAction: [],
+      messages: {}
+    };
+    let id = $location.path().substr(6); // to remove /user/
+    let people = PeopleServices.getPeopleById(id);
+
+    DefaultServices.setTop(data.top);
+    data.typeAction = PeopleServices.getPeopleType();
+
+    people.then(function(response) {
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.people = response;
+    }).catch(function(err) {
+      console.warn('Error getting user: ', err);
+    });
+
+    $scope.updatePeople = function($valid) {
+      let peopleUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      peopleUpdated = PeopleServices.update(data.people);
+      peopleUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating user: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+'use strict';
+
+angular.module('MyApp')
+  .controller('PeopleNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $timeout, PeopleServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      people: {
+        peopleDescription: null,
+        peopleRates: null,
+        peopleType: null,
+        peopleIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the transaction-type-edit.html
+      top: {
+        title: 'new user',
+        url: '/user-new',
+        show: true
+      },
+      typeAction: []
+    };
+
+    DefaultServices.setTop(data.top);
+    data.typeAction = PeopleServices.getPeopleType();
+
+    $scope.updatePeople = function($valid) {
+      let peopleUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      peopleUpdated = PeopleServices.add(data.people);
+      peopleUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/user/${response.data.people.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating user: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      people: [],
+      isNull: false,
+      notFound: {
+        url: '/all-users',
+        title: 'all users',
+        message:'Record Not Found!',
+      },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'all users',
+        url: '/user-new',
+        show: true
+      },
+      isLoading: false
+    };
+    let people = PeopleServices.getAllPeople();
+
+    data.isLoading = true;
+
+    DefaultServices.setTop(data.top);
+
+    people.then(function(response) {
+      let top = {};
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.people = response;
+      top = DefaultServices.getTop();
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting users: ', err);
+    });
+
+    $scope.editPeople = function(id) {
+      $location.path(`/user/${id}`);
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
   .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
@@ -1302,10 +1302,6 @@ angular.module('MyApp')
       });
     };
 
-    $scope.deletePurchase = function(id) {
-      console.log('Ill be in the services', id);
-    };
-
     $scope.seeDetails = function(key, title) {
       data.template.url = 'partials/modal/purchase.tpl.html';
       data.template.class = 'modal-dialog modal-lg';
@@ -1328,7 +1324,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.checked || data.customSearch.expenseType == undefined) {
+      if(data.customSearch.expenseType == undefined) {
         setExpensesType();
       }
       $(".modal").modal("hide");
@@ -1441,10 +1437,6 @@ angular.module('MyApp')
       });
     };
 
-    $scope.deletePurchase = function(id) {
-      console.log('Ill be in the services', id);
-    };
-
     $scope.seeDetails = function(key, title) {
       data.template.url = 'partials/modal/purchase.tpl.html';
       data.template.class = 'modal-dialog modal-lg';
@@ -1467,7 +1459,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.checked || data.customSearch.expenseType == undefined) {
+      if(data.customSearch.expenseType == undefined) {
         setExpensesType();
       }
       $(".modal").modal("hide");
@@ -1582,7 +1574,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.transactionsChecked || data.customSearch.transactionType == undefined) {
+      if(data.customSearch.transactionType == undefined) {
         setTransactionType();
       }
       if(data.customSearch.checked) {
@@ -1761,7 +1753,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.transactionsChecked || data.customSearch.transactionType == undefined) {
+      if(data.customSearch.transactionType == undefined) {
         setTransactionType();
       }
       if(data.customSearch.checked) {

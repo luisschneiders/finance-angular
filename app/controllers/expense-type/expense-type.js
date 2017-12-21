@@ -21,10 +21,12 @@ angular.module('MyApp')
         url: '/expense-type-new',
         show: true
       },
-      isLoading: true,
+      isLoading: false,
       isActive: 0
     };
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+
+    data.isLoading = true;
 
     DefaultServices.setTop(data.top);
 

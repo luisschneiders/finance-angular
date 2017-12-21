@@ -6,24 +6,25 @@ angular.module('MyApp')
     }
     let data = {
       banks: [],
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
       isNull: false,
       notFound: {
         url: '/all-banks',
         title: 'banks',
         message:'Record Not Found!',
       },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
       top: {
         title: 'banks',
         url: '/bank-new',
         show: true
       },
-      isLoading: false
+      isLoading: false,
+      isActive: 0
     };
-    let banks = BankServices.getAllBanks();
+    let banks = BankServices.getAllBanks(data.isActive);
 
     data.isLoading = true;
 

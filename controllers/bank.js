@@ -4,7 +4,7 @@ const Bank = require('../models/Bank');
  * GET /banks
  */
 exports.bankGetAll = function(req, res) {
-  Bank.getAll(req.user.id)
+  Bank.getAll(req.user.id, req.params.isActive)
     .then(function(banks) {
       res.json(banks);
     }).catch(function(err) {

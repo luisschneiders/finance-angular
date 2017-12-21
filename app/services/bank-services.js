@@ -1,8 +1,8 @@
 angular.module('MyApp')
 .factory('BankServices', ['$http', function($http) {
   return {
-    getAllBanks: function() {
-      let banks = $http.get('/banks')
+    getAllBanks: function(isActive) {
+      let banks = $http.get(`/all-banks/${isActive}`)
           .then(function(response){
             return response.data;
           })

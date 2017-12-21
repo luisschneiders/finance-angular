@@ -88,7 +88,7 @@ app.delete('/account', userController.ensureAuthenticated, userController.accoun
 app.get('/main-by-year/:year', mainController.mainGetByYear);
 
 // Banks
-app.get('/banks', bankController.bankGetAll);
+app.get('/all-banks/:isActive', bankController.bankGetAll);
 app.get('/banks/:id', bankController.bankGetById);
 app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut);
 app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);

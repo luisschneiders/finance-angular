@@ -127,6 +127,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PurchaseCustomCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/purchase-new', {
+        templateUrl: 'partials/purchase/purchase-edit.html',
+        controller: 'PurchaseNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });
@@ -513,24 +518,25 @@ angular.module('MyApp')
     }
     let data = {
       banks: [],
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
       isNull: false,
       notFound: {
         url: '/all-banks',
         title: 'banks',
         message:'Record Not Found!',
       },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
       top: {
         title: 'banks',
         url: '/bank-new',
         show: true
       },
-      isLoading: false
+      isLoading: false,
+      isActive: 0
     };
-    let banks = BankServices.getAllBanks();
+    let banks = BankServices.getAllBanks(data.isActive);
 
     data.isLoading = true;
 
@@ -697,10 +703,12 @@ angular.module('MyApp')
         url: '/expense-type-new',
         show: true
       },
-      isLoading: true,
+      isLoading: false,
       isActive: 0
     };
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+
+    data.isLoading = true;
 
     DefaultServices.setTop(data.top);
 
@@ -1331,6 +1339,89 @@ angular.module('MyApp')
       $timeout(function() {
         $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
       }, 500);      
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
+    function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      banks: [],
+      expenses: [],
+      purchase: {},
+      isSaving: false,
+      isActive: 1,
+      isNull: false,
+      top: {
+        title: 'new purchase',
+        url: '/purchase-new',
+        show: false
+      },
+      required: 'All fields are required'
+    };
+    let banks = BankServices.getAllBanks(data.isActive);
+    let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
+
+    DefaultServices.setTop(data.top);
+
+    banks.then(function(response) {
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.banks = response;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting banks: ', err);
+    });
+
+    expenses.then(function(response) {
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.expenses = response;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting expenses: ', err);
+    });
+
+    $scope.updatePurchase = function($valid) {
+      let purchase = null;
+      console.log('data.purchase', data.purchase);
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        data.messages = {
+          error: [{
+            msg: data.required
+          }]
+        };
+        return;
+      }
+      data.isSaving = true;
+      purchase = PurchaseServices.add(data.purchase);
+      purchase.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating purchase: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
     };
 
     $scope.data = data;
@@ -2002,8 +2093,8 @@ angular.module('MyApp')
 angular.module('MyApp')
 .factory('BankServices', ['$http', function($http) {
   return {
-    getAllBanks: function() {
-      let banks = $http.get('/banks')
+    getAllBanks: function(isActive) {
+      let banks = $http.get(`/all-banks/${isActive}`)
           .then(function(response){
             return response.data;
           })

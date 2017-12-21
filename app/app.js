@@ -125,6 +125,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PurchaseCustomCtrl',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/purchase-new', {
+        templateUrl: 'partials/purchase/purchase-edit.html',
+        controller: 'PurchaseNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
       .otherwise({
         templateUrl: 'partials/404.html'
       });

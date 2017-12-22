@@ -11,13 +11,23 @@ angular.module('MyApp')
       purchase: {},
       isSaving: false,
       isActive: 1,
-      isNull: false,
       top: {
         title: 'new purchase',
         url: '/purchase-new',
         show: false
       },
-      required: 'All fields are required'
+      required: 'All fields are required',
+      notFound: {
+        message:'No record found!',
+        bank: {
+          url: '/bank-new',
+          title: 'Add bank',
+        },
+        expense: {
+          url: '/expense-type-new',
+          title: 'Add expense',
+        }
+      }
     };
     let banks = BankServices.getAllBanks(data.isActive);
     let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
@@ -26,7 +36,6 @@ angular.module('MyApp')
 
     banks.then(function(response) {
       if(!response || response.length == 0) {
-        data.isNull = true;
         data.isLoading = false;
         return;
       }
@@ -38,7 +47,6 @@ angular.module('MyApp')
 
     expenses.then(function(response) {
       if(!response || response.length == 0) {
-        data.isNull = true;
         data.isLoading = false;
         return;
       }
@@ -48,9 +56,8 @@ angular.module('MyApp')
       console.warn('Error getting expenses: ', err);
     });
 
-    $scope.updatePurchase = function($valid) {
+    $scope.savePurchase = function($valid) {
       let purchase = null;
-      console.log('data.purchase', data.purchase);
       if (data.isSaving) {
         return;
       }

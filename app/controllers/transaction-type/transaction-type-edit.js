@@ -38,7 +38,7 @@ angular.module('MyApp')
       console.warn('Error getting Transaction Type: ', err);
     });
 
-    $scope.updateTransactionType = function($valid) {
+    $scope.saveTransactionType = function($valid) {
       let transactionTypeUpdated;
       if (data.isSaving) {
         return;

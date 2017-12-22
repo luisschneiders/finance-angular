@@ -23,7 +23,7 @@ angular.module('MyApp')
 
     DefaultServices.setTop(data.top);
 
-    $scope.updateBank = function($valid) {
+    $scope.saveBank = function($valid) {
       let bankUpdated;
       if (data.isSaving) {
         return;

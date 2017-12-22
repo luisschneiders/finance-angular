@@ -29,7 +29,7 @@ angular.module('MyApp')
       };
     });
 
-    $scope.updateTransactionType = function($valid) {
+    $scope.saveTransactionType = function($valid) {
       let transactionTypeUpdated = transactionTypeUpdated || null;
       if (data.isSaving) {
         return;

@@ -36,7 +36,7 @@ angular.module('MyApp')
       console.warn('Error getting Expense Type: ', err);
     });
 
-    $scope.updateExpenseType = function($valid) {
+    $scope.saveExpenseType = function($valid) {
       let expenseTypeUpdated;
       if (data.isSaving) {
         return;

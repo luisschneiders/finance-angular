@@ -20,7 +20,7 @@ angular.module('MyApp')
 
     DefaultServices.setTop(data.top);
 
-    $scope.updateExpenseType = function($valid) {
+    $scope.saveExpenseType = function($valid) {
       let expenseTypeUpdated;
       if (data.isSaving) {
         return;

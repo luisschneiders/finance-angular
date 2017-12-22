@@ -11,7 +11,7 @@
         <div ng-if="data.messages.success" role="alert" class="alert alert-success">
           <div ng-repeat="success in data.messages.success">{{success.msg}}</div>
         </div>
-          <form name="standardForm" ng-submit="updateBank(standardForm.$valid)" class="form-horizontal" ng-if="data.isNull === false">
+          <form name="standardForm" ng-submit="saveBank(standardForm.$valid)" class="form-horizontal" ng-if="data.isNull === false">
             <div class="form-group">
               <label for="bankDescription" class="col-sm-3">Description</label>
               <div class="col-sm-7">
@@ -44,7 +44,7 @@
             </div>
             <div class="form-group">
               <div class="col-sm-offset-3 col-sm-4">
-                <button type="submit" class="btn btn-success">Update</button>
+                <button type="submit" class="btn btn-success">Save</button>
               </div>
             </div>
           </form>

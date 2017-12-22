@@ -23,7 +23,7 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
     data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
-    $scope.updateTransactionType = function($valid) {
+    $scope.saveTransactionType = function($valid) {
       let transactionTypeUpdated;
       if (data.isSaving) {
         return;

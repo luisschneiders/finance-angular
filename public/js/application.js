@@ -428,7 +428,7 @@ angular.module('MyApp')
       console.warn('Error getting banks: ', err);
     });
 
-    $scope.updateBank = function($valid) {
+    $scope.saveBank = function($valid) {
       let bankUpdated;
       if (data.isSaving) {
         return;
@@ -480,7 +480,7 @@ angular.module('MyApp')
 
     DefaultServices.setTop(data.top);
 
-    $scope.updateBank = function($valid) {
+    $scope.saveBank = function($valid) {
       let bankUpdated;
       if (data.isSaving) {
         return;
@@ -601,7 +601,7 @@ angular.module('MyApp')
       console.warn('Error getting Expense Type: ', err);
     });
 
-    $scope.updateExpenseType = function($valid) {
+    $scope.saveExpenseType = function($valid) {
       let expenseTypeUpdated;
       if (data.isSaving) {
         return;
@@ -650,7 +650,7 @@ angular.module('MyApp')
 
     DefaultServices.setTop(data.top);
 
-    $scope.updateExpenseType = function($valid) {
+    $scope.saveExpenseType = function($valid) {
       let expenseTypeUpdated;
       if (data.isSaving) {
         return;
@@ -1087,7 +1087,7 @@ angular.module('MyApp')
       console.warn('Error getting user: ', err);
     });
 
-    $scope.updatePeople = function($valid) {
+    $scope.savePeople = function($valid) {
       let peopleUpdated;
       if (data.isSaving) {
         return;
@@ -1142,7 +1142,7 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
     data.typeAction = PeopleServices.getPeopleType();
 
-    $scope.updatePeople = function($valid) {
+    $scope.savePeople = function($valid) {
       let peopleUpdated;
       if (data.isSaving) {
         return;
@@ -1357,13 +1357,23 @@ angular.module('MyApp')
       purchase: {},
       isSaving: false,
       isActive: 1,
-      isNull: false,
       top: {
         title: 'new purchase',
         url: '/purchase-new',
         show: false
       },
-      required: 'All fields are required'
+      required: 'All fields are required',
+      notFound: {
+        message:'No record found!',
+        bank: {
+          url: '/bank-new',
+          title: 'Add bank',
+        },
+        expense: {
+          url: '/expense-type-new',
+          title: 'Add expense',
+        }
+      }
     };
     let banks = BankServices.getAllBanks(data.isActive);
     let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
@@ -1372,7 +1382,6 @@ angular.module('MyApp')
 
     banks.then(function(response) {
       if(!response || response.length == 0) {
-        data.isNull = true;
         data.isLoading = false;
         return;
       }
@@ -1384,7 +1393,6 @@ angular.module('MyApp')
 
     expenses.then(function(response) {
       if(!response || response.length == 0) {
-        data.isNull = true;
         data.isLoading = false;
         return;
       }
@@ -1394,9 +1402,8 @@ angular.module('MyApp')
       console.warn('Error getting expenses: ', err);
     });
 
-    $scope.updatePurchase = function($valid) {
+    $scope.savePurchase = function($valid) {
       let purchase = null;
-      console.log('data.purchase', data.purchase);
       if (data.isSaving) {
         return;
       }
@@ -1720,7 +1727,7 @@ angular.module('MyApp')
       };
     });
 
-    $scope.updateTransactionType = function($valid) {
+    $scope.saveTransactionType = function($valid) {
       let transactionTypeUpdated = transactionTypeUpdated || null;
       if (data.isSaving) {
         return;
@@ -1932,7 +1939,7 @@ angular.module('MyApp')
       console.warn('Error getting Transaction Type: ', err);
     });
 
-    $scope.updateTransactionType = function($valid) {
+    $scope.saveTransactionType = function($valid) {
       let transactionTypeUpdated;
       if (data.isSaving) {
         return;
@@ -1984,7 +1991,7 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
     data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
-    $scope.updateTransactionType = function($valid) {
+    $scope.saveTransactionType = function($valid) {
       let transactionTypeUpdated;
       if (data.isSaving) {
         return;

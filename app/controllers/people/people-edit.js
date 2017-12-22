@@ -38,7 +38,7 @@ angular.module('MyApp')
       console.warn('Error getting user: ', err);
     });
 
-    $scope.updatePeople = function($valid) {
+    $scope.savePeople = function($valid) {
       let peopleUpdated;
       if (data.isSaving) {
         return;

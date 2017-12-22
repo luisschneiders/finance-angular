@@ -36,7 +36,7 @@ angular.module('MyApp')
       console.warn('Error getting banks: ', err);
     });
 
-    $scope.updateBank = function($valid) {
+    $scope.saveBank = function($valid) {
       let bankUpdated;
       if (data.isSaving) {
         return;

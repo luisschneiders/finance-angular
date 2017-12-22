@@ -26,7 +26,7 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
     data.typeAction = PeopleServices.getPeopleType();
 
-    $scope.updatePeople = function($valid) {
+    $scope.savePeople = function($valid) {
       let peopleUpdated;
       if (data.isSaving) {
         return;

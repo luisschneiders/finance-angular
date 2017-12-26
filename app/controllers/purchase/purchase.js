@@ -8,7 +8,7 @@ angular.module('MyApp')
     let data = {
       modal: {
         title: null,
-        transactions: null,
+        purchases: null,
       },
       purchases: [],
       expensesType: [],
@@ -17,10 +17,9 @@ angular.module('MyApp')
         class: null
       },
       purchasesByGroup: {},
-      typeAction: [],
       isNull: false,
-      isLoading: true,
       isActive: 0,
+      isLoading: true,
       notFound: {
         url: null,
         title: null,
@@ -31,13 +30,13 @@ angular.module('MyApp')
         url: 'purchase-new',
         show: true
       },
+      customSearch: {},
       monthAndYear: null,
       currentPeriod: $location.path().substr(11), // to remove /purchases/
       period: {
         month: null,
         year: null
       },
-      customSearch: {}
     };
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
     data.customSearch.active = 1;

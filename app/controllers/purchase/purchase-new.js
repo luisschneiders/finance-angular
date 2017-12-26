@@ -31,32 +31,10 @@ angular.module('MyApp')
       },
       messages: {}
     };
-    let banks = BankServices.getAllBanks(data.isActive);
-    let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
 
     DefaultServices.setTop(data.top);
-
-    banks.then(function(response) {
-      if (!response || response.length == 0) {
-        data.isLoading = false;
-        return;
-      }
-      data.banks = response;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting banks: ', err);
-    });
-
-    expenses.then(function(response) {
-      if (!response || response.length == 0) {
-        data.isLoading = false;
-        return;
-      }
-      data.expenses = response;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting expenses: ', err);
-    });
+    getAllExpenses();
+    getAllBanks();
 
     $scope.savePurchase = function($valid) {
       let purchase = null;
@@ -96,6 +74,7 @@ angular.module('MyApp')
         data.messages = {
           success: [response.data]
         };
+        getAllBanks();
       }).catch(function(response) {
         console.warn('Error updating purchase: ', response);
         data.isSaving = false;
@@ -105,5 +84,34 @@ angular.module('MyApp')
       });
     };
 
+    function getAllExpenses() {
+      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
+      expenses.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.expenses = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting expenses: ', err);
+      });
+    };
+
+    function getAllBanks() {
+      let banks = BankServices.getAllBanks(data.isActive);
+      banks.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.banks = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting banks: ', err);
+      });
+    };
+
+    $scope.$watch('data.banks', function() {}, true);
     $scope.data = data;
   }]);

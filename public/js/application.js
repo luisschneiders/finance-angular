@@ -1377,32 +1377,10 @@ angular.module('MyApp')
       },
       messages: {}
     };
-    let banks = BankServices.getAllBanks(data.isActive);
-    let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
 
     DefaultServices.setTop(data.top);
-
-    banks.then(function(response) {
-      if (!response || response.length == 0) {
-        data.isLoading = false;
-        return;
-      }
-      data.banks = response;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting banks: ', err);
-    });
-
-    expenses.then(function(response) {
-      if (!response || response.length == 0) {
-        data.isLoading = false;
-        return;
-      }
-      data.expenses = response;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting expenses: ', err);
-    });
+    getAllExpenses();
+    getAllBanks();
 
     $scope.savePurchase = function($valid) {
       let purchase = null;
@@ -1442,6 +1420,7 @@ angular.module('MyApp')
         data.messages = {
           success: [response.data]
         };
+        getAllBanks();
       }).catch(function(response) {
         console.warn('Error updating purchase: ', response);
         data.isSaving = false;
@@ -1451,6 +1430,35 @@ angular.module('MyApp')
       });
     };
 
+    function getAllExpenses() {
+      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
+      expenses.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.expenses = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting expenses: ', err);
+      });
+    };
+
+    function getAllBanks() {
+      let banks = BankServices.getAllBanks(data.isActive);
+      banks.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.banks = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting banks: ', err);
+      });
+    };
+
+    $scope.$watch('data.banks', function() {}, true);
     $scope.data = data;
   }]);
 
@@ -1464,7 +1472,7 @@ angular.module('MyApp')
     let data = {
       modal: {
         title: null,
-        transactions: null,
+        purchases: null,
       },
       purchases: [],
       expensesType: [],
@@ -1473,10 +1481,9 @@ angular.module('MyApp')
         class: null
       },
       purchasesByGroup: {},
-      typeAction: [],
       isNull: false,
-      isLoading: true,
       isActive: 0,
+      isLoading: true,
       notFound: {
         url: null,
         title: null,
@@ -1487,13 +1494,13 @@ angular.module('MyApp')
         url: 'purchase-new',
         show: true
       },
+      customSearch: {},
       monthAndYear: null,
       currentPeriod: $location.path().substr(11), // to remove /purchases/
       period: {
         month: null,
         year: null
       },
-      customSearch: {}
     };
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
     data.customSearch.active = 1;

@@ -12,6 +12,11 @@ const Bank = bookshelf.Model.extend({
     },
     getById: function(user, bank) {
       return this.where({'bankInsertedBy': user, 'id': bank}).fetch();
+    },
+    updateBalance: function(data) {
+      return this.update(function(qr) {
+        qr.where({'bankInsertedBy': data.purchaseInsertedBy, 'id': data.purchaseBank, 'bankCurrentBalance': data.purchaseAmount});
+      })
     }
   });
 

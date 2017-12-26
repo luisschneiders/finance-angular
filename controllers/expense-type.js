@@ -39,17 +39,19 @@ exports.expenseTypePut = function(req, res) {
     return res.status(400).send(errors);
   }
 
-  expenseType = new ExpenseType({'expenseTypeInsertedBy': req.user.id, 'id': req.body.id});
+  expenseType = new ExpenseType();
   expenseType.save({
-    expenseTypeDescription: req.body.expenseTypeDescription,
-    expenseTypeIsActive: req.body.expenseTypeIsActive,
-  }, { patch: true })
-      .then(function(model) {
-        res.send({ expenseType: model, msg: 'Expense has been updated.' });
-      })
-      .catch(function(err) {
-        res.send({ msg: err });
-      });
+      id: req.params.id,
+      expenseTypeInsertedBy: req.user.id,
+      expenseTypeDescription: req.body.expenseTypeDescription,
+      expenseTypeIsActive: req.body.expenseTypeIsActive,
+    }, { patch: true })
+    .then(function(model) {
+      res.send({ expenseType: model, msg: 'Expense has been updated.' });
+    })
+    .catch(function(err) {
+      res.send({ msg: err });
+    });
 };
 
 /**
@@ -69,14 +71,14 @@ exports.expenseTypePost = function(req, res) {
 
   expenseType = new ExpenseType();
   expenseType.save({
-        expenseTypeInsertedBy: req.user.id,
-        expenseTypeDescription: req.body.expenseTypeDescription,
-        expenseTypeIsActive: req.body.expenseTypeIsActive,
-      })
-      .then(function(model) {
-        res.send({ expenseType: model, msg: 'Expense has been added.' });
-      })
-      .catch(function(err) {
-        return res.status(400).send({ msg: 'Error adding Expense.' });
-      });
+      expenseTypeInsertedBy: req.user.id,
+      expenseTypeDescription: req.body.expenseTypeDescription,
+      expenseTypeIsActive: req.body.expenseTypeIsActive,
+    })
+    .then(function(model) {
+      res.send({ expenseType: model, msg: 'Expense has been added.' });
+    })
+    .catch(function(err) {
+      return res.status(400).send({ msg: 'Error adding Expense.' });
+    });
 };

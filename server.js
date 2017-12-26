@@ -120,6 +120,7 @@ app.get('/transactions-by-custom-search/:from&:to&:transactionType', transaction
 // Purchase
 app.get('/purchases-by-year-and-month/:year/:month', purchaseController.purchaseGetByYearAndMonth);
 app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController.purchaseGetByCustomSearch);
+app.post('/purchases/new', userController.ensureAuthenticated, purchaseController.purchasePost);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

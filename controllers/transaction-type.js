@@ -39,18 +39,20 @@ exports.transactionTypePut = function(req, res) {
     return res.status(400).send(errors);
   }
 
-  transactionType = new TransactionType({'transactionTypeInsertedBy': req.user.id, 'id': req.body.id});
+  transactionType = new TransactionType();
   transactionType.save({
-    transactionTypeDescription: req.body.transactionTypeDescription,
-    transactionTypeAction: req.body.transactionTypeAction,
-    transactionTypeIsActive: req.body.transactionTypeIsActive,
-  }, { patch: true })
-      .then(function(model) {
-        res.send({ transactionType: model, msg: 'Transaction type has been updated.' });
-      })
-      .catch(function(err) {
-        res.send({ msg: err });
-      });
+      id: req.params.id,
+      transactionTypeInsertedBy: req.user.id,
+      transactionTypeDescription: req.body.transactionTypeDescription,
+      transactionTypeAction: req.body.transactionTypeAction,
+      transactionTypeIsActive: req.body.transactionTypeIsActive,
+    }, { patch: true })
+    .then(function(model) {
+      res.send({ transactionType: model, msg: 'Transaction type has been updated.' });
+    })
+    .catch(function(err) {
+      res.send({ msg: err });
+    });
 };
 
 /**
@@ -70,15 +72,15 @@ exports.transactionTypePost = function(req, res) {
 
   transactionType = new TransactionType();
   transactionType.save({
-        transactionTypeInsertedBy: req.user.id,
-        transactionTypeDescription: req.body.transactionTypeDescription,
-        transactionTypeAction: req.body.transactionTypeAction,
-        transactionTypeIsActive: req.body.transactionTypeIsActive,
-      })
-      .then(function(model) {
-        res.send({ transactionType: model, msg: 'Transaction type has been added.' });
-      })
-      .catch(function(err) {
-        return res.status(400).send({ msg: 'Error adding transaction.' });
-      });
+      transactionTypeInsertedBy: req.user.id,
+      transactionTypeDescription: req.body.transactionTypeDescription,
+      transactionTypeAction: req.body.transactionTypeAction,
+      transactionTypeIsActive: req.body.transactionTypeIsActive,
+    })
+    .then(function(model) {
+      res.send({ transactionType: model, msg: 'Transaction type has been added.' });
+    })
+    .catch(function(err) {
+      return res.status(400).send({ msg: 'Error adding transaction.' });
+    });
 };

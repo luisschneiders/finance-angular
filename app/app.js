@@ -1,7 +1,7 @@
 angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash'])
   .config(function($routeProvider, $locationProvider, $authProvider) {
+    $locationProvider.hashPrefix(''); // angularjs version 1.6.x
     $locationProvider.html5Mode(true);
-
     $routeProvider
       .when('/', {
         templateUrl: 'partials/home.html'

@@ -40,19 +40,21 @@ exports.bankPut = function(req, res) {
     return res.status(400).send(errors);
   }
 
-  bank = new Bank({'bankInsertedBy': req.user.id, 'id': req.body.id});
+  bank = new Bank();
   bank.save({
-    bankDescription: req.body.bankDescription,
-    bankAccount: req.body.bankAccount,
-    bankCurrentBalance: req.body.bankCurrentBalance,
-    bankIsActive: req.body.bankIsActive,
-  }, { patch: true })
-      .then(function(model) {
-        res.send({ bank: model, msg: 'Bank has been updated.' });
-      })
-      .catch(function(err) {
-        res.send({ msg: err });
-      });
+      id: req.params.id,
+      bankInsertedBy: req.user.id,
+      bankDescription: req.body.bankDescription,
+      bankAccount: req.body.bankAccount,
+      bankCurrentBalance: req.body.bankCurrentBalance,
+      bankIsActive: req.body.bankIsActive,
+    }, { patch: true })
+    .then(function(model) {
+      res.send({ bank: model, msg: 'Bank has been updated.' });
+    })
+    .catch(function(err) {
+      res.send({ msg: err });
+    });
 };
 
 /**
@@ -73,19 +75,19 @@ exports.bankPost = function(req, res) {
 
   bank = new Bank();
   bank.save({
-        bankInsertedBy: req.user.id,
-        bankDescription: req.body.bankDescription,
-        bankAccount: req.body.bankAccount,
-        bankInitialBalance: req.body.bankCurrentBalance,
-        bankCurrentBalance: req.body.bankCurrentBalance,
-        bankIsActive: req.body.bankIsActive,
-      })
-      .then(function(model) {
-        res.send({ bank: model, msg: 'Bank has been added.' });
-      })
-      .catch(function(err) {
-        if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
-          return res.status(400).send({ msg: 'The account you have entered already exists.' });
-        }
-      });
+      bankInsertedBy: req.user.id,
+      bankDescription: req.body.bankDescription,
+      bankAccount: req.body.bankAccount,
+      bankInitialBalance: req.body.bankCurrentBalance,
+      bankCurrentBalance: req.body.bankCurrentBalance,
+      bankIsActive: req.body.bankIsActive,
+    })
+    .then(function(model) {
+      res.send({ bank: model, msg: 'Bank has been added.' });
+    })
+    .catch(function(err) {
+      if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
+        return res.status(400).send({ msg: 'The account you have entered already exists.' });
+      }
+    });
 };

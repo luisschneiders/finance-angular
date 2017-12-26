@@ -11,7 +11,7 @@
           <div class="form-group">
             <label for="purchaseBank" class="col-sm-3">Bank</label>
             <div class="col-sm-7">
-              <span ng-show="data.banks.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.bank.url}}">({{data.notFound.bank.title}})</a></span>
+              <span ng-if="data.banks.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.bank.url}}">({{data.notFound.bank.title}})</a></span>
               <select name="purchaseBank" id="purchaseBank" class="form-control text-uppercase" ng-model="data.purchase.purchaseBank" required
                 ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">
               </select>
@@ -20,7 +20,7 @@
           <div class="form-group">
             <label for="purchaseExpenseId" class="col-sm-3">Expense</label>
             <div class="col-sm-7">
-              <span ng-show="data.expenses.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.expense.url}}">({{data.notFound.expense.title}})</a></span>
+              <span ng-if="data.expenses.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.expense.url}}">({{data.notFound.expense.title}})</a></span>
               <select name="purchaseExpenseId" id="purchaseExpenseId" class="form-control text-uppercase" ng-model="data.purchase.purchaseExpenseId" required
                 ng-options="expense.id as expense.expenseTypeDescription for expense in data.expenses" ng-disabled="data.expenses.length == 0">
               </select>

@@ -40,19 +40,21 @@ exports.peoplePut = function(req, res) {
     return res.status(400).send(errors);
   }
 
-  people = new People({'peopleInsertedBy': req.user.id, 'id': req.body.id});
+  people = new People();
   people.save({
-    peopleDescription: req.body.peopleDescription,
-    peopleRates: req.body.peopleRates,
-    peopleType: req.body.peopleType,
-    peopleIsActive: req.body.peopleIsActive,
-  }, { patch: true })
-      .then(function(model) {
-        res.send({ people: model, msg: 'User has been updated.' });
-      })
-      .catch(function(err) {
-        res.send({ msg: err });
-      });
+      id: req.params.id,
+      peopleInsertedBy: req.user.id,
+      peopleDescription: req.body.peopleDescription,
+      peopleRates: req.body.peopleRates,
+      peopleType: req.body.peopleType,
+      peopleIsActive: req.body.peopleIsActive,
+    }, { patch: true })
+    .then(function(model) {
+      res.send({ people: model, msg: 'User has been updated.' });
+    })
+    .catch(function(err) {
+      res.send({ msg: err });
+    });
 };
 
 /**
@@ -73,16 +75,16 @@ exports.peoplePost = function(req, res) {
 
   people = new People();
   people.save({
-        peopleInsertedBy: req.user.id,
-        peopleDescription: req.body.peopleDescription,
-        peopleRates: req.body.peopleRates,
-        peopleType: req.body.peopleType,
-        peopleIsActive: req.body.peopleIsActive,
-      })
-      .then(function(model) {
-        res.send({ people: model, msg: 'User has been added.' });
-      })
-      .catch(function(err) {
-        return res.status(400).send({ msg: 'Error adding User.' });
-      });
+      peopleInsertedBy: req.user.id,
+      peopleDescription: req.body.peopleDescription,
+      peopleRates: req.body.peopleRates,
+      peopleType: req.body.peopleType,
+      peopleIsActive: req.body.peopleIsActive,
+    })
+    .then(function(model) {
+      res.send({ people: model, msg: 'User has been added.' });
+    })
+    .catch(function(err) {
+      return res.status(400).send({ msg: 'Error adding User.' });
+    });
 };

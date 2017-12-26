@@ -2,8 +2,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
   .config(["$routeProvider", "$locationProvider", "$authProvider", function($routeProvider, $locationProvider, $authProvider) {
     skipIfAuthenticated.$inject = ["$location", "$auth"];
     loginRequired.$inject = ["$location", "$auth"];
+    $locationProvider.hashPrefix(''); // angularjs version 1.6.x
     $locationProvider.html5Mode(true);
-
     $routeProvider
       .when('/', {
         templateUrl: 'partials/home.html'
@@ -1363,6 +1363,7 @@ angular.module('MyApp')
         show: false
       },
       required: 'All fields are required',
+      noBalance: '',
       notFound: {
         message:'No record found!',
         bank: {
@@ -1373,7 +1374,8 @@ angular.module('MyApp')
           url: '/expense-type-new',
           title: 'Add expense',
         }
-      }
+      },
+      messages: {}
     };
     let banks = BankServices.getAllBanks(data.isActive);
     let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
@@ -1381,7 +1383,7 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
 
     banks.then(function(response) {
-      if(!response || response.length == 0) {
+      if (!response || response.length == 0) {
         data.isLoading = false;
         return;
       }
@@ -1392,7 +1394,7 @@ angular.module('MyApp')
     });
 
     expenses.then(function(response) {
-      if(!response || response.length == 0) {
+      if (!response || response.length == 0) {
         data.isLoading = false;
         return;
       }
@@ -1404,13 +1406,31 @@ angular.module('MyApp')
 
     $scope.savePurchase = function($valid) {
       let purchase = null;
+      let checKBalance = null;
+      data.messages = {};
+
       if (data.isSaving) {
         return;
       }
-      if(!$valid) {
+      if (!$valid) {
         data.messages = {
           error: [{
             msg: data.required
+          }]
+        };
+        return;
+      }
+
+      checKBalance = _.find(data.banks, function(bank) {
+        return bank.id == data.purchase.purchaseBank;
+      });
+
+      if (parseFloat(data.purchase.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
+        data.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
+                          in your account, please check!`;
+        data.messages = {
+          error: [{
+            msg: data.noBalance
           }]
         };
         return;
@@ -2340,7 +2360,10 @@ angular.module('MyApp')
             return err;
           });
       return data;
-    }    
+    },
+    add: function(data) {
+      return $http.post(`/purchases/new`, data);
+    }
   };
 }]);
 

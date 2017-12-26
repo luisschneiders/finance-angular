@@ -60,6 +60,9 @@ angular.module('MyApp')
             return err;
           });
       return data;
-    }    
+    },
+    add: function(data) {
+      return $http.post(`/purchases/new`, data);
+    }
   };
 }]);

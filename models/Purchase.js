@@ -32,7 +32,7 @@ const Purchase = bookshelf.Model.extend({
 
       refineExpenseType = expenseType.split(',');
 
-      return this.query(function(qr){
+      return this.query(function(qr) {
         queryPurchases(qr, options);
         qr.whereIn('purchaseExpenseId', refineExpenseType);
       }).fetchAll();

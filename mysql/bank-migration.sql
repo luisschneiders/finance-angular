@@ -1,3 +1,4 @@
+-- active
 INSERT INTO `finance-angular`.`banks`(
   `id`,
   `bankDescription`,
@@ -5,13 +6,40 @@ INSERT INTO `finance-angular`.`banks`(
   `bankInitialBalance`,
   `bankCurrentBalance`,
   `bankInsertedBy`,
-  `created_at`)
+  `created_at`,
+  `bankIsActive`
+)
 SELECT
-  `bank_id`,
-  `bank_description`,
-  `bank_account`,
-  `bank_initbalance`,
-  `bank_actubalance`,
-  `bank_insertedby`,
-  `bank_dateinserted`
-FROM `financephonegap`.`bank`
+  b.`bank_id`,
+  b.`bank_description`,
+  b.`bank_account`,
+  b.`bank_initbalance`,
+  b.`bank_actubalance`,
+  b.`bank_insertedby`,
+  b.`bank_dateinserted`,
+  1
+FROM `financephonegap`.`bank` b
+WHERE b.`bank_status` = 'a'
+
+-- inactive
+INSERT INTO `finance-angular`.`banks`(
+  `id`,
+  `bankDescription`,
+  `bankAccount`,
+  `bankInitialBalance`,
+  `bankCurrentBalance`,
+  `bankInsertedBy`,
+  `created_at`,
+  `bankIsActive`
+)
+SELECT
+  b.`bank_id`,
+  b.`bank_description`,
+  b.`bank_account`,
+  b.`bank_initbalance`,
+  b.`bank_actubalance`,
+  b.`bank_insertedby`,
+  b.`bank_dateinserted`,
+  0
+FROM `financephonegap`.`bank` b
+WHERE b.`bank_status` = 'i'

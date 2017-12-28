@@ -14,6 +14,7 @@ logs
 results
 tmp
 coverage
+settings
 
 # API keys
 .env

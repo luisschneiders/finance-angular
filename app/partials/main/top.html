@@ -1,10 +1,10 @@
 <div ng-controller="TopCtrl">
   <div class="row fixed-row">
     <div class="col-xs-6 col-sm-6">
-      <h5 class="text-capitalize title-border-left" ng-bind="default.title"></h5>
+      <h5 class="text-capitalize title-border-left" ng-bind="data.title"></h5>
     </div>
-    <div class="col-xs-6 col-sm-offset-3 col-sm-3 text-right" ng-if="default.show == true">
-      <a ng-href="{{default.url}}" class="btn btn-primary">Add</a>
+    <div class="col-xs-6 col-sm-offset-3 col-sm-3 text-right" ng-if="data.show == true">
+      <a ng-href="{{data.url}}" class="btn btn-primary">Add</a>
     </div>
   </div>
 </div>

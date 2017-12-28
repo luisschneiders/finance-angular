@@ -8490,7 +8490,7 @@ button.close {
             justify-content: center; } }
 
 .font-family, body {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; }
+  font-family: Arial, Helvetica, sans-serif; }
 
 html {
   position: relative;
@@ -8511,9 +8511,9 @@ footer {
   border-top: 1px solid #e0e0e0; }
 
 a {
-  color: initial; }
+  color: #2f378f; }
   a:hover {
-    color: initial; }
+    color: #0057B8; }
 
 .cursor-pointer, .table-cursor, .panel-cursor {
   cursor: pointer; }
@@ -8614,7 +8614,7 @@ select {
     color: #f0f0f0;
     border-radius: 2px;
     background-color: #4f4f4f;
-    padding: 4px 8px 3px 8px; }
+    padding: 4px 8px 4px 8px; }
 
 .field-required {
   border-color: #da3c0b; }

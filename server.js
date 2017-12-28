@@ -27,6 +27,7 @@ let User = require('./models/User');
 let app = express();
 let server = https.createServer(options, app);
 // Controllers
+let settingsController = require('./controllers/app-settings');
 let mainController = require('./controllers/main');
 let userController = require('./controllers/user');
 let contactController = require('./controllers/contact');
@@ -79,6 +80,9 @@ app.post('/reset/:token', userController.resetPost);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
+
+// settings
+app.get('/settings/', userController.ensureAuthenticated, settingsController.settingsGet);
 
 // Profile
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);

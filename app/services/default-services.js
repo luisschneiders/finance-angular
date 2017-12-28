@@ -2,7 +2,18 @@ angular.module('MyApp')
 .factory('DefaultServices', ['$http', 'moment', function($http, moment) {
   let top = {};
   let monthAndYear = null;
+
   return {
+    getSettings: function(id) {
+      let settings = $http.get(`/settings/${id}`, {cache: true})
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return settings;
+    },
     setTop: function(data) {
       top.title = data.title;
       top.url = data.url;

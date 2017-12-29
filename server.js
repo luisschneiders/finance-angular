@@ -27,7 +27,7 @@ let User = require('./models/User');
 let app = express();
 let server = https.createServer(options, app);
 // Controllers
-let settingsController = require('./controllers/app-settings');
+let settingsController = require('./controllers/settings');
 let mainController = require('./controllers/main');
 let userController = require('./controllers/user');
 let contactController = require('./controllers/contact');
@@ -82,7 +82,7 @@ app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
 
 // settings
-app.get('/settings/', userController.ensureAuthenticated, settingsController.settingsGet);
+app.get('/settings', userController.ensureAuthenticated, settingsController.settingsGet);
 
 // Profile
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
@@ -94,8 +94,8 @@ app.get('/main-by-year/:year', mainController.mainGetByYear);
 // Banks
 app.get('/all-banks/:isActive', bankController.bankGetAll);
 app.get('/banks/:id', bankController.bankGetById);
-app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankPut);
-app.post('/banks/new', userController.ensureAuthenticated, bankController.bankPost);
+app.post('/banks/new', userController.ensureAuthenticated, bankController.bankSave);
+app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankSave);
 
 // Expense Type
 app.get('/all-expenses-type/:isActive', expenseTypeController.expenseTypeGetAll);

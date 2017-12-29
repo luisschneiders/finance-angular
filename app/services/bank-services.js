@@ -21,11 +21,11 @@ angular.module('MyApp')
           });
       return bank;
     },
-    update: function(data) {
+    save: function(newRecord, data) {
+      if(newRecord) {
+        return $http.post(`/banks/new`, data);
+      }
       return $http.put(`/banks/${data.id}`, data);
-    },
-    add: function(data) {
-      return $http.post(`/banks/new`, data);
     }
   };
 }]);

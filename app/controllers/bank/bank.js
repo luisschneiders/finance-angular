@@ -4,49 +4,41 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
-    let data = {
-      banks: [],
-      isNull: false,
-      notFound: {
-        url: '/all-banks',
-        title: 'banks',
-        message:'Record Not Found!',
-      },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
-      top: {
-        title: 'banks',
-        url: '/bank-new',
-        show: true
-      },
-      isLoading: false,
-      isActive: 0
-    };
-    let banks = BankServices.getAllBanks(data.isActive);
 
-    data.isLoading = true;
+    $scope.settings = {};
+    $scope.data = [];
 
-    DefaultServices.setTop(data.top);
+    DefaultServices.getSettings()
+      .then(function(response) {
+        $scope.settings = response;
+        setTop(response);
+        getBanks(response);
+      }).catch(function(err) {
+        console.warn('Error getting settings: ', err)
+      });
 
-    banks.then(function(response) {
-      let top = {};
-      if(!response || response.length == 0) {
-        data.isNull = true;
-        data.isLoading = false;
-        return;
-      }
-      data.banks = response;
-      top = DefaultServices.getTop();
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting banks: ', err);
-    });
-    
     $scope.editBank = function(id) {
       $location.path(`/bank/${id}`);
     };
 
-    $scope.data = data;
+    function setTop(settings) {
+      DefaultServices.setTop(settings.bank.defaults.top);
+    };
+
+    function getBanks(settings) {
+      BankServices.getAllBanks(settings.bank.defaults.isActive)
+        .then(function(response) {
+          if(!response || response.length == 0) {
+            settings.bank.defaults.isNull = true;
+            settings.bank.defaults.isLoading = false;
+            return;
+          }
+
+          settings.bank.defaults.isLoading = false;
+          $scope.data = response;
+
+        }).catch(function(err) {
+          console.warn('Error getting banks: ', err);
+        });
+    };
   }]);

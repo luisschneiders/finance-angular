@@ -31,14 +31,12 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
 
     expensesType.then(function(response) {
-      let top = {};
       if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;
       }
       data.expensesType = response;
-      top = DefaultServices.getTop();
       data.isLoading = false;
     }).catch(function(err) {
       console.warn('Error getting Expenses Type: ', err);

@@ -30,14 +30,12 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
 
     people.then(function(response) {
-      let top = {};
       if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;
       }
       data.people = response;
-      top = DefaultServices.getTop();
       data.isLoading = false;
     }).catch(function(err) {
       console.warn('Error getting users: ', err);

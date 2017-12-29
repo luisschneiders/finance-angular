@@ -4,8 +4,8 @@ angular.module('MyApp')
   let monthAndYear = null;
 
   return {
-    getSettings: function(id) {
-      let settings = $http.get(`/settings/${id}`, {cache: true})
+    getSettings: function() {
+      let settings = $http.get(`/settings`, {cache: true})
           .then(function(response){
             return response.data;
           })

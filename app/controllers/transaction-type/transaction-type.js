@@ -33,14 +33,12 @@ angular.module('MyApp')
     data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
     transactionsType.then(function(response) {
-      let top = {};
       if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;
       }
       data.transactionsType = response;
-      top = DefaultServices.getTop();
       data.isLoading = false;
     }).catch(function(err) {
       console.warn('Error getting transactions type: ', err);

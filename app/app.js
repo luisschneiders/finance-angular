@@ -46,13 +46,13 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank/:id', {
-        templateUrl: 'partials/bank/bank-edit.html',
-        controller: 'BankEditCtrl',
+        templateUrl: 'partials/bank/bank-update.html',
+        controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/bank-new', {
-        templateUrl: 'partials/bank/bank-edit.html',
-        controller: 'BankNewCtrl',
+      .when('/bank/new', {
+        templateUrl: 'partials/bank/bank-update.html',
+        controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-expenses-type', {

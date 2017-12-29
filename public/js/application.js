@@ -48,13 +48,13 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank/:id', {
-        templateUrl: 'partials/bank/bank-edit.html',
-        controller: 'BankEditCtrl',
+        templateUrl: 'partials/bank/bank-update.html',
+        controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/bank-new', {
-        templateUrl: 'partials/bank/bank-edit.html',
-        controller: 'BankNewCtrl',
+      .when('/bank/new', {
+        templateUrl: 'partials/bank/bank-update.html',
+        controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-expenses-type', {
@@ -388,6 +388,314 @@ angular.module('MyApp')
           }
         });
     };
+  }]);
+
+angular.module('MyApp')
+  .controller('BankUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+
+    let bankId = $location.path().substr(6); // to remove path /bank/
+    let newRecord = true;
+
+    $scope.settings = {};
+    $scope.data = [];
+    $scope.form = {};
+
+    if (Number.isInteger(parseInt(bankId))) {
+      newRecord = false;
+      setController(newRecord);
+      getBank(bankId);
+    } else {
+      newRecord = true;
+      setController(newRecord);
+    }
+
+    $scope.saveBank = function($valid) {
+      if ($scope.settings.bank.defaults.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      $scope.settings.bank.defaults.isSaving = true;
+
+      BankServices.save(newRecord, $scope.form)
+        .then(function(response) {
+          $scope.settings.bank.defaults.isSaving = false;
+          $scope.settings.bank.defaults.messages = {
+            success: [response.data]
+          };
+          if(newRecord) {
+            $timeout(function() {
+              $location.path(`/bank/${response.data.bank.id}`);
+            }, 1000);
+            return
+          }
+        }).catch(function(response) {
+          console.warn('Error saving bank: ', response);
+          $scope.settings.bank.defaults.isSaving = false;
+          $scope.settings.bank.defaults.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    function setController(newRecord) {
+      DefaultServices.getSettings()
+      .then(function(response) {
+        $scope.settings = response;
+        setTop(newRecord, response);
+        setForm(newRecord, response);
+      }).catch(function(err) {
+        console.warn('Error getting settings: ', err)
+      });
+    };
+
+    function setTop(newRecord, settings) {
+      if (newRecord) {
+        DefaultServices.setTop(settings.bank.newRecord.top);
+        return;
+      }
+      DefaultServices.setTop(settings.bank.existingRecord.top);
+    };
+
+    function setForm(newRecord, settings) {
+      if (newRecord) {
+        $scope.form = settings.bank.defaults.form;
+        return;
+      }
+    };
+
+    function getBank(id) {
+      BankServices.getBankById(id)
+        .then(function(response) {
+          if(!response || response.length == 0) {
+            $scope.settings.bank.defaults.isNull = true;
+            return;
+          }
+          $scope.settings.bank.defaults.isNull = false;
+          $scope.form = response;
+        }).catch(function(err) {
+          console.warn('Error getting banks: ', err);
+        });
+    };
+
+  }]);
+
+angular.module('MyApp')
+  .controller('BankCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+
+    $scope.settings = {};
+    $scope.data = [];
+
+    DefaultServices.getSettings()
+      .then(function(response) {
+        $scope.settings = response;
+        setTop(response);
+        getBanks(response);
+      }).catch(function(err) {
+        console.warn('Error getting settings: ', err)
+      });
+
+    $scope.editBank = function(id) {
+      $location.path(`/bank/${id}`);
+    };
+
+    function setTop(settings) {
+      DefaultServices.setTop(settings.bank.defaults.top);
+    };
+
+    function getBanks(settings) {
+      BankServices.getAllBanks(settings.bank.defaults.isActive)
+        .then(function(response) {
+          if(!response || response.length == 0) {
+            settings.bank.defaults.isNull = true;
+            settings.bank.defaults.isLoading = false;
+            return;
+          }
+
+          settings.bank.defaults.isLoading = false;
+          $scope.data = response;
+
+        }).catch(function(err) {
+          console.warn('Error getting banks: ', err);
+        });
+    };
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expenseType: null,
+      isSaving: false,
+      isNull: false,
+      notFound: {
+        url: '/all-expenses-type',
+        title: 'expenses type',
+        message:'Record Not Found!',
+      },
+      top: {
+        title: 'update expense type',
+        url: '/expense-type-new',
+        show: true
+      },
+      messages: {}
+    };
+    let id = $location.path().substr(14); // to remove /expense-type/
+    let expenseType = ExpenseTypeServices.getExpenseTypeById(id);
+
+    DefaultServices.setTop(data.top);
+
+    expenseType.then(function(response) {
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.expenseType = response;
+    }).catch(function(err) {
+      console.warn('Error getting Expense Type: ', err);
+    });
+
+    $scope.saveExpenseType = function($valid) {
+      let expenseTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      expenseTypeUpdated = ExpenseTypeServices.update(data.expenseType);
+      expenseTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating Expense Type: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expenseType: {
+        expenseTypeDescription: null,
+        expenseTypeIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the expense-type-edit.html
+      top: {
+        title: 'new expense type',
+        url: '/expense-type-new',
+        show: true
+      }
+    };
+
+    DefaultServices.setTop(data.top);
+
+    $scope.saveExpenseType = function($valid) {
+      let expenseTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      expenseTypeUpdated = ExpenseTypeServices.add(data.expenseType);
+      expenseTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/expense-type/${response.data.expenseType.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating expense: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expensesType: [],
+      isNull: false,
+      notFound: {
+        url: '/all-expenses-type',
+        title: 'Expenses',
+        message:'Record Not Found!',
+      },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'Expense Type',
+        url: '/expense-type-new',
+        show: true
+      },
+      isLoading: false,
+      isActive: 0
+    };
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+
+    data.isLoading = true;
+
+    DefaultServices.setTop(data.top);
+
+    expensesType.then(function(response) {
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.expensesType = response;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting Expenses Type: ', err);
+    });
+    
+    $scope.editExpenseType = function(id) {
+      $location.path(`/expense-type/${id}`);
+    };
+
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -859,14 +1167,12 @@ angular.module('MyApp')
     DefaultServices.setTop(data.top);
 
     people.then(function(response) {
-      let top = {};
       if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;
       }
       data.people = response;
-      top = DefaultServices.getTop();
       data.isLoading = false;
     }).catch(function(err) {
       console.warn('Error getting users: ', err);
@@ -880,233 +1186,204 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('BankEditCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     let data = {
-      bank: null,
-      isSaving: false,
+      modal: {
+        title: null,
+        purchases: null,
+      },
+      purchases: [],
+      expensesType: [],
+      template: {
+        url: null,
+        class: null
+      },
+      purchasesByGroup: {},
       isNull: false,
+      isActive: 0,
+      isLoading: true,
       notFound: {
-        url: '/all-banks',
-        title: 'banks',
-        message:'Record Not Found!',
+        url: null,
+        title: null,
+        message:'No data found for the period!',
       },
       top: {
-        title: 'update bank',
-        url: '/bank-new',
+        title: 'purchase custom search',
+        url: 'purchase-new',
         show: true
       },
-      messages: {}
+      customSearch: {}
     };
-    let id = $location.path().substr(6); // to remove /bank/
-    let banks = BankServices.getBankById(id);
-
+    let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    let customPurchase = null;
+    let refineSearch = customSearch.split('&');
+    let search = {
+      from: refineSearch[0],
+      to: refineSearch[1],
+      expenseType: refineSearch[2]
+    };
+    
+    data.customSearch.active = 1;
     DefaultServices.setTop(data.top);
+//  check if date are valid
+    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
+      data.isLoading = false;
+      data.isNull = true;
+      data.notFound.message = 'Dates are not valid';
+      $scope.data = data;
+      return;
+    }
 
-    banks.then(function(response) {
-      if (!response) {
-        data.isNull = true;
-        return;
-      }
-      data.isNull = false;
-      data.bank = response;
+    customPurchase = PurchaseServices.getPurchasesByCustomSearch(search);
+
+    expensesType.then(function(response) {
+      data.expensesType = response;
     }).catch(function(err) {
-      console.warn('Error getting banks: ', err);
+      console.warn('Error getting expenses type: ', err);
     });
 
-    $scope.saveBank = function($valid) {
-      let bankUpdated;
-      if (data.isSaving) {
-        return;
+    customPurchase.then(function(response){
+      data.isNull = false;
+
+      if (Object.keys(response.groupedBy).length === 0) {
+        data.isNull = true;
       }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      bankUpdated = BankServices.update(data.bank);
-      bankUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-      }).catch(function(response) {
-        console.warn('Error updating bank: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
+
+      data.purchases = response.data;
+      data.purchasesByGroup = response.groupedBy;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting purchases: ', err);
+    });
+
+    function setExpensesType() {
+      data.customSearch.expenseType = [];
+      _.forEach(data.expensesType, function(expense) {
+        if (expense.expenseTypeIsActive === data.customSearch.active) {
+          data.customSearch.expenseType.push(expense.id);
+        }
       });
     };
 
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('BankNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/purchase.tpl.html';
+      data.template.class = 'modal-dialog modal-lg';
+      data.modal.title = title.expenseTypeDescription;
+      data.modal.purchases = _.filter(data.purchases, function(item) {
+        if (item.purchaseExpenseId == key) {
+          return item;
+        }
+      });
     }
-    let data = {
-      bank: {
-        bankDescription: null,
-        bankAccount: null,
-        bankInitialBalance: 0.00,
-        bankCurrentBalance: 0.00,
-        bankIsActive: 1
-      },
-      isSaving: false,
-      isNull: false, // it's required for the bank-edit.html
-      top: {
-        title: 'new bank',
-        url: '/bank-new',
-        show: true
-      }
+
+    $scope.customSearch = function(key) {
+      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.template.class = 'modal-dialog';
+      data.modal.title = 'Custom Search';
     };
 
-    DefaultServices.setTop(data.top);
-
-    $scope.saveBank = function($valid) {
-      let bankUpdated;
-      if (data.isSaving) {
-        return;
-      }
+    $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
       if(!$valid) {
         return;
       }
-      data.isSaving = true;
-      bankUpdated = BankServices.add(data.bank);
-      bankUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        $timeout(function() {
-          $location.path(`/bank/${response.data.bank.id}`);
-        }, 1000);
-      }).catch(function(response) {
-        console.warn('Error updating bank: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
+      if(data.customSearch.expenseType == undefined) {
+        setExpensesType();
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
+      }, 500);      
     };
 
     $scope.data = data;
   }]);
 
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
+    function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     let data = {
       banks: [],
-      isNull: false,
-      notFound: {
-        url: '/all-banks',
-        title: 'banks',
-        message:'Record Not Found!',
-      },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
-      top: {
-        title: 'banks',
-        url: '/bank-new',
-        show: true
-      },
-      isLoading: false,
-      isActive: 0
-    };
-    let banks = BankServices.getAllBanks(data.isActive);
-
-    data.isLoading = true;
-
-    DefaultServices.setTop(data.top);
-
-    banks.then(function(response) {
-      let top = {};
-      if(!response || response.length == 0) {
-        data.isNull = true;
-        data.isLoading = false;
-        return;
-      }
-      data.banks = response;
-      top = DefaultServices.getTop();
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting banks: ', err);
-    });
-    
-    $scope.editBank = function(id) {
-      $location.path(`/bank/${id}`);
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      expenseType: null,
+      expenses: [],
+      purchase: {},
       isSaving: false,
-      isNull: false,
-      notFound: {
-        url: '/all-expenses-type',
-        title: 'expenses type',
-        message:'Record Not Found!',
-      },
+      isActive: 1,
       top: {
-        title: 'update expense type',
-        url: '/expense-type-new',
-        show: true
+        title: 'new purchase',
+        url: '/purchase-new',
+        show: false
+      },
+      required: 'All fields are required',
+      noBalance: '',
+      notFound: {
+        message:'No record found!',
+        bank: {
+          url: '/bank-new',
+          title: 'Add bank',
+        },
+        expense: {
+          url: '/expense-type-new',
+          title: 'Add expense',
+        }
       },
       messages: {}
     };
-    let id = $location.path().substr(14); // to remove /expense-type/
-    let expenseType = ExpenseTypeServices.getExpenseTypeById(id);
 
     DefaultServices.setTop(data.top);
+    getAllExpenses();
+    getAllBanks();
 
-    expenseType.then(function(response) {
-      if (!response) {
-        data.isNull = true;
-        return;
-      }
-      data.isNull = false;
-      data.expenseType = response;
-    }).catch(function(err) {
-      console.warn('Error getting Expense Type: ', err);
-    });
+    $scope.savePurchase = function($valid) {
+      let purchase = null;
+      let checKBalance = null;
+      data.messages = {};
 
-    $scope.saveExpenseType = function($valid) {
-      let expenseTypeUpdated;
       if (data.isSaving) {
         return;
       }
-      if(!$valid) {
+      if (!$valid) {
+        data.messages = {
+          error: [{
+            msg: data.required
+          }]
+        };
+        return;
+      }
+
+      checKBalance = _.find(data.banks, function(bank) {
+        return bank.id == data.purchase.purchaseBank;
+      });
+
+      if (parseFloat(data.purchase.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
+        data.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
+                          in your account, please check!`;
+        data.messages = {
+          error: [{
+            msg: data.noBalance
+          }]
+        };
         return;
       }
       data.isSaving = true;
-      expenseTypeUpdated = ExpenseTypeServices.update(data.expenseType);
-      expenseTypeUpdated.then(function(response) {
+      purchase = PurchaseServices.add(data.purchase);
+      purchase.then(function(response) {
         data.isSaving = false;
         data.messages = {
           success: [response.data]
         };
+        getAllBanks();
       }).catch(function(response) {
-        console.warn('Error updating Expense Type: ', response);
+        console.warn('Error updating purchase: ', response);
         data.isSaving = false;
         data.messages = {
           error: Array.isArray(response.data) ? response.data : [response.data]
@@ -1114,109 +1391,167 @@ angular.module('MyApp')
       });
     };
 
+    function getAllExpenses() {
+      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
+      expenses.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.expenses = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting expenses: ', err);
+      });
+    };
+
+    function getAllBanks() {
+      let banks = BankServices.getAllBanks(data.isActive);
+      banks.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.banks = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting banks: ', err);
+      });
+    };
+
+    $scope.$watch('data.banks', function() {}, true);
     $scope.data = data;
   }]);
 
 angular.module('MyApp')
-  .controller('ExpenseTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, ExpenseTypeServices, DefaultServices) {
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     let data = {
-      expenseType: {
-        expenseTypeDescription: null,
-        expenseTypeIsActive: 1
+      modal: {
+        title: null,
+        purchases: null,
       },
-      isSaving: false,
-      isNull: false, // it's required for the expense-type-edit.html
-      top: {
-        title: 'new expense type',
-        url: '/expense-type-new',
-        show: true
-      }
-    };
-
-    DefaultServices.setTop(data.top);
-
-    $scope.saveExpenseType = function($valid) {
-      let expenseTypeUpdated;
-      if (data.isSaving) {
-        return;
-      }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      expenseTypeUpdated = ExpenseTypeServices.add(data.expenseType);
-      expenseTypeUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        $timeout(function() {
-          $location.path(`/expense-type/${response.data.expenseType.id}`);
-        }, 1000);
-      }).catch(function(response) {
-        console.warn('Error updating expense: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
+      purchases: [],
       expensesType: [],
-      isNull: false,
-      notFound: {
-        url: '/all-expenses-type',
-        title: 'Expenses',
-        message:'Record Not Found!',
+      template: {
+        url: null,
+        class: null
       },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
+      purchasesByGroup: {},
+      isNull: false,
+      isActive: 0,
+      isLoading: true,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
       },
       top: {
-        title: 'Expense Type',
-        url: '/expense-type-new',
+        title: 'Purchases',
+        url: 'purchase-new',
         show: true
       },
-      isLoading: false,
-      isActive: 0
+      customSearch: {},
+      monthAndYear: null,
+      currentPeriod: $location.path().substr(11), // to remove /purchases/
+      period: {
+        month: null,
+        year: null
+      },
     };
     let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    data.customSearch.active = 1;
 
-    data.isLoading = true;
+    expensesType.then(function(response) {
+      data.expensesType = response;
+    }).catch(function(err) {
+      console.warn('Error getting expenses type: ', err);
+    });
 
     DefaultServices.setTop(data.top);
 
-    expensesType.then(function(response) {
-      let top = {};
-      if(!response || response.length == 0) {
-        data.isNull = true;
+    getCurrentPeriodPurchases();
+
+    $scope.changePeriod = function(value) {
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+
+      if (value == 'd') {
+        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
+      } else {
+        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      }
+
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
+    };
+
+    function getCurrentPeriodPurchases() {
+      let purchases = null;
+      DefaultServices.setMonthAndYear(data.currentPeriod);
+
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+
+      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
+      purchases.then(function(response) {
+        data.isNull = false;
+
+        if (Object.keys(response.groupedBy).length === 0) {
+          data.isNull = true;
+        }
+
+        data.purchases = response.data;
+        data.purchasesByGroup = response.groupedBy;
         data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting data: ', err);
+      });
+    };
+
+    function setExpensesType() {
+      data.customSearch.expenseType = [];
+      _.forEach(data.expensesType, function(expense) {
+        if (expense.expenseTypeIsActive === data.customSearch.active) {
+          data.customSearch.expenseType.push(expense.id);
+        }
+      });
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/purchase.tpl.html';
+      data.template.class = 'modal-dialog modal-lg';
+      data.modal.title = title.expenseTypeDescription;
+      data.modal.purchases = _.filter(data.purchases, function(item) {
+        if (item.purchaseExpenseId == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.customSearch = function() {
+      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.template.class = 'modal-dialog';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
+      if(!$valid) {
         return;
       }
-      data.expensesType = response;
-      top = DefaultServices.getTop();
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting Expenses Type: ', err);
-    });
-    
-    $scope.editExpenseType = function(id) {
-      $location.path(`/expense-type/${id}`);
+      if(data.customSearch.expenseType == undefined) {
+        setExpensesType();
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
+      }, 500);
     };
 
     $scope.data = data;
@@ -1709,14 +2044,12 @@ angular.module('MyApp')
     data.typeAction = TransactionTypeServices.getTransactionTypeAction();
 
     transactionsType.then(function(response) {
-      let top = {};
       if(!response || response.length == 0) {
         data.isNull = true;
         data.isLoading = false;
         return;
       }
       data.transactionsType = response;
-      top = DefaultServices.getTop();
       data.isLoading = false;
     }).catch(function(err) {
       console.warn('Error getting transactions type: ', err);
@@ -1724,378 +2057,6 @@ angular.module('MyApp')
 
     $scope.editTransactionType = function(id) {
       $location.path(`/transaction-type/${id}`);
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
-  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      modal: {
-        title: null,
-        purchases: null,
-      },
-      purchases: [],
-      expensesType: [],
-      template: {
-        url: null,
-        class: null
-      },
-      purchasesByGroup: {},
-      isNull: false,
-      isActive: 0,
-      isLoading: true,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },
-      top: {
-        title: 'purchase custom search',
-        url: 'purchase-new',
-        show: true
-      },
-      customSearch: {}
-    };
-    let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-    let customPurchase = null;
-    let refineSearch = customSearch.split('&');
-    let search = {
-      from: refineSearch[0],
-      to: refineSearch[1],
-      expenseType: refineSearch[2]
-    };
-    
-    data.customSearch.active = 1;
-    DefaultServices.setTop(data.top);
-//  check if date are valid
-    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
-      data.isLoading = false;
-      data.isNull = true;
-      data.notFound.message = 'Dates are not valid';
-      $scope.data = data;
-      return;
-    }
-
-    customPurchase = PurchaseServices.getPurchasesByCustomSearch(search);
-
-    expensesType.then(function(response) {
-      data.expensesType = response;
-    }).catch(function(err) {
-      console.warn('Error getting expenses type: ', err);
-    });
-
-    customPurchase.then(function(response){
-      data.isNull = false;
-
-      if (Object.keys(response.groupedBy).length === 0) {
-        data.isNull = true;
-      }
-
-      data.purchases = response.data;
-      data.purchasesByGroup = response.groupedBy;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting purchases: ', err);
-    });
-
-    function setExpensesType() {
-      data.customSearch.expenseType = [];
-      _.forEach(data.expensesType, function(expense) {
-        if (expense.expenseTypeIsActive === data.customSearch.active) {
-          data.customSearch.expenseType.push(expense.id);
-        }
-      });
-    };
-
-    $scope.seeDetails = function(key, title) {
-      data.template.url = 'partials/modal/purchase.tpl.html';
-      data.template.class = 'modal-dialog modal-lg';
-      data.modal.title = title.expenseTypeDescription;
-      data.modal.purchases = _.filter(data.purchases, function(item) {
-        if (item.purchaseExpenseId == key) {
-          return item;
-        }
-      });
-    }
-
-    $scope.customSearch = function(key) {
-      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
-      data.template.class = 'modal-dialog';
-      data.modal.title = 'Custom Search';
-    };
-
-    $scope.customSearchForm = function($valid) {
-      // TODO: More validation to be added
-      if(!$valid) {
-        return;
-      }
-      if(data.customSearch.expenseType == undefined) {
-        setExpensesType();
-      }
-      $(".modal").modal("hide");
-      $timeout(function() {
-        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
-      }, 500);      
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
-    function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      banks: [],
-      expenses: [],
-      purchase: {},
-      isSaving: false,
-      isActive: 1,
-      top: {
-        title: 'new purchase',
-        url: '/purchase-new',
-        show: false
-      },
-      required: 'All fields are required',
-      noBalance: '',
-      notFound: {
-        message:'No record found!',
-        bank: {
-          url: '/bank-new',
-          title: 'Add bank',
-        },
-        expense: {
-          url: '/expense-type-new',
-          title: 'Add expense',
-        }
-      },
-      messages: {}
-    };
-
-    DefaultServices.setTop(data.top);
-    getAllExpenses();
-    getAllBanks();
-
-    $scope.savePurchase = function($valid) {
-      let purchase = null;
-      let checKBalance = null;
-      data.messages = {};
-
-      if (data.isSaving) {
-        return;
-      }
-      if (!$valid) {
-        data.messages = {
-          error: [{
-            msg: data.required
-          }]
-        };
-        return;
-      }
-
-      checKBalance = _.find(data.banks, function(bank) {
-        return bank.id == data.purchase.purchaseBank;
-      });
-
-      if (parseFloat(data.purchase.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
-        data.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
-                          in your account, please check!`;
-        data.messages = {
-          error: [{
-            msg: data.noBalance
-          }]
-        };
-        return;
-      }
-      data.isSaving = true;
-      purchase = PurchaseServices.add(data.purchase);
-      purchase.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        getAllBanks();
-      }).catch(function(response) {
-        console.warn('Error updating purchase: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    function getAllExpenses() {
-      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
-      expenses.then(function(response) {
-        if (!response || response.length == 0) {
-          data.isLoading = false;
-          return;
-        }
-        data.expenses = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting expenses: ', err);
-      });
-    };
-
-    function getAllBanks() {
-      let banks = BankServices.getAllBanks(data.isActive);
-      banks.then(function(response) {
-        if (!response || response.length == 0) {
-          data.isLoading = false;
-          return;
-        }
-        data.banks = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting banks: ', err);
-      });
-    };
-
-    $scope.$watch('data.banks', function() {}, true);
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
-  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      modal: {
-        title: null,
-        purchases: null,
-      },
-      purchases: [],
-      expensesType: [],
-      template: {
-        url: null,
-        class: null
-      },
-      purchasesByGroup: {},
-      isNull: false,
-      isActive: 0,
-      isLoading: true,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },
-      top: {
-        title: 'Purchases',
-        url: 'purchase-new',
-        show: true
-      },
-      customSearch: {},
-      monthAndYear: null,
-      currentPeriod: $location.path().substr(11), // to remove /purchases/
-      period: {
-        month: null,
-        year: null
-      },
-    };
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-    data.customSearch.active = 1;
-
-    expensesType.then(function(response) {
-      data.expensesType = response;
-    }).catch(function(err) {
-      console.warn('Error getting expenses type: ', err);
-    });
-
-    DefaultServices.setTop(data.top);
-
-    getCurrentPeriodPurchases();
-
-    $scope.changePeriod = function(value) {
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-
-      if (value == 'd') {
-        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
-      } else {
-        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
-      }
-
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
-    };
-
-    function getCurrentPeriodPurchases() {
-      let purchases = null;
-      DefaultServices.setMonthAndYear(data.currentPeriod);
-
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-
-      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
-      purchases.then(function(response) {
-        data.isNull = false;
-
-        if (Object.keys(response.groupedBy).length === 0) {
-          data.isNull = true;
-        }
-
-        data.purchases = response.data;
-        data.purchasesByGroup = response.groupedBy;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
-    };
-
-    function setExpensesType() {
-      data.customSearch.expenseType = [];
-      _.forEach(data.expensesType, function(expense) {
-        if (expense.expenseTypeIsActive === data.customSearch.active) {
-          data.customSearch.expenseType.push(expense.id);
-        }
-      });
-    };
-
-    $scope.seeDetails = function(key, title) {
-      data.template.url = 'partials/modal/purchase.tpl.html';
-      data.template.class = 'modal-dialog modal-lg';
-      data.modal.title = title.expenseTypeDescription;
-      data.modal.purchases = _.filter(data.purchases, function(item) {
-        if (item.purchaseExpenseId == key) {
-          return item;
-        }
-      });
-    }
-
-    $scope.customSearch = function() {
-      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
-      data.template.class = 'modal-dialog';
-      data.modal.title = 'Custom Search';
-    };
-
-    $scope.customSearchForm = function($valid) {
-      // TODO: More validation to be added
-      if(!$valid) {
-        return;
-      }
-      if(data.customSearch.expenseType == undefined) {
-        setExpensesType();
-      }
-      $(".modal").modal("hide");
-      $timeout(function() {
-        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
-      }, 500);
     };
 
     $scope.data = data;
@@ -2145,11 +2106,11 @@ angular.module('MyApp')
           });
       return bank;
     },
-    update: function(data) {
+    save: function(newRecord, data) {
+      if(newRecord) {
+        return $http.post(`/banks/new`, data);
+      }
       return $http.put(`/banks/${data.id}`, data);
-    },
-    add: function(data) {
-      return $http.post(`/banks/new`, data);
     }
   };
 }]);
@@ -2169,8 +2130,8 @@ angular.module('MyApp')
   let monthAndYear = null;
 
   return {
-    getSettings: function(id) {
-      let settings = $http.get(`/settings/${id}`, {cache: true})
+    getSettings: function() {
+      let settings = $http.get(`/settings`, {cache: true})
           .then(function(response){
             return response.data;
           })

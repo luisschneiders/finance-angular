@@ -25,11 +25,14 @@ exports.bankGetById = function(req, res) {
 };
 
 /**
- * PUT /banks/:id
+ * SAVE /banks/new
+ * or
+ * SAVE /banks/:id
  */
-exports.bankPut = function(req, res) {
+exports.bankSave = function(req, res) {
   let bank = null;
   let errors = null;
+  let checkRecord = 0;
 
   req.assert('bankDescription', 'Description cannot be blank').notEmpty();
   req.assert('bankAccount', 'Account cannot be blank').notEmpty();
@@ -40,40 +43,26 @@ exports.bankPut = function(req, res) {
     return res.status(400).send(errors);
   }
 
+  checkRecord = new Bank({id: req.params.id});
   bank = new Bank();
-  bank.save({
-      id: req.params.id,
-      bankInsertedBy: req.user.id,
-      bankDescription: req.body.bankDescription,
-      bankAccount: req.body.bankAccount,
-      bankCurrentBalance: req.body.bankCurrentBalance,
-      bankIsActive: req.body.bankIsActive,
-    }, { patch: true })
-    .then(function(model) {
-      res.send({ bank: model, msg: 'Bank has been updated.' });
-    })
-    .catch(function(err) {
-      res.send({ msg: err });
-    });
-};
 
-/**
- * POST /banks/new
- */
-exports.bankPost = function(req, res) {
-  let bank = null;
-  let errors = null;
-
-  req.assert('bankDescription', 'Description cannot be blank').notEmpty();
-  req.assert('bankAccount', 'Account cannot be blank').notEmpty();
-
-  errors = req.validationErrors();
-
-  if (errors) {
-    return res.status(400).send(errors);
+  if(!checkRecord.isNew()) {
+    bank.save({
+        id: req.params.id,
+        bankInsertedBy: req.user.id,
+        bankDescription: req.body.bankDescription,
+        bankAccount: req.body.bankAccount,
+        bankCurrentBalance: req.body.bankCurrentBalance,
+        bankIsActive: req.body.bankIsActive,
+      }, { patch: true })
+      .then(function(model) {
+        res.send({ bank: model, msg: 'Bank has been updated.' });
+      })
+      .catch(function(err) {
+        res.send({ msg: err });
+      });
+    return;
   }
-
-  bank = new Bank();
   bank.save({
       bankInsertedBy: req.user.id,
       bankDescription: req.body.bankDescription,

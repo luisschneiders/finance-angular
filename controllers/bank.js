@@ -75,8 +75,6 @@ exports.bankSave = function(req, res) {
       res.send({ bank: model, msg: 'Bank has been added.' });
     })
     .catch(function(err) {
-      if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
-        return res.status(400).send({ msg: 'The account you have entered already exists.' });
-      }
+      return res.status(400).send({ msg: err });
     });
 };

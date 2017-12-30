@@ -29,12 +29,12 @@ angular.module('MyApp')
       BankServices.getAllBanks(settings.bank.defaults.isActive)
         .then(function(response) {
           if(!response || response.length == 0) {
-            settings.bank.defaults.isNull = true;
-            settings.bank.defaults.isLoading = false;
+            $scope.settings.bank.defaults.isNull = true;
+            $scope.settings.bank.defaults.isLoading = false;
             return;
           }
 
-          settings.bank.defaults.isLoading = false;
+          $scope.settings.bank.defaults.isLoading = false;
           $scope.data = response;
 
         }).catch(function(err) {

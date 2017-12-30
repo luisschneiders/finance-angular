@@ -112,8 +112,8 @@ app.post('/transactions-type/new', userController.ensureAuthenticated, transacti
 // People
 app.get('/people', peopleController.peopleGetAll);
 app.get('/people/:id', peopleController.peopleGetById);
-app.put('/people/:id', userController.ensureAuthenticated, peopleController.peoplePut);
-app.post('/people/new', userController.ensureAuthenticated, peopleController.peoplePost);
+app.put('/people/:id', userController.ensureAuthenticated, peopleController.peopleSave);
+app.post('/people/new', userController.ensureAuthenticated, peopleController.peopleSave);
 
 // Transaction
 app.get('/transactions-by-year-and-month/:year/:month', transactionController.transactionGetByYearAndMonth);

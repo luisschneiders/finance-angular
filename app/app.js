@@ -50,11 +50,6 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/bank/new', {
-        templateUrl: 'partials/bank/bank-update.html',
-        controller: 'BankUpdateCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
       .when('/all-expenses-type', {
         templateUrl: 'partials/expense-type/expense-type.html',
         controller: 'ExpenseTypeCtrl',
@@ -91,13 +86,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/user/:id', {
-        templateUrl: 'partials/people/people-edit.html',
-        controller: 'PeopleEditCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/user-new', {
-        templateUrl: 'partials/people/people-edit.html',
-        controller: 'PeopleNewCtrl',
+        templateUrl: 'partials/people/people-update.html',
+        controller: 'PeopleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transactions/:year/:month', {

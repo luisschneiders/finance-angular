@@ -4,46 +4,41 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
-    let data = {
-      people: [],
-      isNull: false,
-      notFound: {
-        url: '/all-users',
-        title: 'all users',
-        message:'Record Not Found!',
-      },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
-      top: {
-        title: 'all users',
-        url: '/user-new',
-        show: true
-      },
-      isLoading: false
-    };
-    let people = PeopleServices.getAllPeople();
 
-    data.isLoading = true;
+    $scope.settings = {};
+    $scope.data = [];
 
-    DefaultServices.setTop(data.top);
-
-    people.then(function(response) {
-      if(!response || response.length == 0) {
-        data.isNull = true;
-        data.isLoading = false;
-        return;
-      }
-      data.people = response;
-      data.isLoading = false;
+  DefaultServices.getSettings()
+    .then(function(response) {
+      $scope.settings = response;
+      setTop(response);
+      getPeople(response);
     }).catch(function(err) {
       console.warn('Error getting users: ', err);
     });
 
-    $scope.editPeople = function(id) {
-      $location.path(`/user/${id}`);
-    };
+  $scope.editPeople = function(id) {
+    $location.path(`/user/${id}`);
+  };
 
-    $scope.data = data;
+  function setTop(settings) {
+    DefaultServices.setTop(settings.people.defaults.top);
+  };
+
+  function getPeople(settings) {
+    PeopleServices.getAllPeople(settings.people.defaults.isActive)
+      .then(function(response) {
+        if(!response || response.length == 0) {
+          $scope.settings.people.defaults.isNull = true;
+          $scope.settings.people.defaults.isLoading = false;
+          return;
+        }
+
+        $scope.settings.people.defaults.isLoading = false;
+        $scope.data = response;
+
+      }).catch(function(err) {
+        console.warn('Error getting users: ', err);
+      });
+  };
   }]);

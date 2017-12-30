@@ -53,11 +53,11 @@ angular.module('MyApp')
           });
       return people;
     },
-    update: function(data) {
+    save: function(newRecord, data) {
+      if(newRecord) {
+        return $http.post(`/people/new`, data);
+      }
       return $http.put(`/people/${data.id}`, data);
-    },
-    add: function(data) {
-      return $http.post(`/people/new`, data);
     }
   };
 }]);

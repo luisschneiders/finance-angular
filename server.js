@@ -10,7 +10,12 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const request = require('request');
 const favicon = require('serve-favicon');
-const https = require('https');
+/*
+  using spdy over http2(experimental) because Express dont have support just yet
+  Reference: https://developers.google.com/web/fundamentals/performance/http2/
+             https://webapplog.com/http2-server-push-node-express/
+*/
+const spdy = require('spdy'); 
 const fs = require('fs');
 const options = {
   key: fs.readFileSync('./cert/localhost.key'),
@@ -25,7 +30,7 @@ dotenv.load();
 // Models
 let User = require('./models/User');
 let app = express();
-let server = https.createServer(options, app);
+let server = spdy.createServer(options, app);
 // Controllers
 let settingsController = require('./controllers/settings');
 let mainController = require('./controllers/main');

@@ -520,6 +520,486 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
+  .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expenseType: null,
+      isSaving: false,
+      isNull: false,
+      notFound: {
+        url: '/all-expenses-type',
+        title: 'expenses type',
+        message:'Record Not Found!',
+      },
+      top: {
+        title: 'update expense type',
+        url: '/expense-type-new',
+        show: true
+      },
+      messages: {}
+    };
+    let id = $location.path().substr(14); // to remove /expense-type/
+    let expenseType = ExpenseTypeServices.getExpenseTypeById(id);
+
+    DefaultServices.setTop(data.top);
+
+    expenseType.then(function(response) {
+      if (!response) {
+        data.isNull = true;
+        return;
+      }
+      data.isNull = false;
+      data.expenseType = response;
+    }).catch(function(err) {
+      console.warn('Error getting Expense Type: ', err);
+    });
+
+    $scope.saveExpenseType = function($valid) {
+      let expenseTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      expenseTypeUpdated = ExpenseTypeServices.update(data.expenseType);
+      expenseTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+      }).catch(function(response) {
+        console.warn('Error updating Expense Type: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expenseType: {
+        expenseTypeDescription: null,
+        expenseTypeIsActive: 1
+      },
+      isSaving: false,
+      isNull: false, // it's required for the expense-type-edit.html
+      top: {
+        title: 'new expense type',
+        url: '/expense-type-new',
+        show: true
+      }
+    };
+
+    DefaultServices.setTop(data.top);
+
+    $scope.saveExpenseType = function($valid) {
+      let expenseTypeUpdated;
+      if (data.isSaving) {
+        return;
+      }
+      if(!$valid) {
+        return;
+      }
+      data.isSaving = true;
+      expenseTypeUpdated = ExpenseTypeServices.add(data.expenseType);
+      expenseTypeUpdated.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        $timeout(function() {
+          $location.path(`/expense-type/${response.data.expenseType.id}`);
+        }, 1000);
+      }).catch(function(response) {
+        console.warn('Error updating expense: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      expensesType: [],
+      isNull: false,
+      notFound: {
+        url: '/all-expenses-type',
+        title: 'Expenses',
+        message:'Record Not Found!',
+      },
+      class: {
+        active: 'is-active',
+        inactive: 'is-inactive'
+      },
+      top: {
+        title: 'Expense Type',
+        url: '/expense-type-new',
+        show: true
+      },
+      isLoading: false,
+      isActive: 0
+    };
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+
+    data.isLoading = true;
+
+    DefaultServices.setTop(data.top);
+
+    expensesType.then(function(response) {
+      if(!response || response.length == 0) {
+        data.isNull = true;
+        data.isLoading = false;
+        return;
+      }
+      data.expensesType = response;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting Expenses Type: ', err);
+    });
+    
+    $scope.editExpenseType = function(id) {
+      $location.path(`/expense-type/${id}`);
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('FeedCtrl', ['$scope', '$location', 'FeedServices', function($scope, $location, FeedServices) {
+
+  }]);
+
+angular.module('MyApp')
+  .controller('MainCtrl', ['$scope', '$auth', '$location', 'moment', 'MainServices', 'DefaultServices', function($scope, $auth, $location, moment, MainServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      transactionIsNull: false,
+      purchaseIsNull: false,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },      
+      top: {
+        title: 'Annual Graphics',
+        url: null,
+        show: false
+      },
+      isLoading: true,
+      year: $location.path().substr(6) // to remove /main/
+    };
+    let pieChart;
+    let pieChartColoursBackground = [];
+    let barChart;
+    let barChartColoursBackground = [];
+    let barChartLabelsMonths = [];
+    let transactionsData = [];
+    let purchaseData = [];
+    let transactionsLabel = [];
+    let transactionChart = document.getElementById("transactionChart");
+    let purchaseChart = document.getElementById("purchaseChart");
+
+    DefaultServices.setTop(data.top);
+
+    getGraphicData();
+
+    $scope.changePeriod = function(value) {
+      data.year = parseInt(data.year);
+      if(value == 'd') {
+        data.year = data.year - 1;
+        $location.path(`/main/${data.year}`);
+      } else {
+        data.year = data.year + 1;
+        $location.path(`/main/${data.year}`);
+      }
+    };
+
+    function getGraphicData() {
+      let transactions = MainServices.getTransactionsByYear(data.year);
+      transactions.then(function(response) {
+        data.transactionIsNull = false;
+        data.purchaseIsNull = false;
+
+        if(response.data[0].length == 0) {//transaction
+          data.transactionIsNull = true;
+        } else {
+          renderTransactionGraphic(response.data[0]);
+        }
+
+        if(response.data[1].length == 0) {//purchase
+          data.purchaseIsNull = true;
+        } else {
+          renderPurchaseGraphic(response.data[1]);
+        }
+
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting data: ', err);
+      });
+    }
+
+    function renderTransactionGraphic(response) {
+      transactionsData = response.map(function(value) {
+        switch(value.transactionLabel){
+          case 'C':
+            value.TotalAmountByLabel;
+            break;
+          case 'D':
+            value.TotalAmountByLabel;
+            break;
+          case 'T':
+            value.TotalAmountByLabel = value.TotalAmountByLabel / 2;
+            break;
+          default:
+            value.TotalAmountByLabel;
+        }
+        return [value.TotalAmountByLabel];
+      });
+
+      transactionsLabel = response.map(function(value){
+        switch(value.transactionLabel){
+          case 'C':
+            value.transactionLabel = 'Incomes';
+            break;
+          case 'D':
+            value.transactionLabel = 'Outcomes';
+            break;
+          case 'T':
+            value.transactionLabel = 'Transfers';
+            break;
+          default:
+            value.transactionLabel = 'Label';
+        }
+        return [value.transactionLabel];
+      });
+
+      pieChartColoursBackground = response.map(function(value){
+        switch(value.transactionLabel){
+          case 'Incomes':
+            value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            break;
+          case 'Outcomes':
+            value.pieChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            break;
+          case 'Transfers':
+            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            break;
+          default:
+            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+
+        }
+        return [value.pieChartColoursBackground];
+      });
+
+      pieChart = new Chart(transactionChart, {
+        type: 'pie',
+        data: {
+          labels: transactionsLabel,
+          datasets: [{
+            data: transactionsData,
+            backgroundColor: pieChartColoursBackground,
+            borderColor: '#383838',
+            hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+            borderWidth: 1
+          }]
+        }
+      });
+      data.isLoading = false;
+    }
+
+    function renderPurchaseGraphic(response) {
+      let barChartOptions = {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+      };
+
+      barChartLabelsMonths = response.map(function(value){
+        let date = moment(value.purchaseDate);
+        let month = date.format('M');
+        month = month.toString();
+        switch(month){
+          case '1':
+            value.barChartLabelsMonths = 'Jan';
+            break;
+          case '2':
+            value.barChartLabelsMonths = 'Feb';
+            break;
+          case '3':
+            value.barChartLabelsMonths = 'Mar';
+            break;
+          case '4':
+            value.barChartLabelsMonths = 'Apr';
+            break;
+          case '5':
+            value.barChartLabelsMonths = 'May';
+            break;
+          case '6':
+            value.barChartLabelsMonths = 'Jun';
+            break;
+          case '7':
+            value.barChartLabelsMonths = 'Jul';
+            break;
+          case '8':
+            value.barChartLabelsMonths = 'Aug';
+            break;
+          case '9':
+            value.barChartLabelsMonths = 'Sep';
+            break;
+          case '10':
+            value.barChartLabelsMonths = 'Oct';
+            break;
+          case '11':
+            value.barChartLabelsMonths = 'Nov';
+            break;
+          case '12':
+            value.barChartLabelsMonths = 'Dec';
+            break;
+          default:
+            value.barChartLabelsMonths = 'Month';
+        }
+        return [value.barChartLabelsMonths];
+      });
+
+      barChartColoursBackground = response.map(function(value){
+        let date = moment(value.purchaseDate);
+        let month = date.format('M');
+        month = month.toString();
+        switch(month){
+          case '1':
+            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            break;
+          case '2':
+            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            break;
+          case '3':
+            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
+            break;
+          case '4':
+            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            break;
+          case '5':
+            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
+            break;
+          case '6':
+            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            break;
+          case '7':
+            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            break;
+          case '8':
+            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            break;
+          case '9':
+            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
+            break;
+          case '10':
+            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            break;
+          case '11':
+            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
+            break;
+          case '12':
+            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            break;
+          default:
+            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+        }
+        return [value.barChartColoursBackground];
+      });
+
+      purchaseData = response.map(function(value) {
+        return [value.TotalAmountByMonth];
+      });
+
+      barChart = new Chart(purchaseChart, {
+        type: 'bar',
+        data: {
+            labels: barChartLabelsMonths,
+            datasets: [{
+                label: 'Month',
+                data: purchaseData,
+                backgroundColor: barChartColoursBackground,
+                borderColor: '#383838',
+                hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: barChartOptions
+    });
+    }
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
+    let defaultsApp = {
+      logo: null,
+      title: null,
+      alt: null,
+      width: 170,
+      year: moment().format('YYYY'),
+      month: moment().format('MM')
+    };
+
+    defaultsApp.logo = '/img/schneiders-tech-software-development.svg';
+    defaultsApp.title = 'Your personal finance app';
+    defaultsApp.alt = defaultsApp.title;
+
+    $scope.isActive = function (viewLocation) {
+      return viewLocation === $location.path();
+    };
+
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
+
+    $scope.logout = function() {
+      $auth.logout();
+      delete $window.localStorage.user;
+      $location.path('/');
+    };
+
+    $scope.defaultsApp = defaultsApp;
+  }]);
+
+angular.module('MyApp')
+  .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
+    $scope.data = DefaultServices.getTop();
+  }]);
+
+angular.module('MyApp')
   .controller('PeopleUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'PeopleServices', function($scope, $auth, $location, $timeout, DefaultServices, PeopleServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
@@ -657,6 +1137,378 @@ angular.module('MyApp')
         console.warn('Error getting users: ', err);
       });
   };
+  }]);
+
+angular.module('MyApp')
+  .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      modal: {
+        title: null,
+        purchases: null,
+      },
+      purchases: [],
+      expensesType: [],
+      template: {
+        url: null,
+        class: null
+      },
+      purchasesByGroup: {},
+      isNull: false,
+      isActive: 0,
+      isLoading: true,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'purchase custom search',
+        url: 'purchase-new',
+        show: true
+      },
+      customSearch: {}
+    };
+    let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    let customPurchase = null;
+    let refineSearch = customSearch.split('&');
+    let search = {
+      from: refineSearch[0],
+      to: refineSearch[1],
+      expenseType: refineSearch[2]
+    };
+    
+    data.customSearch.active = 1;
+    DefaultServices.setTop(data.top);
+//  check if date are valid
+    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
+      data.isLoading = false;
+      data.isNull = true;
+      data.notFound.message = 'Dates are not valid';
+      $scope.data = data;
+      return;
+    }
+
+    customPurchase = PurchaseServices.getPurchasesByCustomSearch(search);
+
+    expensesType.then(function(response) {
+      data.expensesType = response;
+    }).catch(function(err) {
+      console.warn('Error getting expenses type: ', err);
+    });
+
+    customPurchase.then(function(response){
+      data.isNull = false;
+
+      if (Object.keys(response.groupedBy).length === 0) {
+        data.isNull = true;
+      }
+
+      data.purchases = response.data;
+      data.purchasesByGroup = response.groupedBy;
+      data.isLoading = false;
+    }).catch(function(err) {
+      console.warn('Error getting purchases: ', err);
+    });
+
+    function setExpensesType() {
+      data.customSearch.expenseType = [];
+      _.forEach(data.expensesType, function(expense) {
+        if (expense.expenseTypeIsActive === data.customSearch.active) {
+          data.customSearch.expenseType.push(expense.id);
+        }
+      });
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/purchase.tpl.html';
+      data.template.class = 'modal-dialog modal-lg';
+      data.modal.title = title.expenseTypeDescription;
+      data.modal.purchases = _.filter(data.purchases, function(item) {
+        if (item.purchaseExpenseId == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.customSearch = function(key) {
+      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.template.class = 'modal-dialog';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
+      if(!$valid) {
+        return;
+      }
+      if(data.customSearch.expenseType == undefined) {
+        setExpensesType();
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
+      }, 500);      
+    };
+
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
+    function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      banks: [],
+      expenses: [],
+      purchase: {},
+      isSaving: false,
+      isActive: 1,
+      top: {
+        title: 'new purchase',
+        url: '/purchase-new',
+        show: false
+      },
+      required: 'All fields are required',
+      noBalance: '',
+      notFound: {
+        message:'No record found!',
+        bank: {
+          url: '/bank-new',
+          title: 'Add bank',
+        },
+        expense: {
+          url: '/expense-type-new',
+          title: 'Add expense',
+        }
+      },
+      messages: {}
+    };
+
+    DefaultServices.setTop(data.top);
+    getAllExpenses();
+    getAllBanks();
+
+    $scope.savePurchase = function($valid) {
+      let purchase = null;
+      let checKBalance = null;
+      data.messages = {};
+
+      if (data.isSaving) {
+        return;
+      }
+      if (!$valid) {
+        data.messages = {
+          error: [{
+            msg: data.required
+          }]
+        };
+        return;
+      }
+
+      checKBalance = _.find(data.banks, function(bank) {
+        return bank.id == data.purchase.purchaseBank;
+      });
+
+      if (parseFloat(data.purchase.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
+        data.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
+                          in your account, please check!`;
+        data.messages = {
+          error: [{
+            msg: data.noBalance
+          }]
+        };
+        return;
+      }
+      data.isSaving = true;
+      purchase = PurchaseServices.add(data.purchase);
+      purchase.then(function(response) {
+        data.isSaving = false;
+        data.messages = {
+          success: [response.data]
+        };
+        getAllBanks();
+      }).catch(function(response) {
+        console.warn('Error updating purchase: ', response);
+        data.isSaving = false;
+        data.messages = {
+          error: Array.isArray(response.data) ? response.data : [response.data]
+        };
+      });
+    };
+
+    function getAllExpenses() {
+      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
+      expenses.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.expenses = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting expenses: ', err);
+      });
+    };
+
+    function getAllBanks() {
+      let banks = BankServices.getAllBanks(data.isActive);
+      banks.then(function(response) {
+        if (!response || response.length == 0) {
+          data.isLoading = false;
+          return;
+        }
+        data.banks = response;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting banks: ', err);
+      });
+    };
+
+    $scope.$watch('data.banks', function() {}, true);
+    $scope.data = data;
+  }]);
+
+angular.module('MyApp')
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
+  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+      return;
+    }
+    let data = {
+      modal: {
+        title: null,
+        purchases: null,
+      },
+      purchases: [],
+      expensesType: [],
+      template: {
+        url: null,
+        class: null
+      },
+      purchasesByGroup: {},
+      isNull: false,
+      isActive: 0,
+      isLoading: true,
+      notFound: {
+        url: null,
+        title: null,
+        message:'No data found for the period!',
+      },
+      top: {
+        title: 'Purchases',
+        url: 'purchase-new',
+        show: true
+      },
+      customSearch: {},
+      monthAndYear: null,
+      currentPeriod: $location.path().substr(11), // to remove /purchases/
+      period: {
+        month: null,
+        year: null
+      },
+    };
+    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
+    data.customSearch.active = 1;
+
+    expensesType.then(function(response) {
+      data.expensesType = response;
+    }).catch(function(err) {
+      console.warn('Error getting expenses type: ', err);
+    });
+
+    DefaultServices.setTop(data.top);
+
+    getCurrentPeriodPurchases();
+
+    $scope.changePeriod = function(value) {
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+
+      if (value == 'd') {
+        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
+      } else {
+        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+      }
+
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
+    };
+
+    function getCurrentPeriodPurchases() {
+      let purchases = null;
+      DefaultServices.setMonthAndYear(data.currentPeriod);
+
+      data.monthAndYear = DefaultServices.getMonthAndYear();
+      data.period.year = moment(data.monthAndYear).format('YYYY');
+      data.period.month = moment(data.monthAndYear).format('MM');
+
+      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
+      purchases.then(function(response) {
+        data.isNull = false;
+
+        if (Object.keys(response.groupedBy).length === 0) {
+          data.isNull = true;
+        }
+
+        data.purchases = response.data;
+        data.purchasesByGroup = response.groupedBy;
+        data.isLoading = false;
+      }).catch(function(err) {
+        console.warn('Error getting data: ', err);
+      });
+    };
+
+    function setExpensesType() {
+      data.customSearch.expenseType = [];
+      _.forEach(data.expensesType, function(expense) {
+        if (expense.expenseTypeIsActive === data.customSearch.active) {
+          data.customSearch.expenseType.push(expense.id);
+        }
+      });
+    };
+
+    $scope.seeDetails = function(key, title) {
+      data.template.url = 'partials/modal/purchase.tpl.html';
+      data.template.class = 'modal-dialog modal-lg';
+      data.modal.title = title.expenseTypeDescription;
+      data.modal.purchases = _.filter(data.purchases, function(item) {
+        if (item.purchaseExpenseId == key) {
+          return item;
+        }
+      });
+    }
+
+    $scope.customSearch = function() {
+      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
+      data.template.class = 'modal-dialog';
+      data.modal.title = 'Custom Search';
+    };
+
+    $scope.customSearchForm = function($valid) {
+      // TODO: More validation to be added
+      if(!$valid) {
+        return;
+      }
+      if(data.customSearch.expenseType == undefined) {
+        setExpensesType();
+      }
+      $(".modal").modal("hide");
+      $timeout(function() {
+        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
+      }, 500);
+    };
+
+    $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -1159,858 +2011,6 @@ angular.module('MyApp')
 
     $scope.editTransactionType = function(id) {
       $location.path(`/transaction-type/${id}`);
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      expenseType: null,
-      isSaving: false,
-      isNull: false,
-      notFound: {
-        url: '/all-expenses-type',
-        title: 'expenses type',
-        message:'Record Not Found!',
-      },
-      top: {
-        title: 'update expense type',
-        url: '/expense-type-new',
-        show: true
-      },
-      messages: {}
-    };
-    let id = $location.path().substr(14); // to remove /expense-type/
-    let expenseType = ExpenseTypeServices.getExpenseTypeById(id);
-
-    DefaultServices.setTop(data.top);
-
-    expenseType.then(function(response) {
-      if (!response) {
-        data.isNull = true;
-        return;
-      }
-      data.isNull = false;
-      data.expenseType = response;
-    }).catch(function(err) {
-      console.warn('Error getting Expense Type: ', err);
-    });
-
-    $scope.saveExpenseType = function($valid) {
-      let expenseTypeUpdated;
-      if (data.isSaving) {
-        return;
-      }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      expenseTypeUpdated = ExpenseTypeServices.update(data.expenseType);
-      expenseTypeUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-      }).catch(function(response) {
-        console.warn('Error updating Expense Type: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ExpenseTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, ExpenseTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      expenseType: {
-        expenseTypeDescription: null,
-        expenseTypeIsActive: 1
-      },
-      isSaving: false,
-      isNull: false, // it's required for the expense-type-edit.html
-      top: {
-        title: 'new expense type',
-        url: '/expense-type-new',
-        show: true
-      }
-    };
-
-    DefaultServices.setTop(data.top);
-
-    $scope.saveExpenseType = function($valid) {
-      let expenseTypeUpdated;
-      if (data.isSaving) {
-        return;
-      }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      expenseTypeUpdated = ExpenseTypeServices.add(data.expenseType);
-      expenseTypeUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        $timeout(function() {
-          $location.path(`/expense-type/${response.data.expenseType.id}`);
-        }, 1000);
-      }).catch(function(response) {
-        console.warn('Error updating expense: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      expensesType: [],
-      isNull: false,
-      notFound: {
-        url: '/all-expenses-type',
-        title: 'Expenses',
-        message:'Record Not Found!',
-      },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
-      top: {
-        title: 'Expense Type',
-        url: '/expense-type-new',
-        show: true
-      },
-      isLoading: false,
-      isActive: 0
-    };
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-
-    data.isLoading = true;
-
-    DefaultServices.setTop(data.top);
-
-    expensesType.then(function(response) {
-      if(!response || response.length == 0) {
-        data.isNull = true;
-        data.isLoading = false;
-        return;
-      }
-      data.expensesType = response;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting Expenses Type: ', err);
-    });
-    
-    $scope.editExpenseType = function(id) {
-      $location.path(`/expense-type/${id}`);
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('FeedCtrl', ['$scope', '$location', 'FeedServices', function($scope, $location, FeedServices) {
-
-  }]);
-
-angular.module('MyApp')
-  .controller('MainCtrl', ['$scope', '$auth', '$location', 'moment', 'MainServices', 'DefaultServices', function($scope, $auth, $location, moment, MainServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      transactionIsNull: false,
-      purchaseIsNull: false,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },      
-      top: {
-        title: 'Annual Graphics',
-        url: null,
-        show: false
-      },
-      isLoading: true,
-      year: $location.path().substr(6) // to remove /main/
-    };
-    let pieChart;
-    let pieChartColoursBackground = [];
-    let barChart;
-    let barChartColoursBackground = [];
-    let barChartLabelsMonths = [];
-    let transactionsData = [];
-    let purchaseData = [];
-    let transactionsLabel = [];
-    let transactionChart = document.getElementById("transactionChart");
-    let purchaseChart = document.getElementById("purchaseChart");
-
-    DefaultServices.setTop(data.top);
-
-    getGraphicData();
-
-    $scope.changePeriod = function(value) {
-      data.year = parseInt(data.year);
-      if(value == 'd') {
-        data.year = data.year - 1;
-        $location.path(`/main/${data.year}`);
-      } else {
-        data.year = data.year + 1;
-        $location.path(`/main/${data.year}`);
-      }
-    };
-
-    function getGraphicData() {
-      let transactions = MainServices.getTransactionsByYear(data.year);
-      transactions.then(function(response) {
-        data.transactionIsNull = false;
-        data.purchaseIsNull = false;
-
-        if(response.data[0].length == 0) {//transaction
-          data.transactionIsNull = true;
-        } else {
-          renderTransactionGraphic(response.data[0]);
-        }
-
-        if(response.data[1].length == 0) {//purchase
-          data.purchaseIsNull = true;
-        } else {
-          renderPurchaseGraphic(response.data[1]);
-        }
-
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
-    }
-
-    function renderTransactionGraphic(response) {
-      transactionsData = response.map(function(value) {
-        switch(value.transactionLabel){
-          case 'C':
-            value.TotalAmountByLabel;
-            break;
-          case 'D':
-            value.TotalAmountByLabel;
-            break;
-          case 'T':
-            value.TotalAmountByLabel = value.TotalAmountByLabel / 2;
-            break;
-          default:
-            value.TotalAmountByLabel;
-        }
-        return [value.TotalAmountByLabel];
-      });
-
-      transactionsLabel = response.map(function(value){
-        switch(value.transactionLabel){
-          case 'C':
-            value.transactionLabel = 'Incomes';
-            break;
-          case 'D':
-            value.transactionLabel = 'Outcomes';
-            break;
-          case 'T':
-            value.transactionLabel = 'Transfers';
-            break;
-          default:
-            value.transactionLabel = 'Label';
-        }
-        return [value.transactionLabel];
-      });
-
-      pieChartColoursBackground = response.map(function(value){
-        switch(value.transactionLabel){
-          case 'Incomes':
-            value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
-            break;
-          case 'Outcomes':
-            value.pieChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
-            break;
-          case 'Transfers':
-            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
-            break;
-          default:
-            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
-
-        }
-        return [value.pieChartColoursBackground];
-      });
-
-      pieChart = new Chart(transactionChart, {
-        type: 'pie',
-        data: {
-          labels: transactionsLabel,
-          datasets: [{
-            data: transactionsData,
-            backgroundColor: pieChartColoursBackground,
-            borderColor: '#383838',
-            hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
-            borderWidth: 1
-          }]
-        }
-      });
-      data.isLoading = false;
-    }
-
-    function renderPurchaseGraphic(response) {
-      let barChartOptions = {
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: true
-                }
-              }]
-            }
-      };
-
-      barChartLabelsMonths = response.map(function(value){
-        let date = moment(value.purchaseDate);
-        let month = date.format('M');
-        month = month.toString();
-        switch(month){
-          case '1':
-            value.barChartLabelsMonths = 'Jan';
-            break;
-          case '2':
-            value.barChartLabelsMonths = 'Feb';
-            break;
-          case '3':
-            value.barChartLabelsMonths = 'Mar';
-            break;
-          case '4':
-            value.barChartLabelsMonths = 'Apr';
-            break;
-          case '5':
-            value.barChartLabelsMonths = 'May';
-            break;
-          case '6':
-            value.barChartLabelsMonths = 'Jun';
-            break;
-          case '7':
-            value.barChartLabelsMonths = 'Jul';
-            break;
-          case '8':
-            value.barChartLabelsMonths = 'Aug';
-            break;
-          case '9':
-            value.barChartLabelsMonths = 'Sep';
-            break;
-          case '10':
-            value.barChartLabelsMonths = 'Oct';
-            break;
-          case '11':
-            value.barChartLabelsMonths = 'Nov';
-            break;
-          case '12':
-            value.barChartLabelsMonths = 'Dec';
-            break;
-          default:
-            value.barChartLabelsMonths = 'Month';
-        }
-        return [value.barChartLabelsMonths];
-      });
-
-      barChartColoursBackground = response.map(function(value){
-        let date = moment(value.purchaseDate);
-        let month = date.format('M');
-        month = month.toString();
-        switch(month){
-          case '1':
-            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
-            break;
-          case '2':
-            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
-            break;
-          case '3':
-            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
-            break;
-          case '4':
-            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
-            break;
-          case '5':
-            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
-            break;
-          case '6':
-            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
-            break;
-          case '7':
-            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
-            break;
-          case '8':
-            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
-            break;
-          case '9':
-            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
-            break;
-          case '10':
-            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
-            break;
-          case '11':
-            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
-            break;
-          case '12':
-            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
-            break;
-          default:
-            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
-        }
-        return [value.barChartColoursBackground];
-      });
-
-      purchaseData = response.map(function(value) {
-        return [value.TotalAmountByMonth];
-      });
-
-      barChart = new Chart(purchaseChart, {
-        type: 'bar',
-        data: {
-            labels: barChartLabelsMonths,
-            datasets: [{
-                label: 'Month',
-                data: purchaseData,
-                backgroundColor: barChartColoursBackground,
-                borderColor: '#383838',
-                hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
-                borderWidth: 1
-            }]
-        },
-        options: barChartOptions
-    });
-    }
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
-    let defaultsApp = {
-      logo: null,
-      title: null,
-      alt: null,
-      width: 170,
-      year: moment().format('YYYY'),
-      month: moment().format('MM')
-    };
-
-    defaultsApp.logo = '/img/schneiders-tech-software-development.svg';
-    defaultsApp.title = 'Your personal finance app';
-    defaultsApp.alt = defaultsApp.title;
-
-    $scope.isActive = function (viewLocation) {
-      return viewLocation === $location.path();
-    };
-
-    $scope.isAuthenticated = function() {
-      return $auth.isAuthenticated();
-    };
-
-    $scope.logout = function() {
-      $auth.logout();
-      delete $window.localStorage.user;
-      $location.path('/');
-    };
-
-    $scope.defaultsApp = defaultsApp;
-  }]);
-
-angular.module('MyApp')
-  .controller('TopCtrl', ['$scope', '$location', 'DefaultServices', function($scope, $location, DefaultServices) {
-    $scope.data = DefaultServices.getTop();
-  }]);
-
-angular.module('MyApp')
-  .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
-  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      modal: {
-        title: null,
-        purchases: null,
-      },
-      purchases: [],
-      expensesType: [],
-      template: {
-        url: null,
-        class: null
-      },
-      purchasesByGroup: {},
-      isNull: false,
-      isActive: 0,
-      isLoading: true,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },
-      top: {
-        title: 'purchase custom search',
-        url: 'purchase-new',
-        show: true
-      },
-      customSearch: {}
-    };
-    let customSearch = $location.path().substr(25); // to remove /custom-search-purchases/
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-    let customPurchase = null;
-    let refineSearch = customSearch.split('&');
-    let search = {
-      from: refineSearch[0],
-      to: refineSearch[1],
-      expenseType: refineSearch[2]
-    };
-    
-    data.customSearch.active = 1;
-    DefaultServices.setTop(data.top);
-//  check if date are valid
-    if (!moment(refineSearch[0]).isValid() || !moment(refineSearch[1]).isValid()) {
-      data.isLoading = false;
-      data.isNull = true;
-      data.notFound.message = 'Dates are not valid';
-      $scope.data = data;
-      return;
-    }
-
-    customPurchase = PurchaseServices.getPurchasesByCustomSearch(search);
-
-    expensesType.then(function(response) {
-      data.expensesType = response;
-    }).catch(function(err) {
-      console.warn('Error getting expenses type: ', err);
-    });
-
-    customPurchase.then(function(response){
-      data.isNull = false;
-
-      if (Object.keys(response.groupedBy).length === 0) {
-        data.isNull = true;
-      }
-
-      data.purchases = response.data;
-      data.purchasesByGroup = response.groupedBy;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting purchases: ', err);
-    });
-
-    function setExpensesType() {
-      data.customSearch.expenseType = [];
-      _.forEach(data.expensesType, function(expense) {
-        if (expense.expenseTypeIsActive === data.customSearch.active) {
-          data.customSearch.expenseType.push(expense.id);
-        }
-      });
-    };
-
-    $scope.seeDetails = function(key, title) {
-      data.template.url = 'partials/modal/purchase.tpl.html';
-      data.template.class = 'modal-dialog modal-lg';
-      data.modal.title = title.expenseTypeDescription;
-      data.modal.purchases = _.filter(data.purchases, function(item) {
-        if (item.purchaseExpenseId == key) {
-          return item;
-        }
-      });
-    }
-
-    $scope.customSearch = function(key) {
-      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
-      data.template.class = 'modal-dialog';
-      data.modal.title = 'Custom Search';
-    };
-
-    $scope.customSearchForm = function($valid) {
-      // TODO: More validation to be added
-      if(!$valid) {
-        return;
-      }
-      if(data.customSearch.expenseType == undefined) {
-        setExpensesType();
-      }
-      $(".modal").modal("hide");
-      $timeout(function() {
-        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
-      }, 500);      
-    };
-
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
-    function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      banks: [],
-      expenses: [],
-      purchase: {},
-      isSaving: false,
-      isActive: 1,
-      top: {
-        title: 'new purchase',
-        url: '/purchase-new',
-        show: false
-      },
-      required: 'All fields are required',
-      noBalance: '',
-      notFound: {
-        message:'No record found!',
-        bank: {
-          url: '/bank-new',
-          title: 'Add bank',
-        },
-        expense: {
-          url: '/expense-type-new',
-          title: 'Add expense',
-        }
-      },
-      messages: {}
-    };
-
-    DefaultServices.setTop(data.top);
-    getAllExpenses();
-    getAllBanks();
-
-    $scope.savePurchase = function($valid) {
-      let purchase = null;
-      let checKBalance = null;
-      data.messages = {};
-
-      if (data.isSaving) {
-        return;
-      }
-      if (!$valid) {
-        data.messages = {
-          error: [{
-            msg: data.required
-          }]
-        };
-        return;
-      }
-
-      checKBalance = _.find(data.banks, function(bank) {
-        return bank.id == data.purchase.purchaseBank;
-      });
-
-      if (parseFloat(data.purchase.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
-        data.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
-                          in your account, please check!`;
-        data.messages = {
-          error: [{
-            msg: data.noBalance
-          }]
-        };
-        return;
-      }
-      data.isSaving = true;
-      purchase = PurchaseServices.add(data.purchase);
-      purchase.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        getAllBanks();
-      }).catch(function(response) {
-        console.warn('Error updating purchase: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
-    };
-
-    function getAllExpenses() {
-      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
-      expenses.then(function(response) {
-        if (!response || response.length == 0) {
-          data.isLoading = false;
-          return;
-        }
-        data.expenses = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting expenses: ', err);
-      });
-    };
-
-    function getAllBanks() {
-      let banks = BankServices.getAllBanks(data.isActive);
-      banks.then(function(response) {
-        if (!response || response.length == 0) {
-          data.isLoading = false;
-          return;
-        }
-        data.banks = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting banks: ', err);
-      });
-    };
-
-    $scope.$watch('data.banks', function() {}, true);
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
-  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      modal: {
-        title: null,
-        purchases: null,
-      },
-      purchases: [],
-      expensesType: [],
-      template: {
-        url: null,
-        class: null
-      },
-      purchasesByGroup: {},
-      isNull: false,
-      isActive: 0,
-      isLoading: true,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },
-      top: {
-        title: 'Purchases',
-        url: 'purchase-new',
-        show: true
-      },
-      customSearch: {},
-      monthAndYear: null,
-      currentPeriod: $location.path().substr(11), // to remove /purchases/
-      period: {
-        month: null,
-        year: null
-      },
-    };
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-    data.customSearch.active = 1;
-
-    expensesType.then(function(response) {
-      data.expensesType = response;
-    }).catch(function(err) {
-      console.warn('Error getting expenses type: ', err);
-    });
-
-    DefaultServices.setTop(data.top);
-
-    getCurrentPeriodPurchases();
-
-    $scope.changePeriod = function(value) {
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-
-      if (value == 'd') {
-        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
-      } else {
-        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
-      }
-
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
-    };
-
-    function getCurrentPeriodPurchases() {
-      let purchases = null;
-      DefaultServices.setMonthAndYear(data.currentPeriod);
-
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-
-      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
-      purchases.then(function(response) {
-        data.isNull = false;
-
-        if (Object.keys(response.groupedBy).length === 0) {
-          data.isNull = true;
-        }
-
-        data.purchases = response.data;
-        data.purchasesByGroup = response.groupedBy;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
-    };
-
-    function setExpensesType() {
-      data.customSearch.expenseType = [];
-      _.forEach(data.expensesType, function(expense) {
-        if (expense.expenseTypeIsActive === data.customSearch.active) {
-          data.customSearch.expenseType.push(expense.id);
-        }
-      });
-    };
-
-    $scope.seeDetails = function(key, title) {
-      data.template.url = 'partials/modal/purchase.tpl.html';
-      data.template.class = 'modal-dialog modal-lg';
-      data.modal.title = title.expenseTypeDescription;
-      data.modal.purchases = _.filter(data.purchases, function(item) {
-        if (item.purchaseExpenseId == key) {
-          return item;
-        }
-      });
-    }
-
-    $scope.customSearch = function() {
-      data.template.url = 'partials/modal/custom-search-purchase.tpl.html';
-      data.template.class = 'modal-dialog';
-      data.modal.title = 'Custom Search';
-    };
-
-    $scope.customSearchForm = function($valid) {
-      // TODO: More validation to be added
-      if(!$valid) {
-        return;
-      }
-      if(data.customSearch.expenseType == undefined) {
-        setExpensesType();
-      }
-      $(".modal").modal("hide");
-      $timeout(function() {
-        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
-      }, 500);
     };
 
     $scope.data = data;

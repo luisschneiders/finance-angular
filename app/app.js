@@ -56,13 +56,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type/:id', {
-        templateUrl: 'partials/expense-type/expense-type-edit.html',
-        controller: 'ExpenseTypeEditCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/expense-type-new', {
-        templateUrl: 'partials/expense-type/expense-type-edit.html',
-        controller: 'ExpenseTypeNewCtrl',
+        templateUrl: 'partials/expense-type/expense-type-update.html',
+        controller: 'ExpenseTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-transactions-type', {

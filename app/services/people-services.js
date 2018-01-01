@@ -25,9 +25,9 @@ angular.module('MyApp')
         }
       ]
     },
-    getAllPeople: function() {
+    getAllPeople: function(isActive) {
       let actions = this.getPeopleType();
-      let people = $http.get('/people')
+      let people = $http.get(`/people/${isActive}`)
           .then(function(response){
             _.forEach(response.data, function(data) {
               _.find(actions, function(action){

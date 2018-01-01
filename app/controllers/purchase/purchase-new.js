@@ -75,6 +75,7 @@ angular.module('MyApp')
           success: [response.data]
         };
         getAllBanks();
+        data.purchase = {};
       }).catch(function(response) {
         console.warn('Error updating purchase: ', response);
         data.isSaving = false;

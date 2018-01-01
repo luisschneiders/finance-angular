@@ -1,10 +1,10 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-if="data.isNull === true">
-          <h3>{{::data.notFound.message}}</h3>
+        <div class="alert alert-danger text-center" ng-if="settings.expenseType.defaults.isNull === true">
+          <h3>{{::settings.expenseType.defaults.notFound.message}}</h3>
         </div>
-        <div id="no-more-tables" ng-if="data.isNull === false">
+        <div id="no-more-tables" ng-if="settings.expenseType.defaults.isNull === false">
           <table class="table table-responsive table-hover">
             <thead>
               <tr>
@@ -14,15 +14,15 @@
               </tr>
             </thead>
             <tbody class="table-cursor">
-              <tr class="loading text-center" ng-show="data.isLoading">
+              <tr class="loading text-center" ng-show="settings.expenseType.defaults.isLoading">
                 <td colspan="6">
-                  <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+                  <i ng-class="settings.defaults.cssClassLoading"></i>
                   <span class="sr-only">Loading...</span>
                 </td>
               </tr>
-              <tr ng-repeat="item in data.expensesType | orderBy: 'expenseTypeDescription' | filter:expenseType" ng-click="editExpenseType(item.id)">
+              <tr ng-repeat="item in data | orderBy: 'expenseTypeDescription' | filter:expenseType" ng-click="editExpenseType(item.id)">
                 <td data-title="Expense Type" class="text-uppercase">{{::item.expenseTypeDescription}}</td>
-                <td data-title="Active"  class="text-center" ng-class="item.expenseTypeIsActive == 1 ? data.class.active : data.class.inactive">{{::item.expenseTypeIsActive == 1 ? "Yes" : "No"  }}</td>
+                <td data-title="Active"  class="text-center" ng-class="::item.expenseTypeIsActive == 1 ? settings.defaults.cssClassActive : settings.defaults.cssClassInactive">{{::item.expenseTypeIsActive == 1 ? "Yes" : "No"  }}</td>
                 <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
               </tr>
             </tbody>

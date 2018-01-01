@@ -4,7 +4,7 @@ const People = require('../models/People');
  * GET /people
  */
 exports.peopleGetAll = function(req, res) {
-  People.getAll(req.user.id)
+  People.getAll(req.user.id, req.params.isActive)
     .then(function(people) {
       res.json(people);
     }).catch(function(err) {

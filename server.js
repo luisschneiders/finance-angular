@@ -105,8 +105,8 @@ app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankSav
 // Expense Type
 app.get('/all-expenses-type/:isActive', expenseTypeController.expenseTypeGetAll);
 app.get('/expenses-type/:id', expenseTypeController.expenseTypeGetById);
-app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeController.expenseTypePut);
-app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypePost);
+app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeController.expenseTypeSave);
+app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypeSave);
 
 // Transaction Type
 app.get('/all-transactions-type/:isActive', transactionTypeController.transactionTypeGetAll);
@@ -115,7 +115,7 @@ app.put('/transactions-type/:id', userController.ensureAuthenticated, transactio
 app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
 
 // People
-app.get('/people', peopleController.peopleGetAll);
+app.get('/people/:isActive', peopleController.peopleGetAll);
 app.get('/people/:id', peopleController.peopleGetById);
 app.put('/people/:id', userController.ensureAuthenticated, peopleController.peopleSave);
 app.post('/people/new', userController.ensureAuthenticated, peopleController.peopleSave);

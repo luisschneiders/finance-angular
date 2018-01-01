@@ -21,11 +21,11 @@ angular.module('MyApp')
           });
       return expenseType;
     },
-    update: function(data) {
+    save: function(newRecord, data) {
+      if(newRecord) {
+        return $http.post(`/expenses-type/new`, data);
+      }
       return $http.put(`/expenses-type/${data.id}`, data);
-    },
-    add: function(data) {
-      return $http.post(`/expenses-type/new`, data);
     }
   };
 }]);

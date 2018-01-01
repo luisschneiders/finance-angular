@@ -25,60 +25,49 @@ exports.expenseTypeGetById = function(req, res) {
 };
 
 /**
- * PUT /expenses-type/:id
+ * SAVE /expenses-type/new
+ * or
+ * SAVE /expenses-type/:id
  */
-exports.expenseTypePut = function(req, res) {
+exports.expenseTypeSave = function(req, res) {
   let expenseType = null;
   let errors = null;
+  let checkRecord = 0;
 
   req.assert('expenseTypeDescription', 'Description cannot be blank').notEmpty();
-  
   errors = req.validationErrors();
 
   if (errors) {
     return res.status(400).send(errors);
   }
 
+  checkRecord = new ExpenseType({id: req.params.id});
   expenseType = new ExpenseType();
-  expenseType.save({
-      id: req.params.id,
-      expenseTypeInsertedBy: req.user.id,
-      expenseTypeDescription: req.body.expenseTypeDescription,
-      expenseTypeIsActive: req.body.expenseTypeIsActive,
-    }, { patch: true })
-    .then(function(model) {
-      res.send({ expenseType: model, msg: 'Expense has been updated.' });
-    })
-    .catch(function(err) {
-      res.send({ msg: err });
-    });
-};
 
-/**
- * POST /expenses-type/new
- */
-exports.expenseTypePost = function(req, res) {
-  let expenseType = null;
-  let errors = null;
-
-  req.assert('expenseTypeDescription', 'Description cannot be blank').notEmpty();
-
-  errors = req.validationErrors();
-
-  if (errors) {
-    return res.status(400).send(errors);
+  if(!checkRecord.isNew()) {
+    expenseType.save({
+        id: req.params.id,
+        expenseTypeInsertedBy: req.user.id,
+        expenseTypeDescription: req.body.expenseTypeDescription,
+        expenseTypeIsActive: req.body.expenseTypeIsActive,
+      }, { patch: true })
+      .then(function(model) {
+        res.send({ expenseType: model, msg: 'Expense type has been updated.' });
+      })
+      .catch(function(err) {
+        res.send({ msg: err });
+      });
+    return;
   }
-
-  expenseType = new ExpenseType();
   expenseType.save({
       expenseTypeInsertedBy: req.user.id,
       expenseTypeDescription: req.body.expenseTypeDescription,
       expenseTypeIsActive: req.body.expenseTypeIsActive,
     })
     .then(function(model) {
-      res.send({ expenseType: model, msg: 'Expense has been added.' });
+      res.send({ expenseType: model, msg: 'Expense type has been added.' });
     })
     .catch(function(err) {
-      return res.status(400).send({ msg: 'Error adding Expense.' });
+      return res.status(400).send({ msg: err });
     });
 };

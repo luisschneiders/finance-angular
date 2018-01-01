@@ -58,13 +58,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type/:id', {
-        templateUrl: 'partials/expense-type/expense-type-edit.html',
-        controller: 'ExpenseTypeEditCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/expense-type-new', {
-        templateUrl: 'partials/expense-type/expense-type-edit.html',
-        controller: 'ExpenseTypeNewCtrl',
+        templateUrl: 'partials/expense-type/expense-type-update.html',
+        controller: 'ExpenseTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-transactions-type', {
@@ -520,171 +515,141 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ExpenseTypeEditCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
+  .controller('ExpenseTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $timeout, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
-    let data = {
-      expenseType: null,
-      isSaving: false,
-      isNull: false,
-      notFound: {
-        url: '/all-expenses-type',
-        title: 'expenses type',
-        message:'Record Not Found!',
-      },
-      top: {
-        title: 'update expense type',
-        url: '/expense-type-new',
-        show: true
-      },
-      messages: {}
-    };
-    let id = $location.path().substr(14); // to remove /expense-type/
-    let expenseType = ExpenseTypeServices.getExpenseTypeById(id);
 
-    DefaultServices.setTop(data.top);
+    let expenseTypeId = $location.path().substr(14); // to remove /expense-type/
+    let newRecord = true;
 
-    expenseType.then(function(response) {
-      if (!response) {
-        data.isNull = true;
-        return;
-      }
-      data.isNull = false;
-      data.expenseType = response;
-    }).catch(function(err) {
-      console.warn('Error getting Expense Type: ', err);
-    });
+    $scope.settings = {};
+    $scope.data = [];
+    $scope.form = {};
+
+    if (Number.isInteger(parseInt(expenseTypeId))) {
+      newRecord = false;
+      setController(newRecord);
+      getExpenseType(expenseTypeId);
+    } else {
+      newRecord = true;
+      setController(newRecord);
+    }
 
     $scope.saveExpenseType = function($valid) {
-      let expenseTypeUpdated;
-      if (data.isSaving) {
+      if ($scope.settings.expenseType.defaults.isSaving) {
         return;
       }
       if(!$valid) {
         return;
       }
-      data.isSaving = true;
-      expenseTypeUpdated = ExpenseTypeServices.update(data.expenseType);
-      expenseTypeUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-      }).catch(function(response) {
-        console.warn('Error updating Expense Type: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
+      $scope.settings.expenseType.defaults.isSaving = true;
+
+      ExpenseTypeServices.save(newRecord, $scope.form)
+        .then(function(response) {
+          $scope.settings.expenseType.defaults.isSaving = false;
+          $scope.settings.expenseType.defaults.messages = {
+            success: [response.data]
+          };
+          if(newRecord) {
+            $timeout(function() {
+              $location.path(`/expense-type/${response.data.expenseType.id}`);
+            }, 1000);
+            return
+          }
+        }).catch(function(response) {
+          console.warn('Error saving expense type: ', response);
+          $scope.settings.expenseType.defaults.isSaving = false;
+          $scope.settings.expenseType.defaults.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    };
+
+    function setController(newRecord) {
+      DefaultServices.getSettings()
+      .then(function(response) {
+        $scope.settings = response;
+        setTop(newRecord, response);
+        setForm(newRecord, response);
+      }).catch(function(err) {
+        console.warn('Error getting settings: ', err)
       });
     };
 
-    $scope.data = data;
+    function setTop(newRecord, settings) {
+      if (newRecord) {
+        DefaultServices.setTop(settings.expenseType.newRecord.top);
+        return;
+      }
+      DefaultServices.setTop(settings.expenseType.existingRecord.top);
+    };
+
+    function setForm(newRecord, settings) {
+      if (newRecord) {
+        $scope.form = settings.expenseType.defaults.form;
+        return;
+      }
+    };
+
+    function getExpenseType(id) {
+      ExpenseTypeServices.getExpenseTypeById(id)
+        .then(function(response) {
+          if(!response || response.length == 0) {
+            $scope.settings.expenseType.defaults.isNull = true;
+            return;
+          }
+          $scope.settings.expenseType.defaults.isNull = false;
+          $scope.form = response;
+        }).catch(function(err) {
+          console.warn('Error getting expense type: ', err);
+        });
+    };
   }]);
 
 angular.module('MyApp')
-  .controller('ExpenseTypeNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, ExpenseTypeServices, DefaultServices) {
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
-    let data = {
-      expenseType: {
-        expenseTypeDescription: null,
-        expenseTypeIsActive: 1
-      },
-      isSaving: false,
-      isNull: false, // it's required for the expense-type-edit.html
-      top: {
-        title: 'new expense type',
-        url: '/expense-type-new',
-        show: true
-      }
-    };
+    $scope.settings = {};
+    $scope.data = [];
 
-    DefaultServices.setTop(data.top);
-
-    $scope.saveExpenseType = function($valid) {
-      let expenseTypeUpdated;
-      if (data.isSaving) {
-        return;
-      }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      expenseTypeUpdated = ExpenseTypeServices.add(data.expenseType);
-      expenseTypeUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        $timeout(function() {
-          $location.path(`/expense-type/${response.data.expenseType.id}`);
-        }, 1000);
-      }).catch(function(response) {
-        console.warn('Error updating expense: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
+    DefaultServices.getSettings()
+      .then(function(response) {
+        $scope.settings = response;
+        setTop(response);
+        getExpenseType(response);
+      }).catch(function(err) {
+        console.warn('Error getting settings: ', err);
       });
-    };
 
-    $scope.data = data;
-  }]);
-
-angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'ExpenseTypeServices', 'DefaultServices', function($scope, $auth, $location, ExpenseTypeServices, DefaultServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
-    let data = {
-      expensesType: [],
-      isNull: false,
-      notFound: {
-        url: '/all-expenses-type',
-        title: 'Expenses',
-        message:'Record Not Found!',
-      },
-      class: {
-        active: 'is-active',
-        inactive: 'is-inactive'
-      },
-      top: {
-        title: 'Expense Type',
-        url: '/expense-type-new',
-        show: true
-      },
-      isLoading: false,
-      isActive: 0
-    };
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-
-    data.isLoading = true;
-
-    DefaultServices.setTop(data.top);
-
-    expensesType.then(function(response) {
-      if(!response || response.length == 0) {
-        data.isNull = true;
-        data.isLoading = false;
-        return;
-      }
-      data.expensesType = response;
-      data.isLoading = false;
-    }).catch(function(err) {
-      console.warn('Error getting Expenses Type: ', err);
-    });
-    
     $scope.editExpenseType = function(id) {
       $location.path(`/expense-type/${id}`);
     };
 
-    $scope.data = data;
+    function setTop(settings) {
+      DefaultServices.setTop(settings.expenseType.defaults.top);
+    };
+
+    function getExpenseType(settings) {
+      ExpenseTypeServices.getAllExpensesType(settings.expenseType.defaults.isActive)
+        .then(function(response) {
+          if(!response || response.length == 0) {
+            $scope.settings.expenseType.defaults.isNull = true;
+            $scope.settings.expenseType.defaults.isLoading = false;
+            return;
+          }
+
+          $scope.settings.expenseType.defaults.isLoading = false;
+          $scope.data = response;
+
+        }).catch(function(err) {
+          console.warn('Error getting expenses type: ', err);
+        });
+    };
   }]);
 
 angular.module('MyApp')
@@ -1104,39 +1069,39 @@ angular.module('MyApp')
     $scope.settings = {};
     $scope.data = [];
 
-  DefaultServices.getSettings()
-    .then(function(response) {
-      $scope.settings = response;
-      setTop(response);
-      getPeople(response);
-    }).catch(function(err) {
-      console.warn('Error getting users: ', err);
-    });
-
-  $scope.editPeople = function(id) {
-    $location.path(`/user/${id}`);
-  };
-
-  function setTop(settings) {
-    DefaultServices.setTop(settings.people.defaults.top);
-  };
-
-  function getPeople(settings) {
-    PeopleServices.getAllPeople(settings.people.defaults.isActive)
+    DefaultServices.getSettings()
       .then(function(response) {
-        if(!response || response.length == 0) {
-          $scope.settings.people.defaults.isNull = true;
-          $scope.settings.people.defaults.isLoading = false;
-          return;
-        }
-
-        $scope.settings.people.defaults.isLoading = false;
-        $scope.data = response;
-
+        $scope.settings = response;
+        setTop(response);
+        getPeople(response);
       }).catch(function(err) {
-        console.warn('Error getting users: ', err);
+        console.warn('Error getting settings: ', err);
       });
-  };
+
+    $scope.editPeople = function(id) {
+      $location.path(`/user/${id}`);
+    };
+
+    function setTop(settings) {
+      DefaultServices.setTop(settings.people.defaults.top);
+    };
+
+    function getPeople(settings) {
+      PeopleServices.getAllPeople(settings.people.defaults.isActive)
+        .then(function(response) {
+          if(!response || response.length == 0) {
+            $scope.settings.people.defaults.isNull = true;
+            $scope.settings.people.defaults.isLoading = false;
+            return;
+          }
+
+          $scope.settings.people.defaults.isLoading = false;
+          $scope.data = response;
+
+        }).catch(function(err) {
+          console.warn('Error getting users: ', err);
+        });
+    };
   }]);
 
 angular.module('MyApp')
@@ -1336,6 +1301,7 @@ angular.module('MyApp')
           success: [response.data]
         };
         getAllBanks();
+        data.purchase = {};
       }).catch(function(response) {
         console.warn('Error updating purchase: ', response);
         data.isSaving = false;
@@ -2137,11 +2103,11 @@ angular.module('MyApp')
           });
       return expenseType;
     },
-    update: function(data) {
+    save: function(newRecord, data) {
+      if(newRecord) {
+        return $http.post(`/expenses-type/new`, data);
+      }
       return $http.put(`/expenses-type/${data.id}`, data);
-    },
-    add: function(data) {
-      return $http.post(`/expenses-type/new`, data);
     }
   };
 }]);
@@ -2192,9 +2158,9 @@ angular.module('MyApp')
         }
       ]
     },
-    getAllPeople: function() {
+    getAllPeople: function(isActive) {
       let actions = this.getPeopleType();
-      let people = $http.get('/people')
+      let people = $http.get(`/people/${isActive}`)
           .then(function(response){
             _.forEach(response.data, function(data) {
               _.find(actions, function(action){

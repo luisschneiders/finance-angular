@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="alert alert-danger text-center" ng-if="settings.expenseType.defaults.isNull === true">
+          <h3>{{::settings.expenseType.defaults.notFound.message}}</h3>
+          <a class="text-capitalize" ng-href="{{settings.expenseType.defaults.notFound.url}}">Return to {{settings.expenseType.defaults.notFound.title}}</a>
+        </div>
+        <div ng-if="settings.expenseType.defaults.messages.error" role="alert" class="alert alert-danger">
+            <div ng-repeat="error in settings.expenseType.defaults.messages.error">{{error.msg}}</div>
+        </div>
+        <div ng-if="settings.expenseType.defaults.messages.success" role="alert" class="alert alert-success">
+          <div ng-repeat="success in settings.expenseType.defaults.messages.success">{{success.msg}}</div>
+        </div>
+        <form name="standardForm" ng-submit="saveExpenseType(standardForm.$valid)" class="form-horizontal" ng-if="settings.expenseType.defaults.isNull === false">
+          <div class="form-group">
+            <label for="expenseTypeDescription" class="col-sm-3">Description</label>
+            <div class="col-sm-7">
+              <input type="text" name="expenseTypeDescription" id="expenseTypeDescription" class="form-control" ng-model="form.expenseTypeDescription" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="expenseTypeIsActive" class="col-sm-3">Active</label>
+            <div class="col-sm-7">
+              <input type="checkbox" name="expenseTypeIsActive" ng-model="form.expenseTypeIsActive" ng-checked="form.expenseTypeIsActive === 1" ng-true-value="1" ng-false-value="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-4">
+              <button type="submit" class="btn btn-success">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

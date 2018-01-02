@@ -33,8 +33,8 @@ angular.module('MyApp')
             return;
           }
 
-          $scope.settings.expenseType.defaults.isLoading = false;
           $scope.data = response;
+          $scope.settings.expenseType.defaults.isLoading = false;
 
         }).catch(function(err) {
           console.warn('Error getting expenses type: ', err);

@@ -53,11 +53,11 @@ angular.module('MyApp')
           });
       return transactionType;
     },
-    update: function(data) {
+    save: function(newRecord, data) {
+      if(newRecord) {
+        return $http.post(`/transactions-type/new`, data);
+      }
       return $http.put(`/transactions-type/${data.id}`, data);
-    },
-    add: function(data) {
-      return $http.post(`/transactions-type/new`, data);
     }
   };
 }]);

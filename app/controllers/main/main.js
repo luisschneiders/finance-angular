@@ -72,7 +72,7 @@ angular.module('MyApp')
 
     function renderTransactionGraphic(response) {
       transactionsData = response.map(function(value) {
-        switch(value.transactionLabel){
+        switch(value.transactionLabel) {
           case 'C':
             value.TotalAmountByLabel;
             break;
@@ -88,8 +88,8 @@ angular.module('MyApp')
         return [value.TotalAmountByLabel];
       });
 
-      transactionsLabel = response.map(function(value){
-        switch(value.transactionLabel){
+      transactionsLabel = response.map(function(value) {
+        switch(value.transactionLabel) {
           case 'C':
             value.transactionLabel = 'Incomes';
             break;
@@ -106,7 +106,7 @@ angular.module('MyApp')
       });
 
       pieChartColoursBackground = response.map(function(value){
-        switch(value.transactionLabel){
+        switch(value.transactionLabel) {
           case 'Incomes':
             value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
             break;
@@ -150,7 +150,7 @@ angular.module('MyApp')
             }
       };
 
-      barChartLabelsMonths = response.map(function(value){
+      barChartLabelsMonths = response.map(function(value) {
         let date = moment(value.purchaseDate);
         let month = date.format('M');
         month = month.toString();
@@ -197,7 +197,7 @@ angular.module('MyApp')
         return [value.barChartLabelsMonths];
       });
 
-      barChartColoursBackground = response.map(function(value){
+      barChartColoursBackground = response.map(function(value) {
         let date = moment(value.purchaseDate);
         let month = date.format('M');
         month = month.toString();

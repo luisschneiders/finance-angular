@@ -1,10 +1,10 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-if="data.isNull === true">
-          <h3>{{::data.notFound.message}}</h3>
+        <div class="alert alert-danger text-center" ng-if="settings.transactionType.defaults.isNull === true">
+          <h3>{{::settings.transactionType.defaults.notFound.message}}</h3>
         </div>
-        <div id="no-more-tables" ng-if="data.isNull === false">
+        <div id="no-more-tables" ng-if="settings.transactionType.defaults.isNull === false">
           <table class="table table-responsive table-hover">
             <thead>
               <tr>
@@ -15,16 +15,16 @@
               </tr>
             </thead>
             <tbody class="table-cursor">
-              <tr class="loading text-center" ng-show="data.isLoading">
+              <tr class="loading text-center" ng-show="settings.transactionType.defaults.isLoading">
                 <td colspan="6">
                   <i ng-class="settings.defaults.cssClassLoading"></i>
                   <span class="sr-only">Loading...</span>
                 </td>
               </tr>
-              <tr ng-repeat="item in data.transactionsType | orderBy: 'transactionTypeDescription' | filter:transactionType" ng-click="editTransactionType(item.id)">
+              <tr ng-repeat="item in data | orderBy: 'transactionTypeDescription' | filter:transactionType" ng-click="editTransactionType(item.id)">
                 <td data-title="Description" class="text-uppercase">{{::item.transactionTypeDescription}}</td>
                 <td data-title="Type" class="text-uppercase">{{::item.transactionTypeActionDescription}}</td>
-                <td data-title="Active"  class="text-center" ng-class="item.transactionTypeIsActive == 1 ? data.class.active : data.class.inactive">{{::item.transactionTypeIsActive == 1 ? "Yes" : "No"  }}</td>
+                <td data-title="Active"  class="text-center" ng-class="::item.transactionTypeIsActive == 1 ? settings.defaults.cssClassActive : settings.defaults.cssClassInactive">{{::item.transactionTypeIsActive == 1 ? "Yes" : "No"  }}</td>
                 <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
               </tr>
             </tbody>

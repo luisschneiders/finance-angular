@@ -111,11 +111,11 @@ app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeCo
 // Transaction Type
 app.get('/all-transactions-type/:isActive', transactionTypeController.transactionTypeGetAll);
 app.get('/transactions-type/:id', transactionTypeController.transactionTypeGetById);
-app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypePut);
-app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
+app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypeSave);
+app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypeSave);
 
 // People
-app.get('/people/:isActive', peopleController.peopleGetAll);
+app.get('/all-people/:isActive', peopleController.peopleGetAll);
 app.get('/people/:id', peopleController.peopleGetById);
 app.put('/people/:id', userController.ensureAuthenticated, peopleController.peopleSave);
 app.post('/people/new', userController.ensureAuthenticated, peopleController.peopleSave);

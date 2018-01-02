@@ -66,13 +66,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-type/:id', {
-        templateUrl: 'partials/transaction-type/transaction-type-edit.html',
-        controller: 'TransactionTypeEditCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/transaction-type-new', {
-        templateUrl: 'partials/transaction-type/transaction-type-edit.html',
-        controller: 'TransactionTypeNewCtrl',
+        templateUrl: 'partials/transaction-type/transaction-type-update.html',
+        controller: 'TransactionTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-users', {
@@ -113,6 +108,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       .when('/purchase-new', {
         templateUrl: 'partials/purchase/purchase-edit.html',
         controller: 'PurchaseNewCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/populate-database', {
+        templateUrl: 'partials/settings/populate-database.html',
+        controller: 'PopulateDatabaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({

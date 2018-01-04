@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -7,6 +7,8 @@ angular.module('MyApp')
 
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -19,6 +21,18 @@ angular.module('MyApp')
 
     $scope.editPeople = function(id) {
       $location.path(`/user/${id}`);
+    };
+
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
     };
 
     function setTop(settings) {

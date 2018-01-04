@@ -33,7 +33,7 @@ SELECT
   b.`employer_rates`,
   b.`employer_insertedby`,
   b.`employer_dateinserted`,
-  0
+  0,
   1
 FROM `financephonegap`.`employer` b
 WHERE b.`employer_status` = 'i'

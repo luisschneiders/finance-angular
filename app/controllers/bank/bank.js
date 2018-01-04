@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $filter, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -7,6 +7,8 @@ angular.module('MyApp')
 
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -19,6 +21,18 @@ angular.module('MyApp')
 
     $scope.editBank = function(id) {
       $location.path(`/bank/${id}`);
+    };
+
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
     };
 
     function setTop(settings) {

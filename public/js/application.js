@@ -470,7 +470,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', 'BankServices', 'DefaultServices', function($scope, $auth, $location, BankServices, DefaultServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $filter, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -478,6 +478,8 @@ angular.module('MyApp')
 
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -490,6 +492,18 @@ angular.module('MyApp')
 
     $scope.editBank = function(id) {
       $location.path(`/bank/${id}`);
+    };
+
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
     };
 
     function setTop(settings) {
@@ -513,6 +527,29 @@ angular.module('MyApp')
         });
     };
   }]);
+
+// TODO - not working just yet
+// angular.module('MyApp')
+//   .controller('PaginationCtrl', ['$scope', '$auth', '$location', '$filter', function($scope, $auth, $location, $filter) {
+//     $scope.currentPage = 0;
+//     $scope.pageSize = 12;
+
+//     if (!$auth.isAuthenticated()) {
+//       $location.path('/login');
+//       return;
+//     };
+
+//     $scope.getData = function() {
+//       return $filter('filter')($scope.data);
+//     };
+
+//     $scope.numberOfPages = function() {
+//       // console.log('$scope.getData()', $scope.getData());
+//       console.log('$scope.pageSize', $scope.pageSize);
+//       // console.log('Math.ceil($scope.getData().length / $scope.pageSize);', Math.ceil($scope.getData().length / $scope.pageSize));
+//       return Math.ceil($scope.getData().length / $scope.pageSize);
+//     };
+//   }]);
 
 angular.module('MyApp')
   .controller('ExpenseTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $timeout, DefaultServices, ExpenseTypeServices) {
@@ -609,13 +646,16 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, DefaultServices, ExpenseTypeServices) {
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$filter', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $filter, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
-    }
+    };
+
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -630,6 +670,18 @@ angular.module('MyApp')
       $location.path(`/expense-type/${id}`);
     };
 
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
+    };
+
     function setTop(settings) {
       DefaultServices.setTop(settings.expenseType.defaults.top);
     };
@@ -642,7 +694,6 @@ angular.module('MyApp')
             $scope.settings.expenseType.defaults.isLoading = false;
             return;
           }
-
           $scope.data = response;
           $scope.settings.expenseType.defaults.isLoading = false;
 
@@ -1060,7 +1111,7 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, PeopleServices, DefaultServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -1068,6 +1119,8 @@ angular.module('MyApp')
 
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -1080,6 +1133,18 @@ angular.module('MyApp')
 
     $scope.editPeople = function(id) {
       $location.path(`/user/${id}`);
+    };
+
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
     };
 
     function setTop(settings) {
@@ -1485,7 +1550,7 @@ angular.module('MyApp')
       return;
     }
 
-    let time = 1000;
+    let time = 0;
     let table = null;
 
     let timerTableBanks = null;
@@ -1494,9 +1559,15 @@ angular.module('MyApp')
     let timerTableTransactionType = null;
 
     $scope.settings = {};
+    $scope.switchAlternate = 'off';
     setController();
 
     $scope.autoPopulate = function(db) {
+      if($scope.switchAlternate == 'on') {
+        time = 100;
+      }else {
+        time = 1000;
+      }
       table = db;
       switch(db.value.tableName) {
         case 'banks':
@@ -1554,7 +1625,7 @@ angular.module('MyApp')
       let form = {};
 
       form.bankDescription = `bank name ${new Date()}`;
-      form.bankAccount = `bank account ${new Date()}`;
+      form.bankAccount = `bank account ${Math.random() * (9 - 1) + 1}`;
       form.bankInitialBalance = Math.random() * (9 - 1) + 1;
       form.bankCurrentBalance = form.bankInitialBalance;
       form.bankIsActive = 0;
@@ -2051,13 +2122,15 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', 'DefaultServices', 'TransactionTypeServices', function($scope, $auth, $location, DefaultServices, TransactionTypeServices) {
+  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', 'DefaultServices', 'TransactionTypeServices', function($scope, $auth, $location, $filter, DefaultServices, TransactionTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -2070,6 +2143,18 @@ angular.module('MyApp')
 
     $scope.editTransactionType = function(id) {
       $location.path(`/transaction-type/${id}`);
+    };
+
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
     };
 
     function setTop(settings) {
@@ -2092,51 +2177,6 @@ angular.module('MyApp')
           console.warn('Error getting transactions type: ', err);
         });
     };    
-    // let data = {
-    //   transactionsType: [],
-    //   isNull: false,
-    //   notFound: {
-    //     url: '/all-transactions-type',
-    //     title: 'transactions',
-    //     message:'Record Not Found!',
-    //   },
-    //   class: {
-    //     active: 'is-active',
-    //     inactive: 'is-inactive'
-    //   },
-    //   top: {
-    //     title: 'transaction type',
-    //     url: '/transaction-type-new',
-    //     show: true
-    //   },
-    //   isLoading: false,
-    //   typeAction: [],
-    //   isActive: 0
-    // };
-    // let transactionsType = TransactionTypeServices.getAllTransactionsType(data.isActive);
-
-    // data.isLoading = true;
-
-    // DefaultServices.setTop(data.top);
-    // data.typeAction = TransactionTypeServices.getTransactionTypeAction();
-
-    // transactionsType.then(function(response) {
-    //   if(!response || response.length == 0) {
-    //     data.isNull = true;
-    //     data.isLoading = false;
-    //     return;
-    //   }
-    //   data.transactionsType = response;
-    //   data.isLoading = false;
-    // }).catch(function(err) {
-    //   console.warn('Error getting transactions type: ', err);
-    // });
-
-    // $scope.editTransactionType = function(id) {
-    //   $location.path(`/transaction-type/${id}`);
-    // };
-
-    // $scope.data = data;
   }]);
 
 angular.module('MyApp')
@@ -2590,6 +2630,14 @@ angular.module('MyApp')
           }
         });
       }
+    };
+  });
+
+angular.module('MyApp')
+  .filter('startFrom', function() {
+    return function(input, start) {
+      start = +start; //parse to int
+      return input.slice(start);
     };
   });
 

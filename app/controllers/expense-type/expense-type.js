@@ -1,11 +1,14 @@
 angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, DefaultServices, ExpenseTypeServices) {
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$filter', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $filter, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
-    }
+    };
+
     $scope.settings = {};
     $scope.data = [];
+    $scope.currentPage = 0;
+    $scope.pageSize = 12; // TODO: Set Default value in json file
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -20,6 +23,18 @@ angular.module('MyApp')
       $location.path(`/expense-type/${id}`);
     };
 
+    $scope.getData = function() {
+      return $filter('filter')($scope.data);
+    };
+
+    $scope.numberOfPages = function() {
+      return Math.ceil($scope.getData().length / $scope.pageSize);
+    };
+
+    $scope.refreshList = function(pageSize) {
+      $scope.pageSize = pageSize;
+    };
+
     function setTop(settings) {
       DefaultServices.setTop(settings.expenseType.defaults.top);
     };
@@ -32,7 +47,6 @@ angular.module('MyApp')
             $scope.settings.expenseType.defaults.isLoading = false;
             return;
           }
-
           $scope.data = response;
           $scope.settings.expenseType.defaults.isLoading = false;
 

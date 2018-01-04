@@ -8,16 +8,13 @@
   #no-more-tables tr { 
     display: block; 
   }
-
   /* Hide table headers (but not display: none;, for accessibility) */
   #no-more-tables thead tr { 
     position: absolute;
     top: -9999px;
     left: -9999px;
   }
-
   #no-more-tables tr { border: 1px solid #ccc; }
-
   #no-more-tables td { 
     /* Behave  like a "row" */
     border: none;
@@ -27,7 +24,6 @@
     white-space: normal;
     text-align:left;
   }
-
   #no-more-tables td:before { 
     /* Now like a table header */
     position: absolute;
@@ -40,13 +36,11 @@
     text-align:left;
     font-weight: bold;
   }
-
   /*
   Label the data
   */
   #no-more-tables td:before { content: attr(data-title); }
 }
-
 .table > tbody > tr > td {
   vertical-align: middle;
 }

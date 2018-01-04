@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <base href="/"/>
-  <meta charset="utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="author" content="Luis Fernando Schneiders">
-  <meta name="robots" content="nofollow" />
-  <title>Your Finance App</title>
-  <link rel="manifest" href="misc/manifest.json">
-  <link rel="stylesheet" href="/css/jquery-ui.min.css"/>
-  <link rel="stylesheet" href="/css/main.css"/>
-</head>
-<body ng-app="MyApp">
-  <section ng-include src="'partials/menu.html'"></section>
-  <section class="container-fluid custom-container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div ng-include src="'partials/main/top.html'"></div>
+  <head>
+    <base href="/"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="author" content="Luis Fernando Schneiders">
+    <meta name="robots" content="nofollow" />
+    <title>Your Finance App</title>
+    <link rel="manifest" href="misc/manifest.json">
+    <link rel="stylesheet" href="/css/jquery-ui.min.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+  </head>
+  <body ng-app="MyApp" ng-cloak>
+    <section ng-include src="'partials/menu.html'"></section>
+    <section class="container-fluid custom-container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div ng-include src="'partials/main/top.html'"></div>
+        </div>
+        <main id="main" ng-view></main>
       </div>
-      <main id="main" ng-view></main>
-    </div>
-  </section>
-  </section>
-  <section ng-include src="'partials/footer.html'"></section>
-  <script src="/js/lib/jquery.js"></script>
-  <script src="/js/lib/jquery-ui.min.js"></script>
-  <script src="/js/lib/bootstrap.js"></script>
-  <script src="/js/lib/angular.js"></script>
-  <script src="/js/lib/angular-route.js"></script>
-  <script src="/js/lib/satellizer.js"></script>
-  <script src="/js/lib/chart.js"></script>
-  <script src="/js/lib/moment.min.js"></script>
-  <script src="/js/lib/angular-moment.min.js"></script>
-  <script src="/js/lib/lodash.min.js"></script>
-  <script src="/js/lib/angular-lodash.js"></script>
-  <script src="/js/application.js"></script>
-  <script src="/js/templates.js"></script>
-</body>
+    </section>
+    <section ng-include src="'partials/footer.html'"></section>
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/js/lib/jquery-ui.min.js"></script>
+    <script src="/js/lib/bootstrap.js"></script>
+    <script src="/js/lib/angular.js"></script>
+    <script src="/js/lib/angular-route.js"></script>
+    <script src="/js/lib/satellizer.js"></script>
+    <script src="/js/lib/chart.js"></script>
+    <script src="/js/lib/moment.min.js"></script>
+    <script src="/js/lib/angular-moment.min.js"></script>
+    <script src="/js/lib/lodash.min.js"></script>
+    <script src="/js/lib/angular-lodash.js"></script>
+    <script src="/js/application.js"></script>
+    <script src="/js/templates.js"></script>
+  </body>
 </html>

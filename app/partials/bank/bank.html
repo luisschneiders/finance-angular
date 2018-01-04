@@ -1,14 +1,21 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-if="settings.bank.defaults.isNull === true">
+        <div class="alert alert-danger text-center" ng-show="settings.bank.defaults.isNull">
           <h3>{{::settings.bank.defaults.notFound.message}}</h3>
         </div>
-        <div id="no-more-tables" ng-if="settings.bank.defaults.isNull === false">
+        <div class="row" ng-show="!settings.bank.defaults.isNull">
+          <div class="col-xs-6 col-sm-4"><input type="text" placeholder="Search..." ng-model="bankDescription" class="search-input"></div>
+          <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{data.length}}</span> records</div>
+          <div class="col-xs-12 col-sm-4 text-right">
+            <div ng-include="'partials/defaults/display-rows.tpl.html'"></div>
+          </div>
+        </div>
+        <div id="no-more-tables" ng-show="!settings.bank.defaults.isNull">
           <table class="table table-responsive table-hover">
             <thead>
               <tr>
-                <th><input type="text" placeholder="Search..." ng-model="bankDescription" class="search-input"></th>
+                <th>Bank</th>
                 <th>Account</th>
                 <th class="text-right">Initial Balance</th>
                 <th class="text-right">Current Balance</th>
@@ -23,7 +30,7 @@
                   <span class="sr-only">Loading...</span>
                 </td>
               </tr>
-              <tr ng-repeat="item in data | orderBy: 'bankDescription' | filter:bankDescription" ng-click="editBank(item.id)">
+              <tr ng-repeat="item in data | orderBy: 'bankDescription' | filter:bankDescription | startFrom:currentPage * pageSize | limitTo:pageSize" ng-click="editBank(item.id)">
                 <td data-title="Bank" class="text-uppercase">{{::item.bankDescription}}</td>
                 <td data-title="Account" >{{::item.bankAccount}}</td>
                 <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>
@@ -33,6 +40,18 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <!-- <div ng-include="'partials/defaults/pagination.html'"></div> -->
+        <div class="row" ng-show="!settings.expenseType.defaults.isNull">
+          <div class="col-xs-5 text-right">
+            <button ng-disabled="currentPage == 0" ng-click="currentPage = currentPage - 1" class="btn btn-default"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
+          </div>
+          <div class="col-xs-2 text-center">
+            <span>Page {{currentPage + 1}} of {{numberOfPages()}}</span>
+          </div>
+          <div class="col-xs-5 text-left">
+            <button ng-disabled="currentPage >= getData().length / pageSize - 1" ng-click="currentPage = currentPage + 1" class="btn btn-default btn-me"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+          </div>
         </div>
       </div>
     </div>

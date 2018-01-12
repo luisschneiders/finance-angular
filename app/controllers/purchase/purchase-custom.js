@@ -1,3 +1,4 @@
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
@@ -26,9 +27,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },
       top: {
-        title: 'purchase custom search',
-        url: 'purchase-new',
-        show: true
+        pageTitle: 'purchase custom search',
+        buttonTitle: 'add',
+        buttonUrl: '/purchase-new',
+        buttonDisplay: true
       },
       customSearch: {}
     };

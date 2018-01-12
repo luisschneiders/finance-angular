@@ -155,7 +155,7 @@ $switchbordersize: .1em;
 $switchbordercolor: darken($switchbg, 15%);
 $activecolor: $mid-green;
 $activebordercolor: darken($activecolor, 5%);
-$labeloffset: $toggleheight / 5;
+$labeloffset: $toggleheight / 5.5;
 $borderradius: 2em;
 
 .toggle-bg {
@@ -168,7 +168,6 @@ $borderradius: 2em;
   position: relative; /* Required to allow the switch to move around */
   width: $togglewidth; /* This can be changed later as well */
   @include transition-duration(.2s);
-  position: relative;
   &:hover {
     border-color: darken($togglebordercolor,5%);
   }
@@ -233,7 +232,7 @@ $borderradius: 2em;
 // Alternate
 .toggle-alternate {
   clear: both;
-  margin: 4px 0 0;
+  margin: 6px 0 10px 0;
   width: $togglewidth * 1.4;
   input {
     width: $toggleinputwidth * 1.3;

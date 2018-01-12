@@ -82,7 +82,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PeopleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/transactions/:year/:month', {
+      .when('/transactions=:year-:month', {
         templateUrl: 'partials/transaction/transaction.html',
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
@@ -93,8 +93,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-new', {
-        templateUrl: 'partials/transaction/transaction-edit.html',
-        controller: 'TransactionNewCtrl',
+        templateUrl: 'partials/transaction/transaction-update.html',
+        controller: 'TransactionUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/purchases/:year/:month', {
@@ -140,7 +140,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       }
     }
   }])
-  .run(["$rootScope", "$window", "DefaultServices", function($rootScope, $window, DefaultServices) {
+  .run(["$rootScope", "$window", function($rootScope, $window) {
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }
@@ -528,29 +528,6 @@ angular.module('MyApp')
     };
   }]);
 
-// TODO - not working just yet
-// angular.module('MyApp')
-//   .controller('PaginationCtrl', ['$scope', '$auth', '$location', '$filter', function($scope, $auth, $location, $filter) {
-//     $scope.currentPage = 0;
-//     $scope.pageSize = 12;
-
-//     if (!$auth.isAuthenticated()) {
-//       $location.path('/login');
-//       return;
-//     };
-
-//     $scope.getData = function() {
-//       return $filter('filter')($scope.data);
-//     };
-
-//     $scope.numberOfPages = function() {
-//       // console.log('$scope.getData()', $scope.getData());
-//       console.log('$scope.pageSize', $scope.pageSize);
-//       // console.log('Math.ceil($scope.getData().length / $scope.pageSize);', Math.ceil($scope.getData().length / $scope.pageSize));
-//       return Math.ceil($scope.getData().length / $scope.pageSize);
-//     };
-//   }]);
-
 angular.module('MyApp')
   .controller('ExpenseTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $timeout, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
@@ -723,9 +700,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },      
       top: {
-        title: 'Annual Graphics',
-        url: null,
-        show: false
+        pageTitle: 'Annual Graphics',
+        buttonTitle: null,
+        buttonUrl: null,
+        buttonDisplay: false        
       },
       isLoading: true,
       year: $location.path().substr(6) // to remove /main/
@@ -1111,7 +1089,8 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices', 
+  function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -1130,6 +1109,7 @@ angular.module('MyApp')
       }).catch(function(err) {
         console.warn('Error getting settings: ', err);
       });
+
 
     $scope.editPeople = function(id) {
       $location.path(`/user/${id}`);
@@ -1162,13 +1142,13 @@ angular.module('MyApp')
 
           $scope.settings.people.defaults.isLoading = false;
           $scope.data = response;
-
         }).catch(function(err) {
           console.warn('Error getting users: ', err);
         });
     };
   }]);
 
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('PurchaseCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
@@ -1197,9 +1177,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },
       top: {
-        title: 'purchase custom search',
-        url: 'purchase-new',
-        show: true
+        pageTitle: 'purchase custom search',
+        buttonTitle: 'add',
+        buttonUrl: '/purchase-new',
+        buttonDisplay: true
       },
       customSearch: {}
     };
@@ -1289,6 +1270,7 @@ angular.module('MyApp')
     $scope.data = data;
   }]);
 
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
     function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
@@ -1303,9 +1285,10 @@ angular.module('MyApp')
       isSaving: false,
       isActive: 1,
       top: {
-        title: 'new purchase',
-        url: '/purchase-new',
-        show: false
+        pageTitle: 'new purchase',
+        buttonTitle: 'add',
+        buttonUrl: '/purchase-new',
+        buttonDisplay: false
       },
       required: 'All fields are required',
       noBalance: '',
@@ -1408,6 +1391,7 @@ angular.module('MyApp')
     $scope.data = data;
   }]);
 
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
@@ -1436,9 +1420,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },
       top: {
-        title: 'Purchases',
-        url: 'purchase-new',
-        show: true
+        pageTitle: 'purchases',
+        buttonTitle: 'add',
+        buttonUrl: '/purchase-new',
+        buttonDisplay: true
       },
       customSearch: {},
       monthAndYear: null,
@@ -1696,6 +1681,7 @@ angular.module('MyApp')
     };
   }]);
 
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('TransactionCustomCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
@@ -1824,66 +1810,118 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-  .controller('TransactionNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'TransactionTypeServices', 'DefaultServices', function($scope, $auth, $location, $timeout, TransactionTypeServices, DefaultServices) {
+  .controller('TransactionUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'TransactionTypeServices', 'BankServices',
+  function($scope, $auth, $location, $timeout, DefaultServices, TransactionTypeServices, BankServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
-    let data = {
-      isSaving: false,
-      isNull: false, // it's required for the transaction-type-edit.html
-      isActive: 1,
-      top: {
-        title: 'new transaction',
-        url: '/transaction-new',
-        show: true
-      },
-      transactionType: null
+
+    $scope.settings = {};
+    $scope.form = {};
+    $scope.transactionTypeObj = {};
+    $scope.transactionsType = [];
+    $scope.banks = [];
+
+    let newRecord = true;
+    let isValidForm = false;
+
+    setController(newRecord);
+
+    $scope.saveTransaction = function($valid) {
+      if ($scope.settings.transactions.defaults.isSaving) {
+        return;
+      }
+      if (!$valid) {
+        $scope.settings.transactions.defaults.messages = {
+          error: [{
+            msg: $scope.settings.transactions.defaults.required
+          }]
+        };
+        return;
+      }
+      isValidForm = checkValidation($scope.form);
+      console.log('form', $scope.form);
+      console.log('isValidForm', isValidForm);
+      // $scope.settings.transactions.defaults.isSaving = true;
     };
-    let transactionType = null;
 
-    DefaultServices.setTop(data.top);
-
-    transactionType = TransactionTypeServices.getAllTransactionsType(data.isActive);
-    transactionType.then(function(response){
-      data.transactionType = response;
-    }).catch(function(response) {
-      console.warn('Error getting transaction type: ', response);
-      data.messages = {
-        error: Array.isArray(response.data) ? response.data : [response.data]
-      };
-    });
-
-    $scope.saveTransactionType = function($valid) {
-      let transactionTypeUpdated = transactionTypeUpdated || null;
-      if (data.isSaving) {
-        return;
+    $scope.checkTransactionTypeAction = function (model, option) {
+      let bankFromDescription = '';
+      let bankToDescription = '';
+      if (model.transactionTypeAction == 'T') {
+        _.find($scope.banks, function(bank){
+          if ($scope.form.transactionFromBank == bank.id) {
+            bankFromDescription = bank.bankDescription;
+          }
+          if ($scope.form.transactionToBank == bank.id) {
+            bankToDescription = bank.bankDescription;
+          }
+        });
+        return $scope.form.transactionComments = `FROM: ${bankFromDescription.toUpperCase()}, TO: ${bankToDescription.toUpperCase()}`
       }
-      if(!$valid) {
-        return;
-      }
-      data.isSaving = true;
-      transactionTypeUpdated = TransactionTypeServices.add(data.transactionType);
-      transactionTypeUpdated.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        $timeout(function() {
-          $location.path(`/transaction-type/${response.data.transactionType.id}`);
-        }, 1000);
-      }).catch(function(response) {
-        console.warn('Error updating transaction type: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
+      return $scope.form.transactionComments = '';
+    };
+
+    function setController(newRecord) {
+      DefaultServices.getSettings()
+      .then(function(response) {
+        $scope.settings = response;
+        setTop(newRecord, response);
+        setForm(newRecord, response);
+        getTransactionsType(response);
+        getBanks(response);
+      }).catch(function(err) {
+        console.warn('Error getting settings: ', err)
       });
     };
 
-    $scope.data = data;
+    function setTop(newRecord, settings) {
+      DefaultServices.setTop(settings.transactions.newRecord.top);
+    };
+
+    function setForm(newRecord, settings) {
+      $scope.form = settings.transactions.defaults.form;
+    };
+
+    function getTransactionsType(settings) {
+      TransactionTypeServices.getAllTransactionsType(settings.transactions.defaults.isActive)
+        .then(function(response){
+          $scope.transactionsType = response;
+        }).catch(function(response) {
+          console.warn('Error getting transaction type: ', response);
+          data.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          };
+        });
+    }
+
+    function getBanks(settings) {
+      BankServices.getAllBanks(settings.transactions.defaults.isActive)
+        .then(function(response) {
+          $scope.banks = response;
+        }).catch(function(response) {
+          console.warn.apply('Error getting banks: ', response);
+          data.messages = {
+            error: Array.isArray(response.data) ? response.data : [response.data]
+          }
+        });
+    };
+    function checkValidation() {
+      if (parseFloat($scope.form.transactionAmount) === 0) {
+        $scope.settings.transactions.defaults.messages = {
+          error: [{
+            msg: $scope.settings.transactions.defaults.notZero
+          }]
+        };
+        return false;
+      }
+      
+      return true;
+    };
   }]);
 
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('TransactionCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
@@ -1913,9 +1951,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },
       top: {
-        title: 'Transactions',
-        url: 'transaction-new',
-        show: true
+        pageTitle: 'Transactions',
+        buttonTitle: 'Add',
+        buttonUrl: 'transaction-new',
+        buttonDisplay: true
       },
       monthAndYear: null,
       currentPeriod: $location.path().substr(14), // to remove /transactions/
@@ -1949,7 +1988,7 @@ angular.module('MyApp')
 
       data.period.year = moment(data.monthAndYear).format('YYYY');
       data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/transactions/${data.period.year}/${data.period.month}`);
+      $location.path(`/transactions=${data.period.year}-${data.period.month}`);
     };
 
     $scope.deleteTransaction = function(id) {
@@ -2258,16 +2297,16 @@ angular.module('MyApp')
       return settings;
     },
     setTop: function(data) {
-      top.title = data.title;
-      top.url = data.url;
-      top.show = data.show;
+      top.pageTitle = data.pageTitle;
+      top.buttonTitle = data.buttonTitle;
+      top.buttonUrl = data.buttonUrl;
+      top.buttonDisplay = data.buttonDisplay;
     },
     getTop: function() {
       return top;
     },
     setMonthAndYear: function(data) {
-      let date = null;
-      date = data.toString().split('/').join('-');
+      let date = data.toString().split('/').join('-');
       date = date + '-01';
       monthAndYear = new Date(date);
     },

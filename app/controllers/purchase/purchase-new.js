@@ -1,3 +1,4 @@
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
     function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
@@ -12,9 +13,10 @@ angular.module('MyApp')
       isSaving: false,
       isActive: 1,
       top: {
-        title: 'new purchase',
-        url: '/purchase-new',
-        show: false
+        pageTitle: 'new purchase',
+        buttonTitle: 'add',
+        buttonUrl: '/purchase-new',
+        buttonDisplay: false
       },
       required: 'All fields are required',
       noBalance: '',

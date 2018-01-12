@@ -15,16 +15,16 @@ angular.module('MyApp')
       return settings;
     },
     setTop: function(data) {
-      top.title = data.title;
-      top.url = data.url;
-      top.show = data.show;
+      top.pageTitle = data.pageTitle;
+      top.buttonTitle = data.buttonTitle;
+      top.buttonUrl = data.buttonUrl;
+      top.buttonDisplay = data.buttonDisplay;
     },
     getTop: function() {
       return top;
     },
     setMonthAndYear: function(data) {
-      let date = null;
-      date = data.toString().split('/').join('-');
+      let date = data.toString().split('/').join('-');
       date = date + '-01';
       monthAndYear = new Date(date);
     },

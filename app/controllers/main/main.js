@@ -13,9 +13,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },      
       top: {
-        title: 'Annual Graphics',
-        url: null,
-        show: false
+        pageTitle: 'Annual Graphics',
+        buttonTitle: null,
+        buttonUrl: null,
+        buttonDisplay: false
       },
       isLoading: true,
       year: $location.path().substr(6) // to remove /main/

@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const moment = require('moment');
 const request = require('request');
 const favicon = require('serve-favicon');
 /*
@@ -15,7 +14,7 @@ const favicon = require('serve-favicon');
   Reference: https://developers.google.com/web/fundamentals/performance/http2/
              https://webapplog.com/http2-server-push-node-express/
 */
-const spdy = require('spdy'); 
+const spdy = require('spdy');
 const fs = require('fs');
 const options = {
   key: fs.readFileSync('./cert/localhost.key'),

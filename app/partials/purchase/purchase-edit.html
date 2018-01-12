@@ -9,6 +9,12 @@
         </div>
         <form name="standardForm" ng-submit="savePurchase(standardForm.$valid)" class="form-horizontal" novalidate>
           <div class="form-group">
+            <label for="purchaseDate" class="col-sm-3">Date</label>
+            <div class="col-sm-7">
+              <input type="text" name="purchaseDate" id="purchaseDate" class="form-control" ng-model='data.purchase.purchaseDate' calendar required/>
+            </div>
+          </div>
+          <div class="form-group">
             <label for="purchaseBank" class="col-sm-3">Bank</label>
             <div class="col-sm-7">
               <span ng-if="data.banks.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.bank.url}}">({{data.notFound.bank.title}})</a></span>
@@ -27,12 +33,6 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="purchaseDate" class="col-sm-3">Date</label>
-            <div class="col-sm-7">
-              <input type="text" name="purchaseDate" id="purchaseDate" class="form-control" ng-model='data.purchase.purchaseDate' calendar required/>
-            </div>
-          </div>
-          <div class="form-group">
             <label for="purchaseComments" class="col-sm-3">Comments</label>
             <div class="col-sm-7">
               <textarea name="purchaseComments" id="purchaseComments" class="form-control" ng-model="data.purchase.purchaseComments" rows="3" required></textarea>
@@ -43,7 +43,7 @@
             <div class="col-sm-7">
               <input type="text" name="purchaseAmount" id="purchaseAmount" class="form-control" ng-model="data.purchase.purchaseAmount" format="number" required>
             </div>
-          </div>          
+          </div>
           <div class="form-group">
             <div class="col-sm-offset-3 col-sm-4">
               <button type="submit" class="btn btn-success">Save</button>

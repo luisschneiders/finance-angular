@@ -80,7 +80,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PeopleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/transactions/:year/:month', {
+      .when('/transactions=:year-:month', {
         templateUrl: 'partials/transaction/transaction.html',
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
@@ -91,8 +91,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-new', {
-        templateUrl: 'partials/transaction/transaction-edit.html',
-        controller: 'TransactionNewCtrl',
+        templateUrl: 'partials/transaction/transaction-update.html',
+        controller: 'TransactionUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/purchases/:year/:month', {
@@ -138,7 +138,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       }
     }
   })
-  .run(function($rootScope, $window, DefaultServices) {
+  .run(function($rootScope, $window) {
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }

@@ -1,3 +1,4 @@
+// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('TransactionCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'TransactionServices', 'TransactionTypeServices', 'DefaultServices',
   function($scope, $auth, $location, $timeout, moment, TransactionServices, TransactionTypeServices, DefaultServices) {
@@ -27,9 +28,10 @@ angular.module('MyApp')
         message:'No data found for the period!',
       },
       top: {
-        title: 'Transactions',
-        url: 'transaction-new',
-        show: true
+        pageTitle: 'Transactions',
+        buttonTitle: 'Add',
+        buttonUrl: 'transaction-new',
+        buttonDisplay: true
       },
       monthAndYear: null,
       currentPeriod: $location.path().substr(14), // to remove /transactions/
@@ -63,7 +65,7 @@ angular.module('MyApp')
 
       data.period.year = moment(data.monthAndYear).format('YYYY');
       data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/transactions/${data.period.year}/${data.period.month}`);
+      $location.path(`/transactions=${data.period.year}-${data.period.month}`);
     };
 
     $scope.deleteTransaction = function(id) {

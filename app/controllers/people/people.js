@@ -1,5 +1,6 @@
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices', function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices',
+  function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -18,6 +19,7 @@ angular.module('MyApp')
       }).catch(function(err) {
         console.warn('Error getting settings: ', err);
       });
+
 
     $scope.editPeople = function(id) {
       $location.path(`/user/${id}`);
@@ -50,7 +52,6 @@ angular.module('MyApp')
 
           $scope.settings.people.defaults.isLoading = false;
           $scope.data = response;
-
         }).catch(function(err) {
           console.warn('Error getting users: ', err);
         });

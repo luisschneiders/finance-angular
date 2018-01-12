@@ -15,7 +15,7 @@ results
 tmp
 coverage
 settings
-public/css/*.css
+public/css/main.css
 public/js/
 
 # API keys

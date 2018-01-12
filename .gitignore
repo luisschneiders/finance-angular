@@ -15,6 +15,8 @@ results
 tmp
 coverage
 settings
+public/css/*.css
+public/js/
 
 # API keys
 .env

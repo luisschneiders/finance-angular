@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$filter', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $filter, DefaultServices, ExpenseTypeServices) {
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $filter, $anchorScroll, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -33,6 +33,10 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $scope.pageSize = pageSize;
+    };
+
+    $scope.scrollUp = function() {
+      $anchorScroll();
     };
 
     function setTop(settings) {

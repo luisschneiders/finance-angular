@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', 'DefaultServices', 'TransactionTypeServices', function($scope, $auth, $location, $filter, DefaultServices, TransactionTypeServices) {
+  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'DefaultServices', 'TransactionTypeServices', function($scope, $auth, $location, $filter, $anchorScroll, DefaultServices, TransactionTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -32,6 +32,10 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $scope.pageSize = pageSize;
+    };
+
+    $scope.scrollUp = function() {
+      $anchorScroll();
     };
 
     function setTop(settings) {

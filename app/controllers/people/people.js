@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', 'PeopleServices', 'DefaultServices',
-  function($scope, $auth, $location, $filter, PeopleServices, DefaultServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'PeopleServices', 'DefaultServices',
+  function($scope, $auth, $location, $filter, $anchorScroll, PeopleServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -35,6 +35,10 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $scope.pageSize = pageSize;
+    };
+
+    $scope.scrollUp = function() {
+      $anchorScroll();
     };
 
     function setTop(settings) {

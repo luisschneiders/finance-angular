@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $filter, BankServices, DefaultServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $filter, $anchorScroll, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
@@ -33,6 +33,10 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $scope.pageSize = pageSize;
+    };
+
+    $scope.scrollUp = function() {
+      $anchorScroll();
     };
 
     function setTop(settings) {

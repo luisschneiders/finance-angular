@@ -43,13 +43,13 @@
         </div>
         <div class="row" ng-show="!settings.expenseType.defaults.isNull">
           <div class="col-xs-5 text-right">
-            <button ng-disabled="currentPage == 0" ng-click="currentPage = currentPage - 1" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
+            <button ng-disabled="currentPage == 0" ng-click="scrollUp(); currentPage = currentPage - 1" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
           </div>
           <div class="col-xs-2 text-center">
             <span>Page {{currentPage + 1}} of {{numberOfPages()}}</span>
           </div>
           <div class="col-xs-5 text-left">
-            <button ng-disabled="currentPage >= getData().length / pageSize - 1" ng-click="currentPage = currentPage + 1" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
+            <button ng-disabled="currentPage >= getData().length / pageSize - 1" ng-click="scrollUp(); currentPage = currentPage + 1" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
           </div>
         </div>
       </div>

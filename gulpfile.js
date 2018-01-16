@@ -24,11 +24,8 @@ gulp.task('sass', function() {
 gulp.task('angular', function() {
   return gulp.src([
     'app/app.js',
-    'app/controllers/*.js',
-    'app/controllers/**/*.js',
-    'app/services/*.js',
-    'app/directives/*.js',
-    'app/filters/*.js'
+    'app/components/**/*.js',
+    'app/shared/**/*.js',
   ])
     .pipe(concat('application.js'))
     .pipe(ngAnnotate())
@@ -37,8 +34,8 @@ gulp.task('angular', function() {
 });
 
 gulp.task('templates', function() {
-  return gulp.src('app/partials/**/*.html')
-    .pipe(templateCache({ root: 'partials', module: 'MyApp' }))
+  return gulp.src(['app/components/**/*.html', 'app/shared/**/*.html'])
+    .pipe(templateCache({ root: 'components', module: 'MyApp' }))
     .pipe(gulpif(argv.production, uglify()))
     .pipe(gulp.dest('public/js'));
 });
@@ -56,8 +53,8 @@ gulp.task('misc', function () {
 
 gulp.task('watch', function() {
   gulp.watch('public/css/**/*.scss', ['sass']);
-  gulp.watch('app/partials/**/*.html', ['templates']);
-  gulp.watch('app/**/*.js', ['angular']);
+  gulp.watch('app/**/**/*.html', ['templates']);
+  gulp.watch('app/**/**/*.js', ['angular']);
 });
 
 gulp.task('build', ['sass', 'angular', 'vendor', 'templates', 'misc']);

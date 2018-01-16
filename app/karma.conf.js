@@ -15,11 +15,9 @@ module.exports = function(config) {
       'vendor/jquery-ui.min.js',
       // App entry point
       'app.js',
-      // App services, controllers, directives, filters, etc.
-      'controllers/*.js',
-      'services/*.js',
-      'directives/*.js',
-      'filters/*.js',
+      // App components, services, controllers, directives, filters, etc.
+      'components/**/*.js',
+      'shared/**/*.js',
       // Unit tests
       'test/unit/**/*.test.js'
     ],
@@ -41,11 +39,8 @@ module.exports = function(config) {
 
     preprocessors: {
       'app.js': ['coverage'],
-      'controllers/*.js': ['coverage'],
-      'controllers/**/*.js': ['coverage'],
-      'services/*.js': ['coverage'],
-      'directives/*.js': ['coverage'],
-      'filters/*.js': ['coverage']
+      'components/**/*.js': ['coverage'],
+      'shared/**/*.js': ['coverage'],
     },
 
     coverageReporter: {

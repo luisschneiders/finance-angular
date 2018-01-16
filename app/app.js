@@ -4,119 +4,119 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
     $locationProvider.html5Mode(true);
     $routeProvider
       .when('/', {
-        templateUrl: 'partials/home.html'
+        templateUrl: 'components/home/home.html'
       })
       .when('/contact', {
-        templateUrl: 'partials/contact.html',
+        templateUrl: 'components/contact/contact.html',
         controller: 'ContactCtrl'
       })
       .when('/login', {
-        templateUrl: 'partials/login.html',
+        templateUrl: 'components/login/login.html',
         controller: 'LoginCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
       .when('/signup', {
-        templateUrl: 'partials/signup.html',
+        templateUrl: 'components/signup/signup.html',
         controller: 'SignupCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
       .when('/account', {
-        templateUrl: 'partials/profile.html',
+        templateUrl: 'components/profile/profile.html',
         controller: 'ProfileCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/forgot', {
-        templateUrl: 'partials/forgot.html',
+        templateUrl: 'components/forgot/forgot.html',
         controller: 'ForgotCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
       .when('/reset/:token', {
-        templateUrl: 'partials/reset.html',
+        templateUrl: 'components/reset/reset.html',
         controller: 'ResetCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
       .when('/main/:year', {
-        templateUrl: 'partials/main/main.html',
+        templateUrl: 'components/main/main.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-banks', {
-        templateUrl: 'partials/bank/bank.html',
+        templateUrl: 'components/bank/bank.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/bank/:id', {
-        templateUrl: 'partials/bank/bank-update.html',
+        templateUrl: 'components/bank/bank-update.html',
         controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-expenses-type', {
-        templateUrl: 'partials/expense-type/expense-type.html',
+        templateUrl: 'components/expense-type/expense-type.html',
         controller: 'ExpenseTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/expense-type/:id', {
-        templateUrl: 'partials/expense-type/expense-type-update.html',
+        templateUrl: 'components/expense-type/expense-type-update.html',
         controller: 'ExpenseTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-transactions-type', {
-        templateUrl: 'partials/transaction-type/transaction-type.html',
+        templateUrl: 'components/transaction-type/transaction-type.html',
         controller: 'TransactionTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-type/:id', {
-        templateUrl: 'partials/transaction-type/transaction-type-update.html',
+        templateUrl: 'components/transaction-type/transaction-type-update.html',
         controller: 'TransactionTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/all-users', {
-        templateUrl: 'partials/people/people.html',
+        templateUrl: 'components/people/people.html',
         controller: 'PeopleCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/user/:id', {
-        templateUrl: 'partials/people/people-update.html',
+        templateUrl: 'components/people/people-update.html',
         controller: 'PeopleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transactions=:year-:month', {
-        templateUrl: 'partials/transaction/transaction.html',
+        templateUrl: 'components/transaction/transaction.html',
         controller: 'TransactionCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/custom-search-transactions=:from&:to&:transactionType', {
-        templateUrl: 'partials/transaction/transaction-custom.html',
+        templateUrl: 'components/transaction/transaction-custom.html',
         controller: 'TransactionCustomCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/transaction-new', {
-        templateUrl: 'partials/transaction/transaction-update.html',
+        templateUrl: 'components/transaction/transaction-update.html',
         controller: 'TransactionUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/purchases/:year/:month', {
-        templateUrl: 'partials/purchase/purchase.html',
+        templateUrl: 'components/purchase/purchase.html',
         controller: 'PurchaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/custom-search-purchases=:from&:to&:expenseType', {
-        templateUrl: 'partials/purchase/purchase-custom.html',
+        templateUrl: 'components/purchase/purchase-custom.html',
         controller: 'PurchaseCustomCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/purchase-new', {
-        templateUrl: 'partials/purchase/purchase-edit.html',
+        templateUrl: 'components/purchase/purchase-edit.html',
         controller: 'PurchaseNewCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/populate-database', {
-        templateUrl: 'partials/settings/populate-database.html',
+        templateUrl: 'components/settings/populate-database.html',
         controller: 'PopulateDatabaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
-        templateUrl: 'partials/404.html'
+        templateUrl: 'shared/404/404.html'
       });
 
     $authProvider.loginUrl = '/login';

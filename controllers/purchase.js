@@ -146,10 +146,11 @@ exports.purchasePost = function(req, res) {
   };
 
   async function transaction() {
+    let transactionID = 0;
     try {
-      let updateBalance = await updateBankBalance();
-      let transactionID = await saveTransaction();
-      let purchase = await savePurchase(transactionID);
+      await updateBankBalance();
+      transactionID = await saveTransaction();
+      await savePurchase(transactionID);
       res.status(200).send({msg: 'Purchase Saved!'})
     } catch(error) {
       console.error(error);

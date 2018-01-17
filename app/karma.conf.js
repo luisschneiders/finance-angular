@@ -9,7 +9,6 @@ module.exports = function(config) {
       'vendor/chart.js',
       'vendor/moment.min.js',
       'vendor/angular-moment.min.js',
-      'vendor/angular-moment.min.js.map',
       'vendor/lodash.min.js',
       'vendor/angular-lodash.js',
       'vendor/jquery-ui.min.js',

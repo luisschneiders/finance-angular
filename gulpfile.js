@@ -41,8 +41,10 @@ gulp.task('templates', function() {
 });
 
 gulp.task('vendor', function() {
-  return gulp.src(['app/vendor/*.js', 'app/vendor/*.js.map'])
+  return gulp.src(['app/vendor/*.js'])
+    .pipe(sourcemaps.init())
     .pipe(gulpif(argv.production, uglify()))
+    .pipe(sourcemaps.write('../maps'))
     .pipe(gulp.dest('public/js/lib'));
 });
 

@@ -15,11 +15,10 @@ angular.module('MyApp')
 
     if (Number.isInteger(parseInt(peopleId))) {
       newRecord = false;
-      setController(newRecord);
-      getPeople(peopleId);
+      setControllerSettings(newRecord);
     } else {
       newRecord = true;
-      setController(newRecord);
+      setControllerSettings(newRecord);
     }
 
     $scope.savePeople = function($valid) {
@@ -52,12 +51,15 @@ angular.module('MyApp')
         });
     };
 
-    function setController(newRecord) {
+    function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
         $scope.settings = response;
         setTop(newRecord, response);
         setForm(newRecord, response);
+        if(!newRecord) {
+          getPeople(peopleId);
+        }
       }).catch(function(err) {
         console.warn('Error getting settings: ', err)
       });

@@ -16,7 +16,7 @@ angular.module('MyApp')
     let isValidForm = false;
     let transactionTypeAction = 'T';
 
-    setController(newRecord);
+    setControllerSettings(newRecord);
 
     $scope.saveTransaction = function($valid) {
       if ($scope.settings.transactions.defaults.isSaving) {
@@ -53,7 +53,7 @@ angular.module('MyApp')
       return $scope.form.transactionComments = '';
     };
 
-    function setController(newRecord) {
+    function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
         $scope.settings = response;

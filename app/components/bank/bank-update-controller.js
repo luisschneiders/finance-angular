@@ -14,11 +14,10 @@ angular.module('MyApp')
 
     if (Number.isInteger(parseInt(bankId))) {
       newRecord = false;
-      setController(newRecord);
-      getBank(bankId);
+      setControllerSettings(newRecord);
     } else {
       newRecord = true;
-      setController(newRecord);
+      setControllerSettings(newRecord);
     }
 
     $scope.saveBank = function($valid) {
@@ -51,12 +50,15 @@ angular.module('MyApp')
         });
     };
 
-    function setController(newRecord) {
+    function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
         $scope.settings = response;
         setTop(newRecord, response);
         setForm(newRecord, response);
+        if(!newRecord) {
+          getBank(bankId);
+        }
       }).catch(function(err) {
         console.warn('Error getting settings: ', err)
       });

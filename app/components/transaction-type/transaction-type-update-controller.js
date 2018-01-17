@@ -15,11 +15,10 @@ angular.module('MyApp')
 
     if (Number.isInteger(parseInt(transactionTypeId))) {
       newRecord = false;
-      setController(newRecord);
-      getTransactionType(transactionTypeId);
+      setControllerSettings(newRecord);
     } else {
       newRecord = true;
-      setController(newRecord);
+      setControllerSettings(newRecord);
     }
 
     $scope.saveTransactionType = function($valid) {
@@ -52,12 +51,15 @@ angular.module('MyApp')
         });
     };
 
-    function setController(newRecord) {
+    function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
         $scope.settings = response;
         setTop(newRecord, response);
         setForm(newRecord, response);
+        if(!newRecord) {
+          getTransactionType(transactionTypeId);
+        }
       }).catch(function(err) {
         console.warn('Error getting settings: ', err)
       });

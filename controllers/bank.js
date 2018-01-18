@@ -1,7 +1,7 @@
 const Bank = require('../models/Bank');
 
 /**
- * GET /get-all-banks/page=:page
+ * GET /get-all-banks/page=:page&pageSize=:pageSize
  */
 exports.getAllBanks = function(req, res) {
   let params = {
@@ -10,7 +10,7 @@ exports.getAllBanks = function(req, res) {
   };
   Bank.getAllBanks(req.user.id, params)
     .then(function(banks) {
-      res.send(JSON.stringify({ data: banks, pagination: banks.pagination }));
+      res.send(JSON.stringify({data: banks, pagination: banks.pagination}));
     }).catch(function(err) {
       console.error(err);
     });
@@ -41,11 +41,11 @@ exports.getBankById = function(req, res) {
 };
 
 /**
- * SAVE /banks/new
+ * SAVE /bank-new
  * or
- * SAVE /banks/:id
+ * SAVE /bank-id=:id
  */
-exports.bankSave = function(req, res) {
+exports.saveBank = function(req, res) {
   let bank = null;
   let errors = null;
   let checkRecord = 0;

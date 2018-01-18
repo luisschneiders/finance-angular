@@ -50,32 +50,32 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-expenses-type', {
+      .when('/all-expenses-type/page=:page&pageSize=:pageSize', {
         templateUrl: 'components/expense-type/expense-type.html',
         controller: 'ExpenseTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/expense-type/:id', {
+      .when('/expense-type=:id', {
         templateUrl: 'components/expense-type/expense-type-update.html',
         controller: 'ExpenseTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-transactions-type', {
+      .when('/all-transactions-type/page=:page&pageSize=:pageSize', {
         templateUrl: 'components/transaction-type/transaction-type.html',
         controller: 'TransactionTypeCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/transaction-type/:id', {
+      .when('/transaction-type=:id', {
         templateUrl: 'components/transaction-type/transaction-type-update.html',
         controller: 'TransactionTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-users', {
+      .when('/all-users/page=:page&pageSize=:pageSize', {
         templateUrl: 'components/people/people.html',
         controller: 'PeopleCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/user/:id', {
+      .when('/user=:id', {
         templateUrl: 'components/people/people-update.html',
         controller: 'PeopleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
@@ -116,7 +116,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
-        templateUrl: 'shared/404/404.html'
+        templateUrl: 'components/404/404.html'
       });
 
     $authProvider.loginUrl = '/login';

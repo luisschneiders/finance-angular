@@ -4,11 +4,14 @@ const People = bookshelf.Model.extend({
     tableName: 'people',
     hasTimestamps: true,
   },{
-    getAll: function(user, status) {
-      if (status == 1) {
-        return this.where({'peopleInsertedBy': user, 'peopleIsActive': status}).fetchAll();
-      }
-      return this.where('peopleInsertedBy', user).fetchAll();
+    getAllPeople: function(user, params) {
+      return this.where('peopleInsertedBy', user).fetchPage({
+        page: params.page <= 0 ? params.page = 1 : params.page,
+        pageSize: params.pageSize <= 0 ? params.pageSize = 12 : params.pageSize
+      });
+    },
+    getActivePeople: function(user) {
+      return this.where({'peopleInsertedBy': user, 'peopleIsActive': 1}).fetchAll();
     },
     getById: function(user, people) {
       return this.where({'peopleInsertedBy': user, 'id': people}).fetch();

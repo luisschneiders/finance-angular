@@ -1,21 +1,37 @@
 const TransactionType = require('../models/Transaction-Type');
 
 /**
- * GET /transactions-type/:isActive
+ * GET /get-transactions-type/page=:page&pageSize=:pageSize
  */
-exports.transactionTypeGetAll = function(req, res) {
-  TransactionType.getAll(req.user.id, req.params.isActive)
-  .then(function(transactionType) {
-    res.json(transactionType);
+exports.getAllTransactionsType = function(req, res) {
+  let params = {
+    page: req.params.page,
+    pageSize: req.params.pageSize
+  };
+  TransactionType.getAllTransactionsType(req.user.id, params)
+  .then(function(transactionsType) {
+    res.send(JSON.stringify({data: transactionsType, pagination: transactionsType.pagination}));
   }).catch(function(err) {
     console.error(err);
   });
 };
 
 /**
- * GET /transactions-type/:id
+ * GET /get-active-transactions-type
  */
-exports.transactionTypeGetById = function(req, res) {
+exports.getActiveTransactionsType = function(req, res) {
+  TransactionType.getActiveTransactionsType(req.user.id)
+    .then(function(transactionsType) {
+      res.json(transactionsType);
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
+ * GET /transactions-type=:id
+ */
+exports.getTransactionTypeById = function(req, res) {
   TransactionType.getById(req.user.id, req.params.id)
   .then(function(transactionType) {
     res.json(transactionType);
@@ -25,11 +41,11 @@ exports.transactionTypeGetById = function(req, res) {
 };
 
 /**
- * SAVE /transaction-type/new
+ * SAVE /transactions-type-new
  * or
- * SAVE /transaction-type/:id
+ * SAVE /transactions-type=:id
  */
-exports.transactionTypeSave = function(req, res) {
+exports.saveTransactionType = function(req, res) {
   let transactionType = null;
   let errors = null;
   let checkRecord = 0;

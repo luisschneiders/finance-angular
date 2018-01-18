@@ -99,26 +99,29 @@ app.get('/main-by-year/:year', mainController.mainGetByYear);
 app.get('/get-all-banks/page=:page&pageSize=:pageSize', bankController.getAllBanks);
 app.get('/get-active-banks', bankController.getActiveBanks);
 app.get('/bank-id=:id', bankController.getBankById);
-app.put('/bank-id=:id', userController.ensureAuthenticated, bankController.bankSave);
-app.post('/bank-new', userController.ensureAuthenticated, bankController.bankSave);
+app.put('/bank-id=:id', userController.ensureAuthenticated, bankController.saveBank);
+app.post('/bank-new', userController.ensureAuthenticated, bankController.saveBank);
 
 // Expense Type
-app.get('/all-expenses-type/:isActive', expenseTypeController.expenseTypeGetAll);
-app.get('/expenses-type/:id', expenseTypeController.expenseTypeGetById);
-app.put('/expenses-type/:id', userController.ensureAuthenticated, expenseTypeController.expenseTypeSave);
-app.post('/expenses-type/new', userController.ensureAuthenticated, expenseTypeController.expenseTypeSave);
+app.get('/get-all-expenses-type/page=:page&pageSize=:pageSize', expenseTypeController.getAllExpensesType);
+app.get('/get-active-expenses-type', expenseTypeController.getActiveExpensesType);
+app.get('/expenses-type=:id', expenseTypeController.getExpenseTypeById);
+app.put('/expenses-type=:id', userController.ensureAuthenticated, expenseTypeController.saveExpenseType);
+app.post('/expenses-type-new', userController.ensureAuthenticated, expenseTypeController.saveExpenseType);
 
 // Transaction Type
-app.get('/all-transactions-type/:isActive', transactionTypeController.transactionTypeGetAll);
-app.get('/transactions-type/:id', transactionTypeController.transactionTypeGetById);
-app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypeSave);
-app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypeSave);
+app.get('/get-all-transactions-type/page=:page&pageSize=:pageSize', transactionTypeController.getAllTransactionsType);
+app.get('/get-active-transactions-type', transactionTypeController.getActiveTransactionsType);
+app.get('/transactions-type=:id', transactionTypeController.getTransactionTypeById);
+app.put('/transactions-type=:id', userController.ensureAuthenticated, transactionTypeController.saveTransactionType);
+app.post('/transactions-type-new', userController.ensureAuthenticated, transactionTypeController.saveTransactionType);
 
 // People
-app.get('/all-people/:isActive', peopleController.peopleGetAll);
-app.get('/people/:id', peopleController.peopleGetById);
-app.put('/people/:id', userController.ensureAuthenticated, peopleController.peopleSave);
-app.post('/people/new', userController.ensureAuthenticated, peopleController.peopleSave);
+app.get('/get-all-people/page=:page&pageSize=:pageSize', peopleController.getAllPeople);
+app.get('/get-active-people', peopleController.getActivePeople);
+app.get('/people=:id', peopleController.getPeopleById);
+app.put('/people=:id', userController.ensureAuthenticated, peopleController.savePeople);
+app.post('/people-new', userController.ensureAuthenticated, peopleController.savePeople);
 
 // Transaction
 app.get('/transactions-by-year-and-month/:year/:month', transactionController.transactionGetByYearAndMonth);

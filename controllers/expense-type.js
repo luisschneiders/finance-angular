@@ -1,21 +1,37 @@
 const ExpenseType = require('../models/Expense-Type');
 
 /**
- * GET /expenses-type
+ * GET /get-expenses-type/page=:page&pageSize=:pageSize
  */
-exports.expenseTypeGetAll = function(req, res) {
-  ExpenseType.getAll(req.user.id, req.params.isActive)
-  .then(function(expenseType) {
-    res.json(expenseType);
+exports.getAllExpensesType = function(req, res) {
+  let params = {
+    page: req.params.page,
+    pageSize: req.params.pageSize
+  };
+  ExpenseType.getAllExpensesType(req.user.id, params)
+  .then(function(expensesType) {
+    res.send(JSON.stringify({data: expensesType, pagination: expensesType.pagination}));
   }).catch(function(err) {
     console.error(err);
   });
 };
 
 /**
- * GET /expenses-type/:id
+ * GET /get-active-expenses-type
  */
-exports.expenseTypeGetById = function(req, res) {
+exports.getActiveExpensesType = function(req, res) {
+  ExpenseType.getActiveExpensesType(req.user.id)
+    .then(function(expensesType) {
+      res.json(expensesType);
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
+ * GET /expenses-type=:id
+ */
+exports.getExpenseTypeById = function(req, res) {
   ExpenseType.getById(req.user.id, req.params.id)
   .then(function(expenseType) {
     res.json(expenseType);
@@ -25,11 +41,11 @@ exports.expenseTypeGetById = function(req, res) {
 };
 
 /**
- * SAVE /expenses-type/new
+ * SAVE /expenses-type-new
  * or
- * SAVE /expenses-type/:id
+ * SAVE /expenses-type-id=:id
  */
-exports.expenseTypeSave = function(req, res) {
+exports.saveExpenseType = function(req, res) {
   let expenseType = null;
   let errors = null;
   let checkRecord = 0;

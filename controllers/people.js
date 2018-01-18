@@ -1,10 +1,26 @@
 const People = require('../models/People');
 
 /**
- * GET /people
+ * GET /get-all-people/page=:page&pageSize=:pageSize
  */
-exports.peopleGetAll = function(req, res) {
-  People.getAll(req.user.id, req.params.isActive)
+exports.getAllPeople = function(req, res) {
+  let params = {
+    page: req.params.page,
+    pageSize: req.params.pageSize
+  };
+  People.getAllPeople(req.user.id, params)
+    .then(function(people) {
+      res.send(JSON.stringify({data: people, pagination: people.pagination}));
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
+ * GET /get-active-people
+ */
+exports.getActivePeople = function(req, res) {
+  People.getActivePeople(req.user.id)
     .then(function(people) {
       res.json(people);
     }).catch(function(err) {
@@ -13,9 +29,9 @@ exports.peopleGetAll = function(req, res) {
 };
 
 /**
- * GET /people/:id
+ * GET /people=:id
  */
-exports.peopleGetById = function(req, res) {
+exports.getPeopleById = function(req, res) {
   People.getById(req.user.id, req.params.id)
     .then(function(people) {
       res.json(people);
@@ -25,11 +41,11 @@ exports.peopleGetById = function(req, res) {
 };
 
 /**
- * SAVE /people/new
+ * SAVE /people-new
  * or
- * SAVE /people/:id
+ * SAVE /people=:id
  */
-exports.peopleSave = function(req, res) {
+exports.savePeople = function(req, res) {
   let people = null;
   let errors = null;
   let checkRecord = 0;

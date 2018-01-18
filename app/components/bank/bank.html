@@ -1,12 +1,17 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-show="settings.bank.defaults.isNull">
+        <!-- <div class="alert alert-danger text-center" ng-show="settings.bank.defaults.isNull">
           <h3>{{::settings.bank.defaults.notFound.message}}</h3>
+        </div> -->
+
+        <div ng-if="messages.error" role="alert" class="alert alert-danger">
+          <div ng-repeat="error in messages.error">{{error}}</div>
         </div>
+
         <div class="row" ng-show="!settings.bank.defaults.isNull">
           <div class="col-xs-6 col-sm-4"><input type="text" placeholder="Search..." ng-model="bankDescription" class="search-input"></div>
-          <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{data.length}}</span> records</div>
+          <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{pagination.rowCount}}</span> records</div>
           <div class="col-xs-12 col-sm-4 text-right">
             <div ng-include="'components/partials/dropdown-rows.tpl.html'"></div>
           </div>
@@ -30,7 +35,7 @@
                   <span class="sr-only">Loading...</span>
                 </td>
               </tr>
-              <tr ng-repeat="item in data | orderBy: 'bankDescription' | filter:bankDescription | startFrom:currentPage * pageSize | limitTo:pageSize" ng-click="editBank(item.id)">
+              <tr ng-repeat="item in data | orderBy: 'bankDescription' | filter:bankDescription | limitTo:pagination.pageSize" ng-click="editBank(item.id)">
                 <td data-title="Bank" class="text-uppercase">{{::item.bankDescription}}</td>
                 <td data-title="Account" >{{::item.bankAccount}}</td>
                 <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>
@@ -41,15 +46,15 @@
             </tbody>
           </table>
         </div>
-        <div class="row" ng-show="!settings.expenseType.defaults.isNull">
+        <div class="row" ng-show="!settings.bank.defaults.isNull">
           <div class="col-xs-5 text-right">
-            <button ng-disabled="currentPage == 0" ng-click="scrollUp(); currentPage = currentPage - 1" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
+            <button ng-disabled="pagination.page == 1" ng-click="previousPage()" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
           </div>
           <div class="col-xs-2 text-center">
-            <span>Page {{currentPage + 1}} of {{numberOfPages()}}</span>
+            <span>Page {{pagination.page}} of {{pagination.pageCount}}</span>
           </div>
           <div class="col-xs-5 text-left">
-            <button ng-disabled="currentPage >= getData().length / pageSize - 1" ng-click="scrollUp(); currentPage = currentPage + 1" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
+            <button ng-disabled="pagination.page >= pagination.rowCount / pagination.pageSize" ng-click="nextPage()" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
           </div>
         </div>
       </div>

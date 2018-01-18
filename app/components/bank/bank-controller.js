@@ -1,62 +1,71 @@
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $filter, $anchorScroll, BankServices, DefaultServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'BankServices', 'DefaultServices',
+  function($scope, $auth, $location, $filter, $routeParams, BankServices, DefaultServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
 
+    let page = $routeParams.page;
+    let pageSize = $routeParams.pageSize;
+
     $scope.settings = {};
     $scope.data = [];
     $scope.currentPage = 0;
-    $scope.pageSize = 12; // TODO: Set Default value in json file
+    $scope.pagination = {};
+    $scope.pageSize = pageSize;
 
-    DefaultServices.getSettings()
-      .then(function(response) {
-        $scope.settings = response;
-        setTop(response);
-        getBanks(response);
-      }).catch(function(err) {
-        console.warn('Error getting settings: ', err)
-      });
+    getSettings();
+    getBanks();
 
     $scope.editBank = function(id) {
-      $location.path(`/bank/${id}`);
+      $location.path(`/bank=${id}`);
     };
 
-    $scope.getData = function() {
-      return $filter('filter')($scope.data);
+    $scope.previousPage = function() {
+      $location.path(`/all-banks/page=${$scope.pagination.page - 1}&pageSize=${$scope.pageSize}`);
     };
 
-    $scope.numberOfPages = function() {
-      return Math.ceil($scope.getData().length / $scope.pageSize);
+    $scope.nextPage = function() {
+      $location.path(`/all-banks/page=${$scope.pagination.page + 1}&pageSize=${$scope.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $scope.pageSize = pageSize;
+      $location.path(`/all-banks/page=${$scope.pagination.page}&pageSize=${pageSize}`);
     };
 
-    $scope.scrollUp = function() {
-      $anchorScroll();
+    function getSettings() {
+      DefaultServices.getSettings()
+        .then(function(response) {
+          $scope.settings = response;
+          setTop(response);
+        }).catch(function(err) {
+          console.warn('Error getting settings: ', err)
+        });
     };
 
     function setTop(settings) {
       DefaultServices.setTop(settings.bank.defaults.top);
     };
 
-    function getBanks(settings) {
-      BankServices.getAllBanks(settings.bank.defaults.isActive)
+    function getBanks() {
+      let params = {
+        page: page,
+        pageSize: pageSize
+      };
+      BankServices.getAllBanks(params)
         .then(function(response) {
-          if(!response || response.length == 0) {
+          if(!response.data || response.data.length == 0) {
             $scope.settings.bank.defaults.isNull = true;
             $scope.settings.bank.defaults.isLoading = false;
             return;
           }
-
           $scope.settings.bank.defaults.isLoading = false;
-          $scope.data = response;
-
+          $scope.data = response.data;
+          $scope.pagination = response.pagination;
         }).catch(function(err) {
           console.warn('Error getting banks: ', err);
         });
     };
+
   }]);

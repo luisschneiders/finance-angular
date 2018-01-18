@@ -1,10 +1,26 @@
 const Bank = require('../models/Bank');
 
 /**
- * GET /banks
+ * GET /get-all-banks/page=:page
  */
-exports.bankGetAll = function(req, res) {
-  Bank.getAll(req.user.id, req.params.isActive)
+exports.getAllBanks = function(req, res) {
+  let params = {
+    page: req.params.page,
+    pageSize: req.params.pageSize
+  };
+  Bank.getAllBanks(req.user.id, params)
+    .then(function(banks) {
+      res.send(JSON.stringify({ data: banks, pagination: banks.pagination }));
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
+ * GET /get-active-banks
+ */
+exports.getActiveBanks = function(req, res) {
+  Bank.getActiveBanks(req.user.id)
     .then(function(banks) {
       res.json(banks);
     }).catch(function(err) {
@@ -13,9 +29,9 @@ exports.bankGetAll = function(req, res) {
 };
 
 /**
- * GET /banks/:id
+ * GET /bank-id=:id
  */
-exports.bankGetById = function(req, res) {
+exports.getBankById = function(req, res) {
   Bank.getById(req.user.id, req.params.id)
     .then(function(bank) {
       res.json(bank);

@@ -10,7 +10,7 @@ angular.module('MyApp')
             return response.data;
           })
           .catch(function(error) {
-            return error;
+            return error.data;
           });
       return settings;
     },

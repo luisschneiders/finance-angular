@@ -85,21 +85,22 @@ app.get('/unlink/:provider', userController.ensureAuthenticated, userController.
 app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
 
-// settings
-app.get('/settings', userController.ensureAuthenticated, settingsController.settingsGet);
+// Settings
+app.get('/settings', userController.ensureAuthenticated, settingsController.getSettings);
 
 // Profile
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 
-// main
+// Main
 app.get('/main-by-year/:year', mainController.mainGetByYear);
 
 // Banks
-app.get('/all-banks/:isActive', bankController.bankGetAll);
-app.get('/banks/:id', bankController.bankGetById);
-app.post('/banks/new', userController.ensureAuthenticated, bankController.bankSave);
-app.put('/banks/:id', userController.ensureAuthenticated, bankController.bankSave);
+app.get('/get-all-banks/page=:page&pageSize=:pageSize', bankController.getAllBanks);
+app.get('/get-active-banks', bankController.getActiveBanks);
+app.get('/bank-id=:id', bankController.getBankById);
+app.put('/bank-id=:id', userController.ensureAuthenticated, bankController.bankSave);
+app.post('/bank-new', userController.ensureAuthenticated, bankController.bankSave);
 
 // Expense Type
 app.get('/all-expenses-type/:isActive', expenseTypeController.expenseTypeGetAll);

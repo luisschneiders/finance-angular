@@ -1,8 +1,18 @@
 angular.module('MyApp')
 .factory('BankServices', ['$http', function($http) {
   return {
-    getAllBanks: function(isActive) {
-      let banks = $http.get(`/all-banks/${isActive}`)
+    getAllBanks: function(params) {
+      let banks = $http.get(`/get-all-banks/page=${params.page}&pageSize=${params.pageSize}`) // TODO: use {cache: true}
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(error) {
+            return error;
+          });
+      return banks;
+    },
+    getActiveBanks: function() {
+      let banks = $http.get(`/get-active-banks`)
           .then(function(response){
             return response.data;
           })
@@ -12,7 +22,7 @@ angular.module('MyApp')
       return banks;
     },
     getBankById: function(id) {
-      let bank = $http.get(`/banks/${id}`)
+      let bank = $http.get(`/bank-id=${id}`)
           .then(function(response){
             return response.data;
           })
@@ -23,9 +33,9 @@ angular.module('MyApp')
     },
     save: function(newRecord, data) {
       if(newRecord) {
-        return $http.post(`/banks/new`, data);
+        return $http.post(`/bank-new`, data);
       }
-      return $http.put(`/banks/${data.id}`, data);
+      return $http.put(`/bank-id=${data.id}`, data);
     }
   };
 }]);

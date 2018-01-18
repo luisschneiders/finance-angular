@@ -5,7 +5,7 @@ angular.module('MyApp')
       return;
     }
 
-    let bankId = $location.path().substr(6); // to remove path /bank/
+    let bankId = $location.path().substr(6); // to remove path /bank=
     let newRecord = true;
 
     $scope.settings = {};
@@ -37,7 +37,7 @@ angular.module('MyApp')
           };
           if(newRecord) {
             $timeout(function() {
-              $location.path(`/bank/${response.data.bank.id}`);
+              $location.path(`/bank=${response.data.bank.id}`);
             }, 1000);
             return
           }

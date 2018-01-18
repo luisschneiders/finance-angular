@@ -40,12 +40,12 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-banks', {
+      .when('/all-banks/page=:page&pageSize=:pageSize', {
         templateUrl: 'components/bank/bank.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/bank/:id', {
+      .when('/bank=:id', {
         templateUrl: 'components/bank/bank-update.html',
         controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }

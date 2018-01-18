@@ -5,9 +5,9 @@ angular.module('MyApp')
       let data = $http.get(`/purchases-by-year-and-month/${period.year}/${period.month}`)
           .then(function(response) {
             let groupedBy = {};
-
+            let type = 0;
             groupedBy = _.groupBy(response.data, function(type) {
-              return this.type = type.purchaseExpenseId;
+              return type = type.purchaseExpenseId;
             });
 
             groupedBy = _.forEach(groupedBy, function(group) {
@@ -15,13 +15,6 @@ angular.module('MyApp')
                 return amount.purchaseAmount;
               });
               group.expenseTypeDescription = group[0].expenseTypeDescription;
-            });
-
-            groupedBy = _.forEach(groupedBy, function(items){
-              let removed = _.remove(items, function(arr) {
-                return delete this.arr;
-              })
-              return removed;
             });
 
             return {groupedBy: groupedBy, data: response.data};
@@ -35,9 +28,9 @@ angular.module('MyApp')
       let data = $http.get(`/purchases-by-custom-search/${customSearch.from}&${customSearch.to}&${customSearch.expenseType}`)
           .then(function(response) {
             let groupedBy = {};
-
+            let type = 0;
             groupedBy = _.groupBy(response.data, function(type) {
-              return this.type = type.purchaseExpenseId;
+              return type = type.purchaseExpenseId;
             });
 
             groupedBy = _.forEach(groupedBy, function(group) {
@@ -45,13 +38,6 @@ angular.module('MyApp')
                 return amount.purchaseAmount;
               });
               group.expenseTypeDescription = group[0].expenseTypeDescription;
-            });
-
-            groupedBy = _.forEach(groupedBy, function(items){
-              let removed = _.remove(items, function(arr) {
-                return delete this.arr;
-              })
-              return removed;
             });
 
             return {groupedBy: groupedBy, data: response.data};

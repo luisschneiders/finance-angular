@@ -1,51 +1,53 @@
 angular.module('MyApp')
-  .controller('ExpenseTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'ExpenseTypeServices', function($scope, $auth, $location, $timeout, DefaultServices, ExpenseTypeServices) {
+  .controller('ExpenseTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'ExpenseTypeServices',
+  function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
 
-    let expenseTypeId = $location.path().substr(14); // to remove /expense-type/
-    let newRecord = true;
+    let expenseTypeId = $routeParams.id;
+    let newRecord = null;
+    let noRecord = {
+      msg: 'No Record Found!'
+    };
 
-    $scope.settings = {};
+    $scope.state = {};
     $scope.data = [];
     $scope.form = {};
+    $scope.state.noSettings = true;
 
     if (Number.isInteger(parseInt(expenseTypeId))) {
       newRecord = false;
-      setControllerSettings(newRecord);
     } else {
       newRecord = true;
-      setControllerSettings(newRecord);
     }
 
+    setControllerSettings(newRecord);
+
     $scope.saveExpenseType = function($valid) {
-      if ($scope.settings.expenseType.defaults.isSaving) {
+      if ($scope.state.isSaving) {
         return;
       }
       if(!$valid) {
         return;
       }
-      $scope.settings.expenseType.defaults.isSaving = true;
-
+      $scope.state.isSaving = true;
       ExpenseTypeServices.save(newRecord, $scope.form)
         .then(function(response) {
-          $scope.settings.expenseType.defaults.isSaving = false;
-          $scope.settings.expenseType.defaults.messages = {
-            success: [response.data]
-          };
+          $scope.state.isSaving = false;
+          $scope.state.messages = {
+            success: [response]
+          }
           if(newRecord) {
             $timeout(function() {
-              $location.path(`/expense-type/${response.data.expenseType.id}`);
+              $location.path(`/expense-type=${response.expenseType.id}`);
             }, 1000);
-            return
           }
-        }).catch(function(response) {
-          console.warn('Error saving expense type: ', response);
-          $scope.settings.expenseType.defaults.isSaving = false;
-          $scope.settings.expenseType.defaults.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
+        }).catch(function(error) {
+          $scope.state.isSaving = false;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
           };
         });
     };
@@ -53,43 +55,39 @@ angular.module('MyApp')
     function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
-        $scope.settings = response;
-        setTop(newRecord, response);
-        setForm(newRecord, response);
+        $scope.state.noSettings = false;
         if(!newRecord) {
           getExpenseType(expenseTypeId);
+          DefaultServices.setTop(response.expenseType.existingRecord.top);
+        } else {
+          $scope.form = response.expenseType.defaults.form;
+          DefaultServices.setTop(response.expenseType.newRecord.top);
         }
-      }).catch(function(err) {
-        console.warn('Error getting settings: ', err)
+      }).catch(function(error) {
+        $scope.state.noSettings = true;
+        $scope.state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
       });
-    };
-
-    function setTop(newRecord, settings) {
-      if (newRecord) {
-        DefaultServices.setTop(settings.expenseType.newRecord.top);
-        return;
-      }
-      DefaultServices.setTop(settings.expenseType.existingRecord.top);
-    };
-
-    function setForm(newRecord, settings) {
-      if (newRecord) {
-        $scope.form = settings.expenseType.defaults.form;
-        return;
-      }
     };
 
     function getExpenseType(id) {
       ExpenseTypeServices.getExpenseTypeById(id)
         .then(function(response) {
-          if(!response || response.length == 0) {
-            $scope.settings.expenseType.defaults.isNull = true;
+          if(!response) {
+            $scope.state.isNull = true;
+            $scope.state.messages = {
+              error: Array.isArray(noRecord) ? noRecord : [noRecord]
+            };
             return;
           }
-          $scope.settings.expenseType.defaults.isNull = false;
+          $scope.state.isNull = false;
           $scope.form = response;
-        }).catch(function(err) {
-          console.warn('Error getting expense type: ', err);
+        }).catch(function(error) {
+          $scope.state.isNull = true;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
         });
     };
   }]);

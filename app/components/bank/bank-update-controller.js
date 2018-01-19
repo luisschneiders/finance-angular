@@ -8,6 +8,9 @@ angular.module('MyApp')
 
     let bankId = $routeParams.id;
     let newRecord = null;
+    let noRecord = {
+      msg: 'No Record Found!'
+    };
 
     $scope.state = {};
     $scope.data = [];
@@ -71,6 +74,13 @@ angular.module('MyApp')
     function getBank(id) {
       BankServices.getBankById(id)
         .then(function(response) {
+          if(!response) {
+            $scope.state.isNull = true;
+            $scope.state.messages = {
+              error: Array.isArray(noRecord) ? noRecord : [noRecord]
+            };
+            return;
+          }
           $scope.state.isNull = false;
           $scope.form = response;
         }).catch(function(error) {

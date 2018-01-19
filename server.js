@@ -105,9 +105,9 @@ app.post('/bank-new', userController.ensureAuthenticated, bankController.saveBan
 // Expense Type
 app.get('/get-all-expenses-type/page=:page&pageSize=:pageSize', expenseTypeController.getAllExpensesType);
 app.get('/get-active-expenses-type', expenseTypeController.getActiveExpensesType);
-app.get('/expenses-type=:id', expenseTypeController.getExpenseTypeById);
-app.put('/expenses-type=:id', userController.ensureAuthenticated, expenseTypeController.saveExpenseType);
-app.post('/expenses-type-new', userController.ensureAuthenticated, expenseTypeController.saveExpenseType);
+app.get('/expense-type-id=:id', expenseTypeController.getExpenseTypeById);
+app.put('/expense-type-id=:id', userController.ensureAuthenticated, expenseTypeController.saveExpenseType);
+app.post('/expense-type-new', userController.ensureAuthenticated, expenseTypeController.saveExpenseType);
 
 // Transaction Type
 app.get('/get-all-transactions-type/page=:page&pageSize=:pageSize', transactionTypeController.getAllTransactionsType);

@@ -1,63 +1,69 @@
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'PeopleServices', 'DefaultServices',
-  function($scope, $auth, $location, $filter, $anchorScroll, PeopleServices, DefaultServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'DefaultServices', 'PeopleServices',
+  function($scope, $auth, $location, $filter, $routeParams, DefaultServices, PeopleServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
 
+    let page = $routeParams.page;
+    let pageSize = $routeParams.pageSize;
+
+    $scope.state = {};
     $scope.settings = {};
     $scope.data = [];
     $scope.currentPage = 0;
-    $scope.pageSize = 12; // TODO: Set Default value in json file
+    $scope.pagination = {};
+    $scope.pageSize = pageSize;
+    $scope.state.noSettings = true;
 
     DefaultServices.getSettings()
       .then(function(response) {
+        getPeople();
+        $scope.state.isLoading = true;
+        $scope.state.noSettings = false;
         $scope.settings = response;
-        setTop(response);
-        getPeople(response);
-      }).catch(function(err) {
-        console.warn('Error getting settings: ', err);
+        DefaultServices.setTop(response.people.defaults.top);
+      }).catch(function(error) {
+        $scope.state.noSettings = true;
+        $scope.state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
       });
 
-
     $scope.editPeople = function(id) {
-      $location.path(`/user/${id}`);
+      $location.path(`/user=${id}`);
     };
 
-    $scope.getData = function() {
-      return $filter('filter')($scope.data);
+    $scope.previousPage = function() {
+      $location.path(`/all-users/page=${$scope.pagination.page - 1}&pageSize=${$scope.pageSize}`);
     };
 
-    $scope.numberOfPages = function() {
-      return Math.ceil($scope.getData().length / $scope.pageSize);
+    $scope.nextPage = function() {
+      $location.path(`/all-users/page=${$scope.pagination.page + 1}&pageSize=${$scope.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $scope.pageSize = pageSize;
+      $location.path(`/all-users/page=${$scope.pagination.page}&pageSize=${pageSize}`);
     };
 
-    $scope.scrollUp = function() {
-      $anchorScroll();
-    };
-
-    function setTop(settings) {
-      DefaultServices.setTop(settings.people.defaults.top);
-    };
-
-    function getPeople(settings) {
-      PeopleServices.getAllPeople(settings.people.defaults.isActive)
+    function getPeople() {
+      let params = {
+        page: page,
+        pageSize: pageSize
+      };
+      PeopleServices.getAllPeople(params)
         .then(function(response) {
-          if(!response || response.length == 0) {
-            $scope.settings.people.defaults.isNull = true;
-            $scope.settings.people.defaults.isLoading = false;
-            return;
-          }
-
-          $scope.settings.people.defaults.isLoading = false;
-          $scope.data = response;
-        }).catch(function(err) {
-          console.warn('Error getting users: ', err);
+          $scope.state.isNull = false;
+          $scope.state.isLoading = false;
+          $scope.data = response.people;
+          $scope.pagination = response.pagination;
+        }).catch(function(error) {
+          $scope.state.isNull = true;
+          $scope.state.isLoading = false;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
         });
     };
   }]);

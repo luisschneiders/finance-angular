@@ -1,52 +1,54 @@
 angular.module('MyApp')
-  .controller('PeopleUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'PeopleServices', function($scope, $auth, $location, $timeout, DefaultServices, PeopleServices) {
+  .controller('PeopleUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'PeopleServices',
+  function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, PeopleServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
 
-    let peopleId = $location.path().substr(6); // to remove path /user/
-    let newRecord = true;
+    let peopleId = $routeParams.id;
+    let newRecord = null;
+    let noRecord = {
+      msg: 'No Record Found!'
+    };
 
-    $scope.settings = {};
+    $scope.state = {};
     $scope.data = [];
     $scope.form = {};
+    $scope.state.noSettings = true;
     $scope.typeAction = PeopleServices.getPeopleType();
 
     if (Number.isInteger(parseInt(peopleId))) {
       newRecord = false;
-      setControllerSettings(newRecord);
     } else {
       newRecord = true;
-      setControllerSettings(newRecord);
     }
 
+    setControllerSettings(newRecord);
+
     $scope.savePeople = function($valid) {
-      if ($scope.settings.people.defaults.isSaving) {
+      if ($scope.state.isSaving) {
         return;
       }
       if(!$valid) {
         return;
       }
-      $scope.settings.people.defaults.isSaving = true;
-
+      $scope.state.isSaving = true;
       PeopleServices.save(newRecord, $scope.form)
         .then(function(response) {
-          $scope.settings.people.defaults.isSaving = false;
-          $scope.settings.people.defaults.messages = {
-            success: [response.data]
-          };
+          $scope.state.isSaving = false;
+          $scope.state.messages = {
+            success: [response]
+          }
           if(newRecord) {
             $timeout(function() {
-              $location.path(`/user/${response.data.people.id}`);
+              $location.path(`/user=${response.people.id}`);
             }, 1000);
-            return
           }
-        }).catch(function(response) {
-          console.warn('Error saving user: ', response);
-          $scope.settings.people.defaults.isSaving = false;
-          $scope.settings.people.defaults.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
+        }).catch(function(error) {
+          $scope.state.isSaving = false;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
           };
         });
     };
@@ -54,43 +56,39 @@ angular.module('MyApp')
     function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
-        $scope.settings = response;
-        setTop(newRecord, response);
-        setForm(newRecord, response);
+        $scope.state.noSettings = false;
         if(!newRecord) {
           getPeople(peopleId);
+          DefaultServices.setTop(response.people.existingRecord.top);
+        } else {
+          $scope.form = response.people.defaults.form;
+          DefaultServices.setTop(response.people.newRecord.top);
         }
-      }).catch(function(err) {
-        console.warn('Error getting settings: ', err)
+      }).catch(function(error) {
+        $scope.state.noSettings = true;
+        $scope.state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
       });
-    };
-
-    function setTop(newRecord, settings) {
-      if (newRecord) {
-        DefaultServices.setTop(settings.people.newRecord.top);
-        return;
-      }
-      DefaultServices.setTop(settings.people.existingRecord.top);
-    };
-
-    function setForm(newRecord, settings) {
-      if (newRecord) {
-        $scope.form = settings.people.defaults.form;
-        return;
-      }
     };
 
     function getPeople(id) {
       PeopleServices.getPeopleById(id)
         .then(function(response) {
-          if(!response || response.length == 0) {
-            $scope.settings.people.defaults.isNull = true;
+          if(!response) {
+            $scope.state.isNull = true;
+            $scope.state.messages = {
+              error: Array.isArray(noRecord) ? noRecord : [noRecord]
+            };
             return;
           }
-          $scope.settings.people.defaults.isNull = false;
+          $scope.state.isNull = false;
           $scope.form = response;
-        }).catch(function(err) {
-          console.warn('Error getting user: ', err);
+        }).catch(function(error) {
+          $scope.state.isNull = true;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
         });
     };
   }]);

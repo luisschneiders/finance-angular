@@ -40,17 +40,7 @@
               </tbody>
             </table>
           </div>
-          <div class="row">
-            <div class="col-xs-5 text-right">
-              <button ng-disabled="pagination.page == 1" ng-click="previousPage()" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
-            </div>
-            <div class="col-xs-2 text-center">
-              <span>Page {{::pagination.page}} of {{::pagination.pageCount}}</span>
-            </div>
-            <div class="col-xs-5 text-left">
-              <button ng-disabled="pagination.page >= pagination.rowCount / pagination.pageSize" ng-click="nextPage()" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
-            </div>
-          </div>
+          <section ng-include="'components/partials/pagination.tpl.html'"></section>
         </section>
       </div>
     </div>

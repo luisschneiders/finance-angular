@@ -10,7 +10,7 @@ exports.getAllPeople = function(req, res) {
   };
   People.getAllPeople(req.user.id, params)
     .then(function(people) {
-      res.send(JSON.stringify({data: people, pagination: people.pagination}));
+      res.send(JSON.stringify({people: people, pagination: people.pagination}));
     }).catch(function(err) {
       console.error(err);
     });

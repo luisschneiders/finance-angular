@@ -1,17 +1,8 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-if="settings.people.defaults.isNull === true">
-          <h3>{{::settings.people.defaults.notFound.message}}</h3>
-          <a class="text-capitalize" ng-href="{{settings.people.defaults.notFound.url}}">Return to {{settings.people.defaults.notFound.title}}</a>
-        </div>
-        <div ng-if="settings.people.defaults.messages.error" role="alert" class="alert alert-danger">
-            <div ng-repeat="error in settings.people.defaults.messages.error">{{error.msg}}</div>
-        </div>
-        <div ng-if="settings.people.defaults.messages.success" role="alert" class="alert alert-success">
-          <div ng-repeat="success in settings.people.defaults.messages.success">{{success.msg}}</div>
-        </div>
-        <form name="standardForm" ng-submit="savePeople(standardForm.$valid)" class="form-horizontal" ng-if="settings.people.defaults.isNull === false">
+        <section ng-include="'components/partials/messages.tpl.html'"></section>
+        <form name="standardForm" ng-submit="savePeople(standardForm.$valid)" class="form-horizontal" ng-if="!state.isNull && !state.noSettings">
           <div class="form-group">
             <label for="peopleDescription" class="col-sm-3">Description</label>
             <div class="col-sm-7">

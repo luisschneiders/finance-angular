@@ -56,7 +56,7 @@ angular.module('MyApp')
         .then(function(response) {
           $scope.state.isNull = false;
           $scope.state.isLoading = false;
-          $scope.data = response.data;
+          $scope.data = response.banks;
           $scope.pagination = response.pagination;
         }).catch(function(error) {
           $scope.state.isNull = true;

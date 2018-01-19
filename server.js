@@ -112,15 +112,15 @@ app.post('/expense-type-new', userController.ensureAuthenticated, expenseTypeCon
 // Transaction Type
 app.get('/get-all-transactions-type/page=:page&pageSize=:pageSize', transactionTypeController.getAllTransactionsType);
 app.get('/get-active-transactions-type', transactionTypeController.getActiveTransactionsType);
-app.get('/transactions-type=:id', transactionTypeController.getTransactionTypeById);
-app.put('/transactions-type=:id', userController.ensureAuthenticated, transactionTypeController.saveTransactionType);
+app.get('/transactions-type-id=:id', transactionTypeController.getTransactionTypeById);
+app.put('/transactions-type-id=:id', userController.ensureAuthenticated, transactionTypeController.saveTransactionType);
 app.post('/transactions-type-new', userController.ensureAuthenticated, transactionTypeController.saveTransactionType);
 
 // People
 app.get('/get-all-people/page=:page&pageSize=:pageSize', peopleController.getAllPeople);
 app.get('/get-active-people', peopleController.getActivePeople);
-app.get('/people=:id', peopleController.getPeopleById);
-app.put('/people=:id', userController.ensureAuthenticated, peopleController.savePeople);
+app.get('/people-id=:id', peopleController.getPeopleById);
+app.put('/people-id=:id', userController.ensureAuthenticated, peopleController.savePeople);
 app.post('/people-new', userController.ensureAuthenticated, peopleController.savePeople);
 
 // Transaction

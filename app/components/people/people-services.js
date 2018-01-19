@@ -1,5 +1,5 @@
 angular.module('MyApp')
-.factory('PeopleServices', ['$http', function($http) {
+.factory('PeopleServices', ['$http', '$q', function($http, $q) {
   return {
     getPeopleType: function() {
       return actions = [
@@ -25,11 +25,11 @@ angular.module('MyApp')
         }
       ]
     },
-    getAllPeople: function(isActive) {
+    getAllPeople: function(params) {
       let actions = this.getPeopleType();
-      let people = $http.get(`/all-people/${isActive}`)
+      let people = $http.get(`/get-all-people/page=${params.page}&pageSize=${params.pageSize}`) // TODO: use {cache: true}
           .then(function(response){
-            _.forEach(response.data, function(data) {
+            _.forEach(response.data.people, function(data) {
               _.find(actions, function(action){
                 if (data.peopleType == action.value) {
                   data.peopleTypeDescription = action.description;
@@ -38,26 +38,39 @@ angular.module('MyApp')
             });
             return response.data;
           })
-          .catch(function(error) {
-            return error;
+          .catch(function(response) {
+            return $q.reject(response.data);
           });
       return people;
     },
     getPeopleById: function(id) {
-      let people = $http.get(`/people/${id}`)
+      let people = $http.get(`/people-id=${id}`)
           .then(function(response){
             return response.data;
           })
-          .catch(function(error) {
-            return error;
+          .catch(function(response) {
+            return $q.reject(response.data);
           });
       return people;
     },
     save: function(newRecord, data) {
+      let people = {};
       if(newRecord) {
-        return $http.post(`/people/new`, data);
+        people = $http.post(`/people-new`, data)
+          .then(function(response) {
+            return response.data;
+          }).catch(function(response) {
+            return $q.reject(response.data);
+          });
+      } else {
+        people = $http.put(`/people-id=${data.id}`, data)
+          .then(function(response) {
+            return response.data;
+          }).catch(function(response) {
+            return $q.reject(response.data);
+          });
       }
-      return $http.put(`/people/${data.id}`, data);
+      return people;
     }
   };
 }]);

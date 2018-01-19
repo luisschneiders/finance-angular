@@ -17,6 +17,6 @@ exports.getSettings = function(req, res) {
       }
     });
   } else {
-    res.status(400).send('No settings found!');
+    res.status(400).send({msg:'No settings found!'});
   }
 };

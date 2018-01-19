@@ -9,14 +9,27 @@ angular.module('MyApp')
     let page = $routeParams.page;
     let pageSize = $routeParams.pageSize;
 
+    $scope.state = {};
     $scope.settings = {};
     $scope.data = [];
     $scope.currentPage = 0;
     $scope.pagination = {};
     $scope.pageSize = pageSize;
+    $scope.state.noSettings = true;
 
-    getSettings();
-    getBanks();
+    DefaultServices.getSettings()
+      .then(function(response) {
+        getBanks();
+        $scope.state.isLoading = true;
+        $scope.state.noSettings = false;
+        $scope.settings = response;
+        DefaultServices.setTop(response.bank.defaults.top);
+      }).catch(function(error) {
+        $scope.state.noSettings = true;
+        $scope.state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
+      });
 
     $scope.editBank = function(id) {
       $location.path(`/bank=${id}`);
@@ -34,20 +47,6 @@ angular.module('MyApp')
       $location.path(`/all-banks/page=${$scope.pagination.page}&pageSize=${pageSize}`);
     };
 
-    function getSettings() {
-      DefaultServices.getSettings()
-        .then(function(response) {
-          $scope.settings = response;
-          setTop(response);
-        }).catch(function(err) {
-          console.warn('Error getting settings: ', err)
-        });
-    };
-
-    function setTop(settings) {
-      DefaultServices.setTop(settings.bank.defaults.top);
-    };
-
     function getBanks() {
       let params = {
         page: page,
@@ -55,17 +54,16 @@ angular.module('MyApp')
       };
       BankServices.getAllBanks(params)
         .then(function(response) {
-          if(!response.data || response.data.length == 0) {
-            $scope.settings.bank.defaults.isNull = true;
-            $scope.settings.bank.defaults.isLoading = false;
-            return;
-          }
-          $scope.settings.bank.defaults.isLoading = false;
+          $scope.state.isNull = false;
+          $scope.state.isLoading = false;
           $scope.data = response.data;
           $scope.pagination = response.pagination;
-        }).catch(function(err) {
-          console.warn('Error getting banks: ', err);
+        }).catch(function(error) {
+          $scope.state.isNull = true;
+          $scope.state.isLoading = false;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
         });
     };
-
   }]);

@@ -1,0 +1,6 @@
+<div ng-if="state.messages.error" role="alert" class="alert alert-danger text-center">
+  <div ng-repeat="error in state.messages.error">{{error.msg}}</div>
+</div>
+<div ng-if="state.messages.success" role="alert" class="alert alert-success text-center">
+  <div ng-repeat="success in state.messages.success">{{success.msg}}</div>
+</div>

@@ -1,53 +1,44 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-if="settings.bank.defaults.isNull === true">
-          <h3>{{::settings.bank.defaults.notFound.message}}</h3>
-          <a class="text-capitalize" ng-href="{{settings.bank.defaults.notFound.url}}">Return to {{settings.bank.defaults.notFound.title}}</a>
-        </div>
-        <div ng-if="settings.bank.defaults.messages.error" role="alert" class="alert alert-danger">
-            <div ng-repeat="error in settings.bank.defaults.messages.error">{{error.msg}}</div>
-        </div>
-        <div ng-if="settings.bank.defaults.messages.success" role="alert" class="alert alert-success">
-          <div ng-repeat="success in settings.bank.defaults.messages.success">{{success.msg}}</div>
-        </div>
-          <form name="standardForm" ng-submit="saveBank(standardForm.$valid)" class="form-horizontal" ng-if="settings.bank.defaults.isNull === false">
-            <div class="form-group">
-              <label for="bankDescription" class="col-sm-3">Description</label>
-              <div class="col-sm-7">
-                <input type="text" name="bankDescription" id="bankDescription" class="form-control" ng-model="form.bankDescription" required>
-              </div>
+        <section ng-include="'components/partials/messages.tpl.html'"></section>
+        <form name="standardForm" ng-submit="saveBank(standardForm.$valid)" class="form-horizontal" ng-if="!state.isNull && !state.noSettings">
+          <div class="form-group">
+            <label for="bankDescription" class="col-sm-3">Description</label>
+            <div class="col-sm-7">
+              <input type="text" name="bankDescription" id="bankDescription" class="form-control" ng-model="form.bankDescription" required>
             </div>
-            <div class="form-group">
-              <label for="bankAccount" class="col-sm-3">Account</label>
-              <div class="col-sm-7">
-                <input type="text" name="bankAccount" id="bankAccount" class="form-control" ng-model="form.bankAccount" required>
-              </div>
+          </div>
+          <div class="form-group">
+            <label for="bankAccount" class="col-sm-3">Account</label>
+            <div class="col-sm-7">
+              <input type="text" name="bankAccount" id="bankAccount" class="form-control" ng-model="form.bankAccount" required>
             </div>
-            <div class="form-group">
-              <label for="bankIsActive" class="col-sm-3">Active</label>
-              <div class="col-sm-7">
-                <input type="checkbox" name="bankIsActive" ng-model="form.bankIsActive" ng-checked="form.bankIsActive === 1" ng-true-value="1" ng-false-value="0">
-              </div>
+          </div>
+          <div class="form-group">
+            <label for="bankIsActive" class="col-sm-3">Active</label>
+            <div class="col-sm-7">
+              <input type="checkbox" name="bankIsActive" ng-model="form.bankIsActive" ng-checked="form.bankIsActive === 1" ng-true-value="1" ng-false-value="0">
             </div>
-            <div class="form-group">
-              <label for="bankInitialBalance" class="col-sm-3">Initial Balance</label>
-              <div class="col-sm-7">
-                <input type="text" name="bankInitialBalance" id="bankInitialBalance" class="form-control" ng-model="form.bankInitialBalance" format="number" disabled>
-              </div>
+          </div>
+          <div class="form-group">
+            <label for="bankInitialBalance" class="col-sm-3">Initial Balance</label>
+            <div class="col-sm-7">
+              <input type="text" name="bankInitialBalance" id="bankInitialBalance" class="form-control" ng-model="form.bankInitialBalance" format="number" disabled>
             </div>
-            <div class="form-group">
-              <label for="bankCurrentBalance" class="col-sm-3">Current Balance</label>
-              <div class="col-sm-7">
-                <input type="text" name="bankCurrentBalance" id="bankCurrentBalance" class="form-control" ng-model="form.bankCurrentBalance" format="number">
-              </div>
+          </div>
+          <div class="form-group">
+            <label for="bankCurrentBalance" class="col-sm-3">Current Balance</label>
+            <div class="col-sm-7">
+              <input type="text" name="bankCurrentBalance" id="bankCurrentBalance" class="form-control" ng-model="form.bankCurrentBalance" format="number">
             </div>
-            <div class="form-group">
-              <div class="col-sm-offset-3 col-sm-4">
-                <button type="submit" class="btn btn-success">Save</button>
-              </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-4">
+              <button type="submit" class="btn btn-success">Save</button>
             </div>
-          </form>
+          </div>
+        </form>
       </div>
     </div>
   </div>

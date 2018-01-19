@@ -1,62 +1,57 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <!-- <div class="alert alert-danger text-center" ng-show="settings.bank.defaults.isNull">
-          <h3>{{::settings.bank.defaults.notFound.message}}</h3>
-        </div> -->
-
-        <div ng-if="messages.error" role="alert" class="alert alert-danger">
-          <div ng-repeat="error in messages.error">{{error}}</div>
-        </div>
-
-        <div class="row" ng-show="!settings.bank.defaults.isNull">
-          <div class="col-xs-6 col-sm-4"><input type="text" placeholder="Search..." ng-model="bankDescription" class="search-input"></div>
-          <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{pagination.rowCount}}</span> records</div>
-          <div class="col-xs-12 col-sm-4 text-right">
-            <div ng-include="'components/partials/dropdown-rows.tpl.html'"></div>
+        <section ng-include="'components/partials/messages.tpl.html'"></section>
+        <section ng-if="!state.noSettings">
+          <div class="row">
+            <div class="col-xs-6 col-sm-4"><input type="text" placeholder="Search..." ng-model="bankDescription" class="search-input"></div>
+            <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{pagination.rowCount}}</span> records</div>
+            <div class="col-xs-12 col-sm-4 text-right">
+              <div ng-include="'components/partials/dropdown-rows.tpl.html'"></div>
+            </div>
           </div>
-        </div>
-        <div id="no-more-tables" ng-show="!settings.bank.defaults.isNull">
-          <table class="table table-responsive table-hover">
-            <thead>
-              <tr>
-                <th>Bank</th>
-                <th>Account</th>
-                <th class="text-right">Initial Balance</th>
-                <th class="text-right">Current Balance</th>
-                <th class="text-center">Active</th>
-                <th class="text-center">Edit</th>
-              </tr>
-            </thead>
-            <tbody class="table-cursor">
-              <tr class="loading text-center" ng-show="settings.bank.defaults.isLoading">
-                <td colspan="6">
-                  <i ng-class="settings.defaults.cssClassLoading"></i>
-                  <span class="sr-only">Loading...</span>
-                </td>
-              </tr>
-              <tr ng-repeat="item in data | orderBy: 'bankDescription' | filter:bankDescription | limitTo:pagination.pageSize" ng-click="editBank(item.id)">
-                <td data-title="Bank" class="text-uppercase">{{::item.bankDescription}}</td>
-                <td data-title="Account" >{{::item.bankAccount}}</td>
-                <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>
-                <td data-title="Current Balance"  class="text-right">{{::item.bankCurrentBalance | number:2}}</td>
-                <td data-title="Active"  class="text-center" ng-class="::item.bankIsActive == 1 ? settings.defaults.cssClassActive : settings.defaults.cssClassInactive">{{::item.bankIsActive == 1 ? "Yes" : "No"  }}</td>
-                <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="row" ng-show="!settings.bank.defaults.isNull">
-          <div class="col-xs-5 text-right">
-            <button ng-disabled="pagination.page == 1" ng-click="previousPage()" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
+          <div id="no-more-tables">
+            <table class="table table-responsive table-hover">
+              <thead>
+                <tr>
+                  <th>Bank</th>
+                  <th>Account</th>
+                  <th class="text-right">Initial Balance</th>
+                  <th class="text-right">Current Balance</th>
+                  <th class="text-center">Active</th>
+                  <th class="text-center">Edit</th>
+                </tr>
+              </thead>
+              <tbody class="table-cursor">
+                <tr class="loading text-center" ng-show="state.isLoading">
+                  <td colspan="6">
+                    <i ng-class="settings.defaults.cssClassLoading"></i>
+                    <span class="sr-only">Loading...</span>
+                  </td>
+                </tr>
+                <tr ng-repeat="item in data | orderBy: 'bankDescription' | filter:bankDescription | limitTo:pagination.pageSize" ng-click="editBank(item.id)">
+                  <td data-title="Bank" class="text-uppercase">{{::item.bankDescription}}</td>
+                  <td data-title="Account" >{{::item.bankAccount}}</td>
+                  <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>
+                  <td data-title="Current Balance"  class="text-right">{{::item.bankCurrentBalance | number:2}}</td>
+                  <td data-title="Active"  class="text-center" ng-class="::item.bankIsActive == 1 ? settings.defaults.cssClassActive : settings.defaults.cssClassInactive">{{::item.bankIsActive == 1 ? "Yes" : "No"  }}</td>
+                  <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="col-xs-2 text-center">
-            <span>Page {{pagination.page}} of {{pagination.pageCount}}</span>
+          <div class="row">
+            <div class="col-xs-5 text-right">
+              <button ng-disabled="pagination.page == 1" ng-click="previousPage()" class="btn btn-link btn-xs"><i class="fa fa-angle-left" aria-hidden="true"></i> prev</button>
+            </div>
+            <div class="col-xs-2 text-center">
+              <span>Page {{pagination.page}} of {{pagination.pageCount}}</span>
+            </div>
+            <div class="col-xs-5 text-left">
+              <button ng-disabled="pagination.page >= pagination.rowCount / pagination.pageSize" ng-click="nextPage()" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
+            </div>
           </div>
-          <div class="col-xs-5 text-left">
-            <button ng-disabled="pagination.page >= pagination.rowCount / pagination.pageSize" ng-click="nextPage()" class="btn btn-link btn-xs">next <i class="fa fa-angle-right" aria-hidden="true"></i></button>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   </div>

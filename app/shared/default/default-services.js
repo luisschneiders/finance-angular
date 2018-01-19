@@ -1,5 +1,5 @@
 angular.module('MyApp')
-.factory('DefaultServices', ['$http', 'moment', function($http, moment) {
+.factory('DefaultServices', ['$http', '$q', 'moment', function($http, $q, moment) {
   let top = {};
   let monthAndYear = null;
 
@@ -7,10 +7,11 @@ angular.module('MyApp')
     getSettings: function() {
       let settings = $http.get(`/settings`, {cache: true})
           .then(function(response){
+            response.data.status = '';
             return response.data;
           })
-          .catch(function(error) {
-            return error.data;
+          .catch(function(response) {
+            return $q.reject(response.data);
           });
       return settings;
     },

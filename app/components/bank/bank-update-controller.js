@@ -1,51 +1,50 @@
 angular.module('MyApp')
-  .controller('BankUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', 'BankServices', 'DefaultServices', function($scope, $auth, $location, $timeout, BankServices, DefaultServices) {
+  .controller('BankUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'BankServices',
+  function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, BankServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
 
-    let bankId = $location.path().substr(6); // to remove path /bank=
-    let newRecord = true;
+    let bankId = $routeParams.id;
+    let newRecord = null;
 
-    $scope.settings = {};
+    $scope.state = {};
     $scope.data = [];
     $scope.form = {};
+    $scope.state.noSettings = true;
 
     if (Number.isInteger(parseInt(bankId))) {
       newRecord = false;
-      setControllerSettings(newRecord);
     } else {
       newRecord = true;
-      setControllerSettings(newRecord);
     }
 
+    setControllerSettings(newRecord);
+
     $scope.saveBank = function($valid) {
-      if ($scope.settings.bank.defaults.isSaving) {
+      if ($scope.state.isSaving) {
         return;
       }
       if(!$valid) {
         return;
       }
-      $scope.settings.bank.defaults.isSaving = true;
-
+      $scope.state.isSaving = true;
       BankServices.save(newRecord, $scope.form)
         .then(function(response) {
-          $scope.settings.bank.defaults.isSaving = false;
-          $scope.settings.bank.defaults.messages = {
-            success: [response.data]
-          };
+          $scope.state.isSaving = false;
+          $scope.state.messages = {
+            success: [response]
+          }
           if(newRecord) {
             $timeout(function() {
-              $location.path(`/bank=${response.data.bank.id}`);
+              $location.path(`/bank=${response.bank.id}`);
             }, 1000);
-            return
           }
-        }).catch(function(response) {
-          console.warn('Error saving bank: ', response);
-          $scope.settings.bank.defaults.isSaving = false;
-          $scope.settings.bank.defaults.messages = {
-            error: Array.isArray(response.data) ? response.data : [response.data]
+        }).catch(function(error) {
+          $scope.state.isSaving = false;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
           };
         });
     };
@@ -53,43 +52,32 @@ angular.module('MyApp')
     function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
-        $scope.settings = response;
-        setTop(newRecord, response);
-        setForm(newRecord, response);
+        $scope.state.noSettings = false;
         if(!newRecord) {
           getBank(bankId);
+          DefaultServices.setTop(response.bank.existingRecord.top);
+        } else {
+          $scope.form = response.bank.defaults.form;
+          DefaultServices.setTop(response.bank.newRecord.top);
         }
-      }).catch(function(err) {
-        console.warn('Error getting settings: ', err)
+      }).catch(function(error) {
+        $scope.state.noSettings = true;
+        $scope.state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
       });
-    };
-
-    function setTop(newRecord, settings) {
-      if (newRecord) {
-        DefaultServices.setTop(settings.bank.newRecord.top);
-        return;
-      }
-      DefaultServices.setTop(settings.bank.existingRecord.top);
-    };
-
-    function setForm(newRecord, settings) {
-      if (newRecord) {
-        $scope.form = settings.bank.defaults.form;
-        return;
-      }
     };
 
     function getBank(id) {
       BankServices.getBankById(id)
         .then(function(response) {
-          if(!response || response.length == 0) {
-            $scope.settings.bank.defaults.isNull = true;
-            return;
-          }
-          $scope.settings.bank.defaults.isNull = false;
+          $scope.state.isNull = false;
           $scope.form = response;
-        }).catch(function(err) {
-          console.warn('Error getting banks: ', err);
+        }).catch(function(error) {
+          $scope.state.isNull = true;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
         });
     };
   }]);

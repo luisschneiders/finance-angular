@@ -38,7 +38,7 @@ angular.module('MyApp')
           $scope.state.isSaving = false;
           $scope.state.messages = {
             success: [response]
-          }
+          };
           if(newRecord) {
             $timeout(function() {
               $location.path(`/expense-type=${response.expenseType.id}`);

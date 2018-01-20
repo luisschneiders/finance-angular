@@ -1,17 +1,8 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-danger text-center" ng-if="settings.transactionType.defaults.isNull === true">
-          <h3>{{::settings.transactionType.defaults.notFound.message}}</h3>
-          <a class="text-capitalize" ng-href="{{settings.transactionType.defaults.notFound.url}}">Return to {{settings.transactionType.defaults.notFound.title}}</a>
-        </div>
-        <div ng-if="settings.transactionType.defaults.messages.error" role="alert" class="alert alert-danger">
-            <div ng-repeat="error in settings.transactionType.defaults.messages.error">{{error.msg}}</div>
-        </div>
-        <div ng-if="settings.transactionType.defaults.messages.success" role="alert" class="alert alert-success">
-          <div ng-repeat="success in settings.transactionType.defaults.messages.success">{{success.msg}}</div>
-        </div>
-        <form name="standardForm" ng-submit="saveTransactionType(standardForm.$valid)" class="form-horizontal" ng-if="settings.transactionType.defaults.isNull === false">
+        <section ng-include="'components/partials/messages.tpl.html'"></section>
+        <form name="standardForm" ng-submit="saveTransactionType(standardForm.$valid)" class="form-horizontal" ng-if="!state.isNull && !state.noSettings">
           <div class="form-group">
             <label for="transactionTypeDescription" class="col-sm-3">Description</label>
             <div class="col-sm-7">

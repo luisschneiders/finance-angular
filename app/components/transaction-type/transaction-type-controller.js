@@ -1,61 +1,69 @@
 angular.module('MyApp')
-  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$anchorScroll', 'DefaultServices', 'TransactionTypeServices', function($scope, $auth, $location, $filter, $anchorScroll, DefaultServices, TransactionTypeServices) {
+  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'DefaultServices', 'TransactionTypeServices',
+  function($scope, $auth, $location, $filter, $routeParams, DefaultServices, TransactionTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
+
+    let page = $routeParams.page;
+    let pageSize = $routeParams.pageSize;
+
+    $scope.state = {};
     $scope.settings = {};
     $scope.data = [];
     $scope.currentPage = 0;
-    $scope.pageSize = 12; // TODO: Set Default value in json file
+    $scope.pagination = {};
+    $scope.pageSize = pageSize;
+    $scope.state.noSettings = true;
 
     DefaultServices.getSettings()
       .then(function(response) {
+        getTransactionsType();
+        $scope.state.isLoading = true;
+        $scope.state.noSettings = false;
         $scope.settings = response;
-        setTop(response);
-        getTransactionType(response);
-      }).catch(function(err) {
-        console.warn('Error getting settings: ', err);
+        DefaultServices.setTop(response.transactionType.defaults.top);
+      }).catch(function(error) {
+        $scope.state.noSettings = true;
+        $scope.state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
       });
 
     $scope.editTransactionType = function(id) {
-      $location.path(`/transaction-type/${id}`);
+      $location.path(`/transaction-type=${id}`);
     };
 
-    $scope.getData = function() {
-      return $filter('filter')($scope.data);
+    $scope.previousPage = function() {
+      $location.path(`/all-transactions-type/page=${$scope.pagination.page - 1}&pageSize=${$scope.pageSize}`);
     };
 
-    $scope.numberOfPages = function() {
-      return Math.ceil($scope.getData().length / $scope.pageSize);
+    $scope.nextPage = function() {
+      $location.path(`/all-transactions-type/page=${$scope.pagination.page + 1}&pageSize=${$scope.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $scope.pageSize = pageSize;
+      $location.path(`/all-transactions-type/page=${$scope.pagination.page}&pageSize=${pageSize}`);
     };
 
-    $scope.scrollUp = function() {
-      $anchorScroll();
-    };
-
-    function setTop(settings) {
-      DefaultServices.setTop(settings.transactionType.defaults.top);
-    };
-
-    function getTransactionType(settings) {
-      TransactionTypeServices.getAllTransactionsType(settings.transactionType.defaults.isActive)
+    function getTransactionsType(settings) {
+      let params = {
+        page: page,
+        pageSize: pageSize
+      };
+      TransactionTypeServices.getAllTransactionsType(params)
         .then(function(response) {
-          if(!response || response.length == 0) {
-            $scope.settings.transactionType.defaults.isNull = true;
-            $scope.settings.transactionType.defaults.isLoading = false;
-            return;
-          }
-
-          $scope.data = response;
-          $scope.settings.transactionType.defaults.isLoading = false;
-
-        }).catch(function(err) {
-          console.warn('Error getting transactions type: ', err);
+          $scope.state.isNull = false;
+          $scope.state.isLoading = false;
+          $scope.data = response.transactionsType;
+          $scope.pagination = response.pagination;
+        }).catch(function(error) {
+          $scope.state.isNull = true;
+          $scope.state.isLoading = false;
+          $scope.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
         });
     };    
   }]);

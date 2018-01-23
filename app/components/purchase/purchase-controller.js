@@ -61,7 +61,7 @@ angular.module('MyApp')
     };
 
     $scope.seeDetails = function(key, title) {
-      state.template.url = 'components/modal/purchase.tpl.html',
+      state.template.url = 'components/purchase/purchase.tpl.html',
       state.template.class = 'modal-dialog modal-lg'
       state.modal.title = title.expenseTypeDescription;
       data.purchasesDetails = _.filter(data.purchases, function(item) {
@@ -73,7 +73,7 @@ angular.module('MyApp')
 
     $scope.customSearch = function() {
       state.isLoadingModal = true;
-      state.template.url = 'components/modal/custom-search-purchase.tpl.html';
+      state.template.url = 'components/purchase/custom-search-purchase.tpl.html';
       state.template.class = 'modal-dialog';
       state.modal.title = 'Custom Search';
       getActiveExpensesType();

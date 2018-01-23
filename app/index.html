@@ -13,16 +13,16 @@
     <link rel="stylesheet" href="/css/main.css"/>
   </head>
   <body ng-app="MyApp" ng-cloak>
-    <section ng-include src="'components/menu/menu.html'"></section>
+    <section ng-include src="'components/menu/menu-view.html'"></section>
     <section class="container-fluid custom-container">
       <div class="row">
         <div class="col-sm-12">
-          <div ng-include src="'components/top/top.html'"></div>
+          <div ng-include src="'components/top/top-view.html'"></div>
         </div>
         <main id="main" ng-view></main>
       </div>
     </section>
-    <section ng-include src="'components/footer/footer.html'"></section>
+    <section ng-include src="'components/footer/footer-view.html'"></section>
     <script src="/js/lib/jquery.js"></script>
     <script src="/js/lib/jquery-ui.min.js"></script>
     <script src="/js/lib/bootstrap.js"></script>

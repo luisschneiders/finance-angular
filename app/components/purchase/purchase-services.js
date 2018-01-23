@@ -1,11 +1,13 @@
 angular.module('MyApp')
-.factory('PurchaseServices', ['$http', function($http) {
+.factory('PurchaseServices', ['$http', '$q', function($http, $q) {
   return {
-    getPurchasesByYearAndMonth: function(period) {
-      let data = $http.get(`/purchases-by-year-and-month/${period.year}/${period.month}`)
+    getPurchasesByCustomSearch: function(params) {
+      // TODO: use {cache: true/false}, add parameter: custom-search=yes/no
+      let data = $http.get(`/purchases-by-custom-search/${params.from}&${params.to}&${params.expenses}`)
           .then(function(response) {
             let groupedBy = {};
             let type = 0;
+
             groupedBy = _.groupBy(response.data, function(type) {
               return type = type.purchaseExpenseId;
             });
@@ -18,37 +20,20 @@ angular.module('MyApp')
             });
 
             return {groupedBy: groupedBy, data: response.data};
-          })
-          .catch(function(err) {
-            return err;
+          }).catch(function(response) {
+            return $q.reject(response.data);
           });
       return data;
     },
-    getPurchasesByCustomSearch: function(customSearch) {
-      let data = $http.get(`/purchases-by-custom-search/${customSearch.from}&${customSearch.to}&${customSearch.expenseType}`)
-          .then(function(response) {
-            let groupedBy = {};
-            let type = 0;
-            groupedBy = _.groupBy(response.data, function(type) {
-              return type = type.purchaseExpenseId;
-            });
-
-            groupedBy = _.forEach(groupedBy, function(group) {
-              group.TotalAmountByExpenseType = _.sum(group, function(amount) {
-                return amount.purchaseAmount;
-              });
-              group.expenseTypeDescription = group[0].expenseTypeDescription;
-            });
-
-            return {groupedBy: groupedBy, data: response.data};
-          })
-          .catch(function(err) {
-            return err;
-          });
-      return data;
-    },
-    add: function(data) {
-      return $http.post(`/purchases/new`, data);
+    save: function(data) {
+      let purchase = {};
+      purchase = $http.post(`/purchases/new`, data)
+        .then(function(response) {
+          return response.data;
+        }).catch(function(response) {
+          return $q.reject(response.data);
+        });
+      return purchase;
     }
   };
 }]);

@@ -126,11 +126,8 @@ app.post('/people-new', userController.ensureAuthenticated, peopleController.sav
 // Transaction
 app.get('/transactions-by-year-and-month/:year/:month', transactionController.transactionGetByYearAndMonth);
 app.get('/transactions-by-custom-search/:from&:to&:transactionType', transactionController.transactionGetByCustomSearch);
-// app.put('/transactions-type/:id', userController.ensureAuthenticated, transactionTypeController.transactionTypePut);
-// app.post('/transactions-type/new', userController.ensureAuthenticated, transactionTypeController.transactionTypePost);
 
 // Purchase
-app.get('/purchases-by-year-and-month/:year/:month', purchaseController.purchaseGetByYearAndMonth);
 app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController.purchaseGetByCustomSearch);
 app.post('/purchases/new', userController.ensureAuthenticated, purchaseController.purchasePost);
 

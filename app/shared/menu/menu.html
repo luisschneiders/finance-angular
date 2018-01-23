@@ -1,7 +1,7 @@
 <div ng-controller="MenuCtrl" class="nav-side-menu">
     <div class="brand">
       <span ng-if="!isAuthenticated()" class="navbar-logo text-center">
-        <img ng-src="{{defaultsApp.logo}}" alt="{{defaultsApp.alt}}" title="{{defaultsApp.title}}" width="{{defaultsApp.width}}">
+        <img ng-src="{{state.logo}}" alt="{{state.alt}}" title="{{state.title}}" width="{{state.width}}">
       </span>      
       <span ng-if="isAuthenticated()" class="navbar-avatar">
         <img ng-src="{{currentUser.picture || currentUser.gravatar}}">  {{currentUser.name || currentUser.email || currentUser.id}}
@@ -10,7 +10,7 @@
     <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
     <div class="menu-list">
       <ul id="menu-content" ng-if="isAuthenticated()" class="menu-content collapse out">
-        <li><a href="/main/{{defaultsApp.year}}"><i class="fa fa-dashboard fa-lg"></i>Dashboard</a></li>
+        <li><a href="/main/{{state.year}}"><i class="fa fa-dashboard fa-lg"></i>Dashboard</a></li>
         <li data-toggle="collapse" data-target="#setup" class="collapsed">
             <a href="#"><i class="fa fa-cogs fa-lg"></i>Setup <span class="arrow"></span></a>
         </li>
@@ -22,8 +22,10 @@
             <li><a href="/populate-database">Populate DB</a></li>
         </ul>
         <ul>
-          <li><a href="/transactions={{defaultsApp.year}}-{{defaultsApp.month}}"><i class="fa fa-money fa-lg"></i>Transactions</a></li>
-          <li><a href="/purchases/{{defaultsApp.year}}/{{defaultsApp.month}}"><i class="fa fa-shopping-cart fa-lg"></i>Purchases</a></li>
+          <li><a href="/transactions={{state.year}}-{{state.month}}"><i class="fa fa-money fa-lg"></i>Transactions</a></li>
+          <!-- <li><a href="/purchases/{{state.year}}/{{state.month}}"><i class="fa fa-shopping-cart fa-lg"></i>Purchases</a></li> -->
+          <li><a href="/purchases/from={{state.period.from}}&to={{state.period.to}}&expenses=all"><i class="fa fa-shopping-cart fa-lg"></i>Purchases</a></li>
+
           <li><a href="/account"><i class="fa fa-user fa-lg"></i>Profile</a></li>
           <li><a href="/login" ng-click="logout()"><i class="fa fa-sign-out fa-lg"></i>Logout</a></li>
         </ul>

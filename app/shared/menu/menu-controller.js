@@ -1,17 +1,17 @@
 angular.module('MyApp')
   .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
-    let defaultsApp = {
-      logo: null,
-      title: null,
-      alt: null,
+    let state = {
+      logo: '/img/schneiders-tech-software-development.svg',
+      title: 'Your personal finance app',
+      alt: 'Your personal finance app',
       width: 170,
       year: moment().format('YYYY'),
-      month: moment().format('MM')
+      month: moment().format('MM'),
+      period: {
+        from: moment().startOf('month').format('YYYY-MM-DD'),
+        to: moment().endOf('month').format('YYYY-MM-DD')
+      }
     };
-
-    defaultsApp.logo = '/img/schneiders-tech-software-development.svg';
-    defaultsApp.title = 'Your personal finance app';
-    defaultsApp.alt = defaultsApp.title;
 
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.path();
@@ -27,5 +27,5 @@ angular.module('MyApp')
       $location.path('/');
     };
 
-    $scope.defaultsApp = defaultsApp;
+    $scope.state = state;
   }]);

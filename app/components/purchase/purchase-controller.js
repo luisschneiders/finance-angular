@@ -1,120 +1,82 @@
-// TODO: Code Refactoring
 angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', 'moment', 'ExpenseTypeServices', 'PurchaseServices', 'DefaultServices',
-  function($scope, $auth, $location, $timeout, moment, ExpenseTypeServices, PurchaseServices, DefaultServices) {
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'ExpenseTypeServices', 'PurchaseServices',
+  function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, ExpenseTypeServices, PurchaseServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
-    let data = {
-      modal: {
-        title: null,
-        purchases: null,
-      },
-      purchases: [],
-      expensesType: [],
-      template: {
-        url: null,
-        class: null
-      },
-      purchasesByGroup: {},
+
+    let params = {
+      from: $routeParams.from,
+      to: $routeParams.to,
+      expenses: $routeParams.id
+    }
+    let purchasesDetails = [];
+    let state = {
+      settings: {},
       isNull: false,
-      isActive: 0,
       isLoading: true,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },
-      top: {
-        pageTitle: 'purchases',
-        buttonTitle: 'add',
-        buttonUrl: '/purchase-new',
-        buttonDisplay: true
-      },
+      isLoadingModal: true,
+      noSettings: true,
       customSearch: {},
-      monthAndYear: null,
-      currentPeriod: $location.path().substr(11), // to remove /purchases/
-      period: {
-        month: null,
-        year: null
-      },
+      messages: {},
+      params: params,
+      modal: {},
+      template: {},
     };
-    let expensesType = ExpenseTypeServices.getAllExpensesType(data.isActive);
-    data.customSearch.active = 1;
+    let data = {
+      purchases: [],
+      purchasesByGroup: {},
+      purchasesDetails: purchasesDetails,
+      expensesType: [],
+    };
 
-    expensesType.then(function(response) {
-      data.expensesType = response;
-    }).catch(function(err) {
-      console.warn('Error getting expenses type: ', err);
-    });
-
-    DefaultServices.setTop(data.top);
-
-    getCurrentPeriodPurchases();
+    DefaultServices.getSettings()
+      .then(function(response) {
+        getPurchases();
+        state.noSettings = false;
+        state.settings = response;
+        DefaultServices.setTop(response.purchases.defaults.top);
+      }).catch(function(error) {
+        state.noSettings = true;
+        state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
+      });
 
     $scope.changePeriod = function(value) {
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-
+      params = {
+        from: $routeParams.from,
+        to: $routeParams.to,
+        expenses: $routeParams.id
+      };
       if (value == 'd') {
-        data.monthAndYear = moment(data.monthAndYear).subtract(1, 'months').format();
+        params.from = moment(params.from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+        params.to = moment(params.to).subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
       } else {
-        data.monthAndYear = moment(data.monthAndYear).add(1, 'months').format();
+        params.from = moment(params.from).add(1, 'months').startOf('month').format('YYYY-MM-DD');
+        params.to = moment(params.to).add(1, 'months').endOf('month').format('YYYY-MM-DD');
       }
-
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-      $location.path(`/purchases/${data.period.year}/${data.period.month}`);
-    };
-
-    function getCurrentPeriodPurchases() {
-      let purchases = null;
-      DefaultServices.setMonthAndYear(data.currentPeriod);
-
-      data.monthAndYear = DefaultServices.getMonthAndYear();
-      data.period.year = moment(data.monthAndYear).format('YYYY');
-      data.period.month = moment(data.monthAndYear).format('MM');
-
-      purchases = PurchaseServices.getPurchasesByYearAndMonth(data.period);
-      purchases.then(function(response) {
-        data.isNull = false;
-
-        if (Object.keys(response.groupedBy).length === 0) {
-          data.isNull = true;
-        }
-
-        data.purchases = response.data;
-        data.purchasesByGroup = response.groupedBy;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
-      });
-    };
-
-    function setExpensesType() {
-      data.customSearch.expenseType = [];
-      _.forEach(data.expensesType, function(expense) {
-        if (expense.expenseTypeIsActive === data.customSearch.active) {
-          data.customSearch.expenseType.push(expense.id);
-        }
-      });
+      $location.path(`/purchases/from=${params.from}&to=${params.to}&expenses=all`);
     };
 
     $scope.seeDetails = function(key, title) {
-      data.template.url = 'components/modal/purchase.tpl.html';
-      data.template.class = 'modal-dialog modal-lg';
-      data.modal.title = title.expenseTypeDescription;
-      data.modal.purchases = _.filter(data.purchases, function(item) {
+      state.template.url = 'components/modal/purchase.tpl.html',
+      state.template.class = 'modal-dialog modal-lg'
+      state.modal.title = title.expenseTypeDescription;
+      data.purchasesDetails = _.filter(data.purchases, function(item) {
         if (item.purchaseExpenseId == key) {
           return item;
         }
       });
-    }
+    };
 
     $scope.customSearch = function() {
-      data.template.url = 'components/modal/custom-search-purchase.tpl.html';
-      data.template.class = 'modal-dialog';
-      data.modal.title = 'Custom Search';
+      state.isLoadingModal = true;
+      state.template.url = 'components/modal/custom-search-purchase.tpl.html';
+      state.template.class = 'modal-dialog';
+      state.modal.title = 'Custom Search';
+      getActiveExpensesType();
     };
 
     $scope.customSearchForm = function($valid) {
@@ -122,14 +84,53 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.expenseType == undefined) {
-        setExpensesType();
+      if(state.customSearch.expenseType == undefined) {
+        params.expenses = setExpensesType();
+      } else {
+        params.expenses = state.customSearch.expenseType;
       }
+      params.from = state.customSearch.from;
+      params.to = state.customSearch.to;
       $(".modal").modal("hide");
       $timeout(function() {
-        $location.path(`/custom-search-purchases=${data.customSearch.from}&${data.customSearch.to}&${data.customSearch.expenseType.toString()}`);
+        $location.path(`/purchases/from=${params.from}&to=${params.to}&expenses=${params.expenses}`);
       }, 500);
     };
 
+    function getPurchases() {
+      PurchaseServices.getPurchasesByCustomSearch(params)
+        .then(function(response) {
+          state.isLoading = false;
+          data.purchases = response.data;
+          if(response.data.length === 0) {
+            state.isNull = true;
+          }
+          data.purchasesByGroup = response.groupedBy;
+        }).catch(function(error){
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
+    };
+    function getActiveExpensesType() {
+      ExpenseTypeServices.getActiveExpensesType()
+        .then(function(response) {
+          data.expensesType = response;
+          state.isLoadingModal = false;
+        }).catch(function(error) {
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
+    };
+    function setExpensesType() {
+      let expenses = [];
+      _.forEach(data.expensesType, function(expense) {
+        expenses.push(expense.id);
+      });
+      return expenses;
+    };
+
+    $scope.state = state;
     $scope.data = data;
   }]);

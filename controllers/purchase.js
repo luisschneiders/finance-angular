@@ -5,27 +5,6 @@ const Purchase = require('../models/Purchase');
 const Transaction = require('../models/Transaction');
 
 /**
- * GET /purchase/:year/:month
- */
-exports.purchaseGetByYearAndMonth = function(req, res) {
-  let startDate = null;
-  let endDate = null;
-
-  startDate = `${req.params.year}-${req.params.month}-01`;
-  startDate = new Date(startDate);
-// we use moment to set both startDate and endDate in the same format.
-  startDate = moment(startDate);
-  endDate = moment(startDate).endOf('month');
-
-  Purchase.getPurchaseByYearAndMonth(req.user.id, startDate, endDate)
-    .then(function(purchases) {
-      res.json(purchases);
-    }).catch(function(err) {
-      console.error(err);
-    });
-};
-
-/**
  * GET /purchases-by-custom-search/:from&:to&:expenseType
  */
 exports.purchaseGetByCustomSearch = function(req, res) {

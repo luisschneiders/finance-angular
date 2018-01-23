@@ -1,4 +1,3 @@
-// TODO: Code Refactoring
 angular.module('MyApp')
   .controller('PurchaseNewCtrl', ['$scope', '$auth', '$location', '$timeout', 'DefaultServices', 'BankServices', 'ExpenseTypeServices', 'PurchaseServices', 
     function($scope, $auth, $location, $timeout, DefaultServices, BankServices, ExpenseTypeServices, PurchaseServices) {
@@ -6,50 +5,77 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
+
+    let state = {
+      settings: {},
+      noSettings: true,
+      isLoadingExpensesType: true,
+      isLoadingBanks: true,
+      messages: {},
+      noBalance: ''
+    };
     let data = {
       banks: [],
-      expenses: [],
-      purchase: {},
-      isSaving: false,
-      isActive: 1,
-      top: {
-        pageTitle: 'new purchase',
-        buttonTitle: 'add',
-        buttonUrl: '/purchase-new',
-        buttonDisplay: false
-      },
-      required: 'All fields are required',
-      noBalance: '',
-      notFound: {
-        message:'No record found!',
-        bank: {
-          url: '/bank-new',
-          title: 'Add bank',
-        },
-        expense: {
-          url: '/expense-type-new',
-          title: 'Add expense',
-        }
-      },
-      messages: {}
+      expensesType: [],
+      purchase: {}
+    };
+    let isSaving = false;
+
+    setControllerSettings();
+
+    function setControllerSettings() {
+      DefaultServices.getSettings()
+        .then(function(response) {
+          state.settings = response;
+          state.noSettings = false;
+          getActiveExpensesType();
+          getActiveBanks();
+          DefaultServices.setTop(response.purchases.newRecord.top);
+        }).catch(function(error) {
+          state.noSettings = true;
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
     };
 
-    DefaultServices.setTop(data.top);
-    getAllExpenses();
-    getAllBanks();
+    function getActiveExpensesType() {
+      ExpenseTypeServices.getActiveExpensesType()
+        .then(function(response) {
+          data.expensesType = response;
+          state.isLoadingExpensesType = false;
+        }).catch(function(error) {
+          state.isLoadingExpensesType = false;
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
+    };
+
+    function getActiveBanks() {
+      BankServices.getActiveBanks()
+        .then(function(response) {
+          data.banks = response;
+          state.isLoadingBanks = false;
+        }).catch(function(error) {
+          state.isLoadingBanks = false;
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
+    };
 
     $scope.savePurchase = function($valid) {
-      let purchase = null;
       let checKBalance = null;
-      data.messages = {};
+      state.messages = {};
 
-      if (data.isSaving) {
+      if (isSaving) {
         return;
       }
       if (!$valid) {
-        data.messages = {
+        state.messages = {
           error: [{
-            msg: data.required
+            msg: state.settings.purchases.defaults.message.required
           }]
         };
         return;
@@ -60,61 +86,31 @@ angular.module('MyApp')
       });
 
       if (parseFloat(data.purchase.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
-        data.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
+        state.noBalance = `Amount $${data.purchase.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
                           in your account, please check!`;
-        data.messages = {
+        state.messages = {
           error: [{
-            msg: data.noBalance
+            msg: state.noBalance
           }]
         };
         return;
       }
-      data.isSaving = true;
-      purchase = PurchaseServices.add(data.purchase);
-      purchase.then(function(response) {
-        data.isSaving = false;
-        data.messages = {
-          success: [response.data]
-        };
-        getAllBanks();
-        data.purchase = {};
-      }).catch(function(response) {
-        console.warn('Error updating purchase: ', response);
-        data.isSaving = false;
-        data.messages = {
-          error: Array.isArray(response.data) ? response.data : [response.data]
-        };
-      });
+      isSaving = true;
+      PurchaseServices.save(data.purchase)
+        .then(function(response) {
+          isSaving = false;
+          state.messages = {
+            success: [response]
+          };
+          getActiveBanks();
+          data.purchase = {};
+        }).catch(function(error) {
+          isSaving = false;
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
     };
-
-    function getAllExpenses() {
-      let expenses = ExpenseTypeServices.getAllExpensesType(data.isActive);
-      expenses.then(function(response) {
-        if (!response || response.length == 0) {
-          data.isLoading = false;
-          return;
-        }
-        data.expenses = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting expenses: ', err);
-      });
-    };
-
-    function getAllBanks() {
-      let banks = BankServices.getAllBanks(data.isActive);
-      banks.then(function(response) {
-        if (!response || response.length == 0) {
-          data.isLoading = false;
-          return;
-        }
-        data.banks = response;
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting banks: ', err);
-      });
-    };
-
-    $scope.$watch('data.banks', function() {}, true);
+    $scope.state = state;
     $scope.data = data;
   }]);

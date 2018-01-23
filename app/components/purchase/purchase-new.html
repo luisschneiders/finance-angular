@@ -1,13 +1,8 @@
 <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div ng-if="data.messages.error" role="alert" class="alert alert-danger">
-            <div ng-repeat="error in data.messages.error">{{error.msg}}</div>
-        </div>
-        <div ng-if="data.messages.success" role="alert" class="alert alert-success">
-          <div ng-repeat="success in data.messages.success">{{success.msg}}</div>
-        </div>
-        <form name="standardForm" ng-submit="savePurchase(standardForm.$valid)" class="form-horizontal" novalidate>
+        <section ng-include="'components/partials/messages.tpl.html'"></section>
+        <form name="standardForm" ng-submit="savePurchase(standardForm.$valid)" class="form-horizontal" novalidate ng-if="!state.isNull && !state.noSettings">
           <div class="form-group">
             <label for="purchaseDate" class="col-sm-3">Date</label>
             <div class="col-sm-7">
@@ -17,19 +12,31 @@
           <div class="form-group">
             <label for="purchaseBank" class="col-sm-3">Bank</label>
             <div class="col-sm-7">
-              <span ng-if="data.banks.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.bank.url}}">({{data.notFound.bank.title}})</a></span>
+              <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.purchases.defaults.messages.notFound}}
+                <a ng-href="{{::state.settings.purchases.newRecord.table.bank.url}}">({{state.settings.purchases.newRecord.table.bank.title}})</a>
+              </span>
               <select name="purchaseBank" id="purchaseBank" class="form-control text-uppercase" ng-model="data.purchase.purchaseBank" required
                 ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">
               </select>
+            </div>
+            <div class="col-sm-2 loading" ng-show="state.isLoadingBanks">
+              <i ng-class="state.settings.defaults.cssClassLoading"></i>
+              <span class="sr-only">Loading...</span>
             </div>
           </div>
           <div class="form-group">
             <label for="purchaseExpenseId" class="col-sm-3">Expense</label>
             <div class="col-sm-7">
-              <span ng-if="data.expenses.length == 0" class="text-danger">{{::data.notFound.message}} <a ng-href="{{::data.notFound.expense.url}}">({{data.notFound.expense.title}})</a></span>
+              <span ng-if="data.expensesType.length == 0" class="text-danger">{{::state.settings.purchases.defaults.messages.notFound}}
+                <a ng-href="{{::state.settings.purchases.newRecord.table.expenseType.url}}">({{state.settings.purchases.newRecord.table.expenseType.title}})</a>
+              </span>
               <select name="purchaseExpenseId" id="purchaseExpenseId" class="form-control text-uppercase" ng-model="data.purchase.purchaseExpenseId" required
-                ng-options="expense.id as expense.expenseTypeDescription for expense in data.expenses" ng-disabled="data.expenses.length == 0">
+                ng-options="expense.id as expense.expenseTypeDescription for expense in data.expensesType" ng-disabled="data.expensesType.length == 0">
               </select>
+            </div>
+            <div class="col-sm-2 loading" ng-show="state.isLoadingExpensesType">
+              <i ng-class="state.settings.defaults.cssClassLoading"></i>
+              <span class="sr-only">Loading...</span>
             </div>
           </div>
           <div class="form-group">

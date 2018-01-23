@@ -14,17 +14,6 @@ const Purchase = bookshelf.Model.extend({
         qr.groupByRaw('month (purchaseDate)');
       }).fetchAll();
     },
-    getPurchaseByYearAndMonth: function(user, startDate, endDate) {
-      let options = null;
-
-      startDate = moment(startDate).format('YYYY-MM-DD');
-      endDate = moment(endDate).format('YYYY-MM-DD');
-      options = new Options(user, startDate, endDate);
-
-      return this.query(function(qr){
-        queryPurchases(qr, options);
-      }).fetchAll();
-    },
     getPurchaseByCustomSearch: function(user, startDate, endDate, expenseType) {
       let options = new Options(user, startDate, endDate);
       let refineExpenseType = [];
@@ -34,7 +23,9 @@ const Purchase = bookshelf.Model.extend({
 
       return this.query(function(qr) {
         queryPurchases(qr, options);
-        qr.whereIn('purchaseExpenseId', refineExpenseType);
+        if(expenseType !== allExpensesType){
+          qr.whereIn('purchaseExpenseId', refineExpenseType);
+        }
       }).fetchAll();
     }
   });

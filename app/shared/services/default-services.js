@@ -24,13 +24,13 @@ angular.module('MyApp')
     getTop: function() {
       return top;
     },
-    setMonthAndYear: function(data) {
-      let date = data.toString().split('/').join('-');
-      date = date + '-01';
-      monthAndYear = new Date(date);
-    },
-    getMonthAndYear: function() {
-      return monthAndYear;
-    }
+    // setMonthAndYear: function(data) {
+    //   let date = data.toString().split('/').join('-');
+    //   date = date + '-01';
+    //   monthAndYear = new Date(date);
+    // },
+    // getMonthAndYear: function() {
+    //   return monthAndYear;
+    // }
   }
 }]);

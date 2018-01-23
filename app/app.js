@@ -95,18 +95,13 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'TransactionUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/purchases/:year/:month', {
+      .when('/purchases/from=:from&to=:to&expenses=:id', {
         templateUrl: 'components/purchase/purchase.html',
         controller: 'PurchaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/custom-search-purchases=:from&:to&:expenseType', {
-        templateUrl: 'components/purchase/purchase-custom.html',
-        controller: 'PurchaseCustomCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/purchase-new', {
-        templateUrl: 'components/purchase/purchase-edit.html',
+      .when('/purchase=new', {
+        templateUrl: 'components/purchase/purchase-new.html',
         controller: 'PurchaseNewCtrl',
         resolve: { loginRequired: loginRequired }
       })

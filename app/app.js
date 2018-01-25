@@ -100,11 +100,6 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PurchaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/purchase=new', {
-        templateUrl: 'components/purchase/purchase-new-view.html',
-        controller: 'PurchaseNewCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
       .when('/populate-database', {
         templateUrl: 'components/settings/populate-database-view.html',
         controller: 'PopulateDatabaseCtrl',

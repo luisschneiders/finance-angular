@@ -13,25 +13,12 @@
   }
 }
 .btn-primary {
-  border-color: $colour-5-main;
-  background: $colour-5-main; /* Old browsers */
-  background-image: -moz-linear-gradient(top,  $colour-5-main 0%, $colour-6-dark 100%); /* FF3.6+ */
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$colour-5-main), color-stop(100%,$colour-6-dark)); /* Chrome,Safari4+ */
-  background-image: -webkit-linear-gradient(top,  $colour-5-main 0%,$colour-6-dark 100%); /* Chrome10+,Safari5.1+ */
-  background-image: -o-linear-gradient(top,  $colour-5-main 0%,$colour-6-dark 100%); /* Opera 11.10+ */
-  background-image: -ms-linear-gradient(top,  $colour-5-main 0%,$colour-6-dark 100%); /* IE10+ */
-  background-image: linear-gradient(to bottom,  $colour-5-main 0%,$colour-6-dark 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$colour-5-main', endColorstr='$colour-6-dark',GradientType=0 ); /* IE6-9 */
+  border-color: $mid-pink;
+  background: $mid-pink; /* Old browsers */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$mid-pink', endColorstr='$dark-pink',GradientType=0 ); /* IE6-9 */
   &:active, &:hover, &:focus {
-    border-color: $colour-5-main;
-    background: $colour-6-dark; /* Old browsers */
-    background-image: -moz-linear-gradient(top,  $colour-6-dark 0%, $colour-7-dark 100%); /* FF3.6+ */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$colour-6-dark), color-stop(100%,$colour-7-dark)); /* Chrome,Safari4+ */
-    background-image: -webkit-linear-gradient(top,  $colour-6-dark 0%,$colour-7-dark 100%); /* Chrome10+,Safari5.1+ */
-    background-image: -o-linear-gradient(top,  $colour-6-dark 0%,$colour-7-dark 100%); /* Opera 11.10+ */
-    background-image: -ms-linear-gradient(top,  $colour-6-dark 0%,$colour-7-dark 100%); /* IE10+ */
-    background-image: linear-gradient(to bottom,  $colour-6-dark 0%,$colour-7-dark 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$colour-6-dark', endColorstr='$colour-7-dark',GradientType=0 ); /* IE6-9 */
+    border-color: $dark-pink;
+    background: $dark-pink; /* Old browsers */
   }
 }
 .btn-default {
@@ -86,6 +73,20 @@
     background-image: -ms-linear-gradient(top,  $dark-orange 0%,$dark-orange 100%); /* IE10+ */
     background-image: linear-gradient(to bottom,  $dark-orange 0%,$dark-orange 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$dark-orange', endColorstr='$dark-orange',GradientType=0 ); /* IE6-9 */
+  }
+}
+.btn-rounded {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 7px 0 0 0;
+}
+.btn-add {
+  @extend .btn-rounded;
+  &:hover {
+    -webkit-box-shadow: 0px 0px 25px -4px $mid-pink;
+    -moz-box-shadow: 0px 0px 25px -4px $mid-pink;
+    box-shadow: 0px 0px 25px -4px $mid-pink;
   }
 }
 .btn-facebook {

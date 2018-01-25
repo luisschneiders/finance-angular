@@ -2,9 +2,9 @@
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
   <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title || 'Purchase'"></h4>
 </div>
-<section ng-include="'components/partials/messages.tpl.html'"></section>
 <form name="standardForm" ng-submit="customSearchForm(standardForm.$valid)" class="form-horizontal">
   <div class="modal-body">
+    <section ng-include="'components/partials/messages.tpl.html'" ng-show="state.status.errorSearch"></section>
     <div class="row">
       <div class="col-sm-9">
         <div class="form-group">
@@ -22,7 +22,7 @@
         <div class="form-group">
           <label for="transactionType" class="col-sm-3">Expense Type</label>
           <div class="col-sm-9">
-            <div class="loading text-center" ng-show="state.isLoadingModal">
+            <div class="loading text-center" ng-show="state.status.isLoadingExpensesType">
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
             </div>

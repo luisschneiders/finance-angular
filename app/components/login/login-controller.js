@@ -9,7 +9,7 @@ angular.module('MyApp')
       year: new Date().getFullYear()
     };
 
-    DefaultServices.setTop(data.top);
+    // DefaultServices.setTop(data.top);
 
     $scope.login = function() {
       $auth.login($scope.user)

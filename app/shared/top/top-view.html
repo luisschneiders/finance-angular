@@ -1,10 +1,2 @@
-<div ng-controller="TopCtrl">
-  <div class="row fixed-row">
-    <div class="col-xs-6 col-sm-6">
-      <h5 class="text-capitalize title-border-left" ng-bind="data.pageTitle"></h5>
-    </div>
-    <div class="col-xs-6 col-sm-offset-3 col-sm-3 text-right" ng-if="data.buttonDisplay">
-      <a ng-href="{{data.buttonUrl}}" class="btn btn-primary text-capitalize">{{::data.buttonTitle}}</a>
-    </div>
-  </div>
-</div>
+  <section ng-include="state.settings.templateTop.url"></section>
+

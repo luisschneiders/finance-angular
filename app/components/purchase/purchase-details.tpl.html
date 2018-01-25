@@ -12,12 +12,6 @@
           </tr>
         </thead>
         <tbody >
-          <tr class="loading text-center" ng-show="state.isLoading">
-            <td colspan="6">
-              <i ng-class="settings.defaults.cssClassLoading"></i>
-              <span class="sr-only">Loading...</span>
-            </td>
-          </tr>
           <tr ng-repeat="item in data.purchasesDetails | orderBy: '-purchaseDate'">
             <td data-title="Details">
               <div>{{::item.purchaseDate | date: "dd/MM/yyyy"}}</div>

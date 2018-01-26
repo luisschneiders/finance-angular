@@ -4,28 +4,56 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
-    let data = {
-      top: {
-        title: 'Profile Information',
-        url: null,
-        show: false
+    class State {
+      constructor(settings, status, messages) {
+        this.settings = settings;
+        this.status = status;
+        this.messages = messages;
       }
     };
-    DefaultServices.setTop(data.top);
+    class Settings {
+      constructor(defaults, component, templateTop) {
+        this.defaults = defaults;
+        this.component = component;
+        this.templateTop = templateTop;
+      }
+    };
+    class Status {
+      constructor(noSettings) {
+        this.noSettings = noSettings;
+      }
+    };
+
+    let settings = new Settings();
+    let status = new Status(true);
+    let state = new State(settings, status, null);
+
+    DefaultServices.getSettings()
+      .then(function(response) {
+        status.noSettings = false;
+        settings.defaults = response.defaults;
+        settings.component = response.profile;
+        settings.templateTop = response.profile.defaults.template.top;
+        state.settings = settings;
+      }).catch(function(error) {
+        status.noSettings = true;
+        state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
+      });
 
     $scope.profile = $rootScope.currentUser;
-
     $scope.updateProfile = function() {
       AccountServices.updateProfile($scope.profile)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $scope.messages = {
+          state.messages = {
             success: [response.data]
           };
         })
         .catch(function(response) {
-          $scope.messages = {
+          state.messages = {
             error: Array.isArray(response.data) ? response.data : [response.data]
           };
         });
@@ -34,12 +62,12 @@ angular.module('MyApp')
     $scope.changePassword = function() {
       AccountServices.changePassword($scope.profile)
         .then(function(response) {
-          $scope.messages = {
+          state.messages = {
             success: [response.data]
           };
         })
         .catch(function(response) {
-          $scope.messages = {
+          state.messages = {
             error: Array.isArray(response.data) ? response.data : [response.data]
           };
         });
@@ -48,13 +76,13 @@ angular.module('MyApp')
     $scope.link = function(provider) {
       $auth.link(provider)
         .then(function(response) {
-          $scope.messages = {
+          state.messages = {
             success: [response.data]
           };
         })
         .catch(function(response) {
           $window.scrollTo(0, 0);
-          $scope.messages = {
+          state.messages = {
             error: [response.data]
           };
         });
@@ -63,12 +91,12 @@ angular.module('MyApp')
     $scope.unlink = function(provider) {
       $auth.unlink(provider)
         .then(function() {
-          $scope.messages = {
+          state.messages = {
             success: [response.data]
           };
         })
         .catch(function(response) {
-          $scope.messages = {
+          state.messages = {
             error: [response.data]
           };
         });
@@ -82,9 +110,11 @@ angular.module('MyApp')
           $location.path('/');
         })
         .catch(function(response) {
-          $scope.messages = {
+          state.messages = {
             error: [response.data]
           };
         });
     };
+
+    $scope.state = state;
   }]);

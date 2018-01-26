@@ -5,48 +5,80 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
-
-    let expenseTypeId = $routeParams.id;
-    let newRecord = null;
-    let noRecord = {
-      msg: 'No Record Found!'
+    class State {
+      constructor(settings, params, status, messages) {
+        this.settings = settings;
+        this.params = params;
+        this.status = status;
+        this.messages = messages;
+      }
+    };
+    class Settings {
+      constructor(defaults, component, templateTop) {
+        this.defaults = defaults;
+        this.component = component;
+        this.templateTop = templateTop;
+      }
+    };
+    class Params {
+      constructor($routeParams) {
+        this.id = $routeParams.id;
+      }
+    };
+    class Status {
+      constructor(isLoading, noSettings, newRecord, isNull, isSaving) {
+        this.isLoading = isLoading;
+        this.noSettings = noSettings;
+        this.newRecord = newRecord;
+        this.isNull = isNull;
+        this.isSaving = isSaving;
+      }
+      noRecord() {
+        return { msg: 'No Record Found!' }
+      };
+    };
+    class Data {
+      constructor(form) {
+        this.form = form;
+      }
     };
 
-    $scope.state = {};
-    $scope.data = [];
-    $scope.form = {};
-    $scope.state.noSettings = true;
+    let settings = new Settings();
+    let params = new Params($routeParams);
+    let status = new Status(true, true, null, false, false);
+    let data = new Data();
+    let state = new State(settings, params, status, null);
 
-    if (Number.isInteger(parseInt(expenseTypeId))) {
-      newRecord = false;
+    if (Number.isInteger(parseInt(params.id))) {
+      status.newRecord = false;
     } else {
-      newRecord = true;
+      status.newRecord = true;
     }
 
-    setControllerSettings(newRecord);
+    setControllerSettings(status.newRecord);
 
     $scope.saveExpenseType = function($valid) {
-      if ($scope.state.isSaving) {
+      if (status.isSaving) {
         return;
       }
       if(!$valid) {
         return;
       }
-      $scope.state.isSaving = true;
-      ExpenseTypeServices.save(newRecord, $scope.form)
+      status.isSaving = true;
+      ExpenseTypeServices.save(status.newRecord, data.form)
         .then(function(response) {
-          $scope.state.isSaving = false;
-          $scope.state.messages = {
+          status.isSaving = false;
+          state.messages = {
             success: [response]
           };
-          if(newRecord) {
+          if(status.newRecord) {
             $timeout(function() {
               $location.path(`/expense-type=${response.expenseType.id}`);
             }, 1000);
           }
         }).catch(function(error) {
-          $scope.state.isSaving = false;
-          $scope.state.messages = {
+          status.isSaving = false;
+          state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
@@ -55,17 +87,17 @@ angular.module('MyApp')
     function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
-        $scope.state.noSettings = false;
+        status.noSettings = false;
         if(!newRecord) {
-          getExpenseType(expenseTypeId);
-          DefaultServices.setTop(response.expenseType.existingRecord.top);
+          getExpenseType(params.id);
+          settings.templateTop = response.expenseType.existingRecord.template.top;
         } else {
-          $scope.form = response.expenseType.defaults.form;
-          DefaultServices.setTop(response.expenseType.newRecord.top);
+          settings.templateTop = response.expenseType.newRecord.template.top;
+          data.form = response.expenseType.newRecord.form;
         }
       }).catch(function(error) {
-        $scope.state.noSettings = true;
-        $scope.state.messages = {
+        status.noSettings = true;
+        state.messages = {
           error: Array.isArray(error) ? error : [error]
         };
       });
@@ -75,19 +107,22 @@ angular.module('MyApp')
       ExpenseTypeServices.getExpenseTypeById(id)
         .then(function(response) {
           if(!response) {
-            $scope.state.isNull = true;
-            $scope.state.messages = {
-              error: Array.isArray(noRecord) ? noRecord : [noRecord]
+            status.isNull = true;
+            state.messages = {
+              error: Array.isArray(status.noRecord()) ? status.noRecord() : [status.noRecord()]
             };
             return;
           }
-          $scope.state.isNull = false;
-          $scope.form = response;
+          status.isNull = false;
+          data.form = response;
         }).catch(function(error) {
-          $scope.state.isNull = true;
-          $scope.state.messages = {
+          status.isNull = true;
+          state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
     };
+
+    $scope.state = state;
+    $scope.data = data;
   }]);

@@ -30,7 +30,7 @@
                     <span class="sr-only">Loading...</span>
                   </td>
                 </tr>
-                <tr ng-repeat="item in data.banks | orderBy: 'bankDescription' | filter:bankDescription | limitTo:pagination.pageSize" ng-click="editBank(item.id)">
+                <tr ng-repeat="item in data.banks | orderBy: 'bankDescription' | filter:bankDescription" ng-click="editBank(item.id)">
                   <td data-title="Bank" class="text-uppercase">{{::item.bankDescription}}</td>
                   <td data-title="Account" >{{::item.bankAccount}}</td>
                   <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>

@@ -69,7 +69,7 @@ angular.module('MyApp')
     let status = new Status();
     let state = new State(null, params, status, null, null);
     let data = new Data();
-    let messages = [];
+    // let messages = [];
 
     DefaultServices.getSettings()
       .then(function(response) {

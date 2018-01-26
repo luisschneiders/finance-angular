@@ -13,12 +13,11 @@
   }
 }
 .btn-primary {
-  border-color: $mid-pink;
-  background: $mid-pink; /* Old browsers */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$mid-pink', endColorstr='$dark-pink',GradientType=0 ); /* IE6-9 */
+  border-color: transparent;
+  background: $dark-blue; /* Old browsers */
   &:active, &:hover, &:focus {
-    border-color: $dark-pink;
-    background: $dark-pink; /* Old browsers */
+    border-color: transparent;
+    background: $mid-blue; /* Old browsers */
   }
 }
 .btn-default {
@@ -83,11 +82,9 @@
 }
 .btn-add {
   @extend .btn-rounded;
-  &:hover {
-    -webkit-box-shadow: 0px 0px 25px -4px $mid-pink;
-    -moz-box-shadow: 0px 0px 25px -4px $mid-pink;
-    box-shadow: 0px 0px 25px -4px $mid-pink;
-  }
+  -webkit-box-shadow: 0px 4px 23px 0px $light-black;
+  -moz-box-shadow: 0px 4px 23px 0px $light-black;
+  box-shadow: 0px 4px 23px 0px $light-black;
 }
 .btn-facebook {
   color: #fff;

@@ -1,10 +1,10 @@
 <div class="btn-group">
   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Display {{pageSize}} rows <span class="caret"></span>
+    Display {{state.params.pageSize}} rows <span class="caret"></span>
   </button>
   <ul class="dropdown-menu dropdown-menu-right">
-    <li class="text-center" ng-repeat="row in settings.defaults.pageSize">
-      <a class="button cursor-pointer" ng-click="refreshList(row);">{{::row}} rows <i class="fa fa-check" ng-class="row === pagination.pageSize ? settings.defaults.cssClassActive : settings.defaults.cssClassDisabled"></i></a>
+    <li class="text-center" ng-repeat="row in state.settings.defaults.pageSize">
+      <a class="button cursor-pointer" ng-click="refreshList(row);">{{::row}} rows <i class="fa fa-check" ng-class="row === state.pagination.pageSize ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassDisabled"></i></a>
     </li>
   </ul>
 </div>

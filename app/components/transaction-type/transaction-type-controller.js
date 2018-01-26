@@ -5,28 +5,58 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
+    class State {
+      constructor(settings, params, status, messages, pagination, pageSize) {
+        this.settings = settings;
+        this.params = params;
+        this.status = status;
+        this.messages = messages;
+        this.pagination = pagination;
+        this.pageSize = pageSize;
+      }
+    };
+    class Settings {
+      constructor(defaults, component, templateTop) {
+        this.defaults = defaults;
+        this.component = component;
+        this.templateTop = templateTop;
+      }
+    };
+    class Params {
+      constructor($routeParams) {
+        this.page = $routeParams.page;
+        this.pageSize = $routeParams.pageSize;
+      }
+    };
+    class Status {
+      constructor(isLoading, noSettings) {
+        this.isLoading = isLoading;
+        this.noSettings = noSettings;
+      }
+    };
+    class Data {
+      constructor(transactionsType) {
+        this.transactionsType = transactionsType;
+      }
+    };
 
-    let page = $routeParams.page;
-    let pageSize = $routeParams.pageSize;
-
-    $scope.state = {};
-    $scope.settings = {};
-    $scope.data = [];
-    $scope.currentPage = 0;
-    $scope.pagination = {};
-    $scope.pageSize = pageSize;
-    $scope.state.noSettings = true;
+    let settings = new Settings();
+    let params = new Params($routeParams);
+    let status = new Status(true, true);
+    let data = new Data();
+    let state = new State(settings, params, status, null, null, null);
 
     DefaultServices.getSettings()
       .then(function(response) {
+        status.noSettings = false;
+        settings.defaults = response.defaults;
+        settings.component = response.transactionType;
+        settings.templateTop = response.transactionType.defaults.template.top;
+        state.settings = settings;
         getTransactionsType();
-        $scope.state.isLoading = true;
-        $scope.state.noSettings = false;
-        $scope.settings = response;
-        DefaultServices.setTop(response.transactionType.defaults.top);
       }).catch(function(error) {
-        $scope.state.noSettings = true;
-        $scope.state.messages = {
+        status.noSettings = true;
+        state.messages = {
           error: Array.isArray(error) ? error : [error]
         };
       });
@@ -36,34 +66,31 @@ angular.module('MyApp')
     };
 
     $scope.previousPage = function() {
-      $location.path(`/all-transactions-type/page=${$scope.pagination.page - 1}&pageSize=${$scope.pageSize}`);
+      $location.path(`/all-transactions-type/page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.nextPage = function() {
-      $location.path(`/all-transactions-type/page=${$scope.pagination.page + 1}&pageSize=${$scope.pageSize}`);
+      $location.path(`/all-transactions-type/page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $location.path(`/all-transactions-type/page=${$scope.pagination.page}&pageSize=${pageSize}`);
+      $location.path(`/all-transactions-type/page=${state.pagination.page}&pageSize=${pageSize}`);
     };
 
-    function getTransactionsType(settings) {
-      let params = {
-        page: page,
-        pageSize: pageSize
-      };
+    function getTransactionsType() {
       TransactionTypeServices.getAllTransactionsType(params)
         .then(function(response) {
-          $scope.state.isNull = false;
-          $scope.state.isLoading = false;
-          $scope.data = response.transactionsType;
-          $scope.pagination = response.pagination;
+          status.isLoading = false;
+          data.transactionsType = response.transactionsType;
+          state.pagination = response.pagination;
         }).catch(function(error) {
-          $scope.state.isNull = true;
-          $scope.state.isLoading = false;
-          $scope.state.messages = {
+          status.isLoading = false;
+          state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
-    };    
+    };
+
+    $scope.state = state;
+    $scope.data = data;
   }]);

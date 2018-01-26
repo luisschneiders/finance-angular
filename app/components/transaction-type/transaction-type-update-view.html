@@ -1,25 +1,26 @@
 <div class="container-fluid">
+    <div class="row fixed-row" ng-include src="'components/top/top-view.html'"></div>
     <div class="row">
       <div class="col-sm-12">
         <section ng-include="'components/partials/messages.tpl.html'"></section>
-        <form name="standardForm" ng-submit="saveTransactionType(standardForm.$valid)" class="form-horizontal" ng-if="!state.isNull && !state.noSettings">
+        <form name="standardForm" ng-submit="saveTransactionType(standardForm.$valid)" class="form-horizontal" ng-if="!state.status.noSettings && !state.status.isNull">
           <div class="form-group">
             <label for="transactionTypeDescription" class="col-sm-3">Description</label>
             <div class="col-sm-7">
-              <input type="text" name="transactionTypeDescription" id="transactionTypeDescription" class="form-control" ng-model="form.transactionTypeDescription" required>
+              <input type="text" name="transactionTypeDescription" id="transactionTypeDescription" class="form-control" ng-model="data.form.transactionTypeDescription" required>
             </div>
           </div>
           <div class="form-group">
             <label for="transactionTypeIsActive" class="col-sm-3">Active</label>
             <div class="col-sm-7">
-              <input type="checkbox" name="transactionTypeIsActive" ng-model="form.transactionTypeIsActive" ng-checked="form.transactionTypeIsActive === 1" ng-true-value="1" ng-false-value="0">
+              <input type="checkbox" name="transactionTypeIsActive" ng-model="data.form.transactionTypeIsActive" ng-checked="data.form.transactionTypeIsActive === 1" ng-true-value="1" ng-false-value="0">
             </div>
           </div>
           <div class="form-group">
             <label for="transactionTypeAction" class="col-sm-3">Type</label>
             <div class="col-sm-7">
-              <select name="transactionTypeAction" id="transactionTypeAction" class="form-control" ng-model="form.transactionTypeAction" required
-                ng-options="type.value as type.description for type in typeAction">
+              <select name="transactionTypeAction" id="transactionTypeAction" class="form-control" ng-model="data.form.transactionTypeAction" required
+                ng-options="type.value as type.description for type in data.typeAction">
               </select>
             </div>
           </div>

@@ -5,51 +5,81 @@ angular.module('MyApp')
       $location.path('/login');
       return;
     }
-
-    let transactionTypeId = $routeParams.id;
-    let newRecord = null;
-    let noRecord = {
-      msg: 'No Record Found!'
+    class State {
+      constructor(settings, params, status, messages) {
+        this.settings = settings;
+        this.params = params;
+        this.status = status;
+        this.messages = messages;
+      }
+    };
+    class Settings {
+      constructor(defaults, component, templateTop) {
+        this.defaults = defaults;
+        this.component = component;
+        this.templateTop = templateTop;
+      }
+    };
+    class Params {
+      constructor($routeParams) {
+        this.id = $routeParams.id;
+      }
+    };
+    class Status {
+      constructor(isLoading, noSettings, newRecord, isNull, isSaving) {
+        this.isLoading = isLoading;
+        this.noSettings = noSettings;
+        this.newRecord = newRecord;
+        this.isNull = isNull;
+        this.isSaving = isSaving;
+      }
+      noRecord() {
+        return { msg: 'No Record Found!' }
+      };
+    };
+    class Data {
+      constructor(form, typeAction) {
+        this.form = form;
+        this.typeAction = typeAction;
+      }
     };
 
-    $scope.state = {};
-    $scope.data = [];
-    $scope.form = {};
-    $scope.state.noSettings = true;
-    $scope.typeAction = TransactionTypeServices.getTransactionTypeAction();
+    let settings = new Settings();
+    let params = new Params($routeParams);
+    let status = new Status(true, true, null, false, false);
+    let data = new Data();
+    let state = new State(settings, params, status, null);
 
-    if (Number.isInteger(parseInt(transactionTypeId))) {
-      newRecord = false;
+    if (Number.isInteger(parseInt(params.id))) {
+      status.newRecord = false;
     } else {
-      newRecord = true;
+      status.newRecord = true;
     }
 
-    setControllerSettings(newRecord);
+    setControllerSettings(status.newRecord);
 
     $scope.saveTransactionType = function($valid) {
-      if ($scope.state.isSaving) {
+      if (status.isSaving) {
         return;
       }
       if(!$valid) {
         return;
       }
-      $scope.state.isSaving = true;
-
-      TransactionTypeServices.save(newRecord, $scope.form)
+      status.isSaving = true;
+      TransactionTypeServices.save(status.newRecord, data.form)
         .then(function(response) {
-          $scope.state.isSaving = false;
-          $scope.state.messages = {
+          status.isSaving = false;
+          state.messages = {
             success: [response]
           };
-          if(newRecord) {
+          if(status.newRecord) {
             $timeout(function() {
               $location.path(`/transaction-type=${response.transactionType.id}`);
             }, 1000);
-            return
           }
         }).catch(function(error) {
-          $scope.state.isSaving = false;
-          $scope.state.messages = {
+          status.isSaving = false;
+          state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
@@ -58,17 +88,18 @@ angular.module('MyApp')
     function setControllerSettings(newRecord) {
       DefaultServices.getSettings()
       .then(function(response) {
-        $scope.state.noSettings = false;
+        status.noSettings = false;
         if(!newRecord) {
-          getTransactionType(transactionTypeId);
-          DefaultServices.setTop(response.transactionType.existingRecord.top);
+          getTransactionType(params.id);
+          settings.templateTop = response.transactionType.existingRecord.template.top;
         } else {
-          $scope.form = response.transactionType.defaults.form;
-          DefaultServices.setTop(response.transactionType.newRecord.top);
+          settings.templateTop = response.transactionType.newRecord.template.top;
+          data.form = response.transactionType.newRecord.form;
         }
+        data.typeAction = TransactionTypeServices.getTransactionTypeAction();
       }).catch(function(error) {
-        $scope.state.noSettings = true;
-        $scope.state.messages = {
+        status.noSettings = true;
+        state.messages = {
           error: Array.isArray(error) ? error : [error]
         };
       });
@@ -78,18 +109,22 @@ angular.module('MyApp')
       TransactionTypeServices.getTransactionTypeById(id)
         .then(function(response) {
           if(!response) {
-            $scope.state.isNull = true;
-            $scope.state.messages = {
-              error: Array.isArray(noRecord) ? noRecord : [noRecord]
+            status.isNull = true;
+            state.messages = {
+              error: Array.isArray(status.noRecord()) ? status.noRecord() : [status.noRecord()]
             };
             return;
           }
-          $scope.state.isNull = false;
-          $scope.form = response;
+          status.isNull = false;
+          data.form = response;
         }).catch(function(error) {
-          $scope.state.messages = {
+          status.isNull = true;
+          state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
     };
+
+    $scope.state = state;
+    $scope.data = data;
   }]);

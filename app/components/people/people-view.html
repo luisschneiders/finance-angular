@@ -1,11 +1,12 @@
 <div class="container-fluid">
+    <div class="row fixed-row" ng-include src="'components/top/top-view.html'"></div>
     <div class="row">
       <div class="col-sm-12">
         <section ng-include="'components/partials/messages.tpl.html'"></section>
-        <section ng-if="!state.noSettings">
+        <section ng-if="!state.status.noSettings">
           <div class="row">
             <div class="col-xs-6 col-sm-4"><input type="text" placeholder="Search..." ng-model="peopleDescription" class="search-input"></div>
-            <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{::pagination.rowCount}}</span> records</div>
+            <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{::state.pagination.rowCount}}</span> records</div>
             <div class="col-xs-12 col-sm-4 text-right">
               <div ng-include="'components/partials/dropdown-rows.tpl.html'"></div>
             </div>
@@ -21,16 +22,16 @@
                 </tr>
               </thead>
               <tbody class="table-cursor">
-                <tr class="loading text-center" ng-show="state.isLoading">
+                <tr class="loading text-center" ng-show="state.state.isLoading">
                   <td colspan="6">
-                    <i ng-class="settings.defaults.cssClassLoading"></i>
+                    <i ng-class="state.settings.defaults.cssClassLoading"></i>
                     <span class="sr-only">Loading...</span>
                   </td>
                 </tr>
-                <tr ng-repeat="item in data | orderBy: 'peopleDescription' | filter:peopleDescription | limitTo:pagination.pageSize" ng-click="editPeople(item.id)">
+                <tr ng-repeat="item in data.people | orderBy: 'peopleDescription' | filter:peopleDescription" ng-click="editPeople(item.id)">
                   <td data-title="Name" class="text-uppercase">{{::item.peopleDescription}}</td>
                   <td data-title="Type" class="text-uppercase">{{::item.peopleTypeDescription}}</td>
-                  <td data-title="Active"  class="text-center" ng-class="::item.peopleIsActive == 1 ? settings.defaults.cssClassActive : settings.defaults.cssClassInactive">{{::item.peopleIsActive == 1 ? "Yes" : "No"  }}</td>
+                  <td data-title="Active"  class="text-center" ng-class="::item.peopleIsActive == 1 ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassInactive">{{::item.peopleIsActive == 1 ? "Yes" : "No"  }}</td>
                   <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
                 </tr>
               </tbody>

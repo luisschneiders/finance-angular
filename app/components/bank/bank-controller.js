@@ -60,6 +60,7 @@ angular.module('MyApp')
           error: Array.isArray(error) ? error : [error]
         };
       });
+
     $scope.editBank = function(id) {
       $location.path(`/bank=${id}`);
     };

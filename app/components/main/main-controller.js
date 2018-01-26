@@ -26,12 +26,11 @@ angular.module('MyApp')
       }
     };
     class Status {
-      constructor() {
-        this.transactionIsNull = false;
-        this.purchaseIsNull = false;
-        this.isLoading = true;
-        this.noSettings = true;
-        this.errorVIew = false;
+      constructor(transactionIsNull, purchaseIsNull, isLoading, noSettings) {
+        this.transactionIsNull = transactionIsNull;
+        this.purchaseIsNull = purchaseIsNull;
+        this.isLoading = isLoading;
+        this.noSettings = noSettings;
       }
     };
     class Data {
@@ -43,12 +42,11 @@ angular.module('MyApp')
 
     let settings = new Settings();
     let params = new Params($routeParams);
-    let status = new Status();
+    let status = new Status(false, false, true, true);
     let state = new State(null, params, status, null);
     let data = new Data();
     let pieChart = null;
     let barChart = null;
-    let messages = [];
     let pieChartColoursBackground = [];
     let transactionsLabel = [];
     let barChartColoursBackground = [];
@@ -64,7 +62,6 @@ angular.module('MyApp')
         getGraphicData();
       }).catch(function(error) {
         status.noSettings = true;
-        status.errorView = true;
         state.messages = {
           error: Array.isArray(error) ? error : [error]
         };
@@ -99,7 +96,6 @@ angular.module('MyApp')
           status.isLoading = false;
         }).catch(function(error) {
           status.noSettings = true;
-          status.errorView = true;
           status.isLoading = false;
           state.messages = {
             error: Array.isArray(error) ? error : [error]

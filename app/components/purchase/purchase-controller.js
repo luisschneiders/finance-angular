@@ -88,6 +88,7 @@ angular.module('MyApp')
           error: Array.isArray(error) ? error : [error]
         };
       });
+
     $scope.changePeriod = function(value) {
       params = {
         from: $routeParams.from,

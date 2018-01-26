@@ -1,51 +1,54 @@
-<div class="container-fluid" ng-include src="'components/top/top-view.html'"></div>
 <div class="container-fluid">
+  <div class="row fixed-row" ng-include src="'components/top/top-view.html'"></div>
   <div class="row">
     <div class="col-sm-12">
-      <div class="row select-period">
-        <div class="col-xs-12">
-          <div class="padding-bottom text-center">
-            <a class="arrows" ng-click="changePeriod('d')"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-            <strong>{{data.year}}</strong>
-            <a class="arrows" ng-click="changePeriod('i')"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <span>Transactions:</span>
-          <div class="loading text-center" ng-show="data.isLoading">
-            <i ng-class="settings.defaults.cssClassLoading"></i>
-            <span class="sr-only">Loading...</span>
-          </div>
-          <div class="row">
-            <div class="col-sm-12" ng-show="data.transactionIsNull">
-              <h3 class="alert alert-danger text-center">{{::data.notFound.message}}</h3>
-            </div>
-            <div class="col-md-12" ng-show="!data.transactionIsNull">
-              <canvas id="transactionChart"></canvas>
+      <section ng-include="'components/partials/messages.tpl.html'" ng-show="state.status.errorView"></section>
+      <section ng-if="!state.status.noSettings">
+        <div class="row select-period">
+          <div class="col-xs-12">
+            <div class="padding-bottom text-center">
+              <a class="btn btn-default" ng-click="changePeriod('d')"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+              <a class="btn btn-default"> {{state.params.year}} </a>
+              <a class="btn btn-default" ng-click="changePeriod('i')"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <span>Purchases:</span>
-          <div class="loading text-center" ng-show="data.isLoading">
-            <i ng-class="settings.defaults.cssClassLoading"></i>
-            <span class="sr-only">Loading...</span>
-          </div>
-          <div class="row">
-            <div class="col-sm-12" ng-show="data.purchaseIsNull">
-                <h3 class="alert alert-danger text-center">{{::data.notFound.message}}</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <span>Transactions:</span>
+            <div class="loading text-center" ng-show="state.status.isLoading">
+              <i ng-class="state.settings.defaults.cssClassLoading"></i>
+              <span class="sr-only">Loading...</span>
             </div>
-            <div class="col-md-12" ng-show="!data.purchaseIsNull">
-              <canvas id="purchaseChart"></canvas>
+            <div class="row">
+              <div class="col-sm-12" ng-show="state.status.transactionIsNull">
+                <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
+              </div>
+              <div class="col-md-12" ng-show="!state.status.transactionIsNull">
+                <canvas id="transactionChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <span>Purchases:</span>
+            <div class="loading text-center" ng-show="state.status.isLoading">
+              <i ng-class="state.settings.defaults.cssClassLoading"></i>
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="row">
+              <div class="col-sm-12" ng-show="state.status.purchaseIsNull">
+                  <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
+              </div>
+              <div class="col-md-12" ng-show="!state.status.purchaseIsNull">
+                <canvas id="purchaseChart"></canvas>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="col-sm-12">
-      <div ng-include src="'components/feed/feed-view.html'"></div>
+        <div class="col-sm-12">
+          <div ng-include src="'components/feed/feed-view.html'"></div>
+        </div>
+      </section>
     </div>
   </div>
 </div>

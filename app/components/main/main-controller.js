@@ -1,78 +1,115 @@
 angular.module('MyApp')
-  .controller('MainCtrl', ['$scope', '$auth', '$location', 'moment', 'MainServices', 'DefaultServices', function($scope, $auth, $location, moment, MainServices, DefaultServices) {
+  .controller('MainCtrl', ['$scope', '$auth', '$location', '$routeParams', 'moment', 'DefaultServices', 'MainServices',
+  function($scope, $auth, $location, $routeParams, moment, DefaultServices, MainServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
-    let data = {
-      transactionIsNull: false,
-      purchaseIsNull: false,
-      notFound: {
-        url: null,
-        title: null,
-        message:'No data found for the period!',
-      },      
-      top: {
-        pageTitle: 'Annual Graphics',
-        buttonTitle: null,
-        buttonUrl: null,
-        buttonDisplay: false
-      },
-      isLoading: true,
-      year: $location.path().substr(6) // to remove /main/
+    class State {
+      constructor(settings, params, status, messages) {
+        this.settings = settings;
+        this.params = params;
+        this.status = status;
+        this.messages = messages;
+      }
     };
-    let pieChart;
-    let pieChartColoursBackground = [];
-    let barChart;
-    let barChartColoursBackground = [];
-    let barChartLabelsMonths = [];
-    let transactionsData = [];
-    let purchaseData = [];
-    let transactionsLabel = [];
-    let transactionChart = document.getElementById("transactionChart");
-    let purchaseChart = document.getElementById("purchaseChart");
-
-    DefaultServices.setTop(data.top);
-
-    getGraphicData();
-
-    $scope.changePeriod = function(value) {
-      data.year = parseInt(data.year);
-      if(value == 'd') {
-        data.year = data.year - 1;
-        $location.path(`/main/${data.year}`);
-      } else {
-        data.year = data.year + 1;
-        $location.path(`/main/${data.year}`);
+    class Params {
+      constructor($routeParams) {
+        this.year = $routeParams.year;
+      }
+    };
+    class Settings {
+      constructor(defaults, component, templateTop) {
+        this.defaults = defaults;
+        this.component = component;
+        this.templateTop = templateTop;
+      }
+    };
+    class Status {
+      constructor() {
+        this.transactionIsNull = false;
+        this.purchaseIsNull = false;
+        this.isLoading = true;
+        this.noSettings = true;
+        this.errorVIew = false;
+      }
+    };
+    class Data {
+      constructor(purchases, transactions) {
+        this.purchases = purchases;
+        this.transactions = transactions;
       }
     };
 
-    function getGraphicData() {
-      let transactions = MainServices.getTransactionsByYear(data.year);
-      transactions.then(function(response) {
-        data.transactionIsNull = false;
-        data.purchaseIsNull = false;
+    let settings = new Settings();
+    let params = new Params($routeParams);
+    let status = new Status();
+    let state = new State(null, params, status, null);
+    let data = new Data();
+    let pieChart = null;
+    let barChart = null;
+    let messages = [];
+    let pieChartColoursBackground = [];
+    let transactionsLabel = [];
+    let barChartColoursBackground = [];
+    let barChartLabelsMonths = [];
 
-        if(response.data[0].length == 0) {//transaction
-          data.transactionIsNull = true;
-        } else {
-          renderTransactionGraphic(response.data[0]);
-        }
-
-        if(response.data[1].length == 0) {//purchase
-          data.purchaseIsNull = true;
-        } else {
-          renderPurchaseGraphic(response.data[1]);
-        }
-
-        data.isLoading = false;
-      }).catch(function(err) {
-        console.warn('Error getting data: ', err);
+    DefaultServices.getSettings()
+      .then(function(response) {
+        status.noSettings = false;
+        settings.defaults = response.defaults;
+        settings.component = response.main;
+        settings.templateTop = response.main.defaults.template.top;
+        state.settings = settings;
+        getGraphicData();
+      }).catch(function(error) {
+        status.noSettings = true;
+        status.errorView = true;
+        state.messages = {
+          error: Array.isArray(error) ? error : [error]
+        };
       });
+
+    $scope.changePeriod = function(value) {
+      params.year = parseInt(params.year);
+      if(value == 'd') {
+        params.year = params.year - 1;
+      } else {
+        params.year = params.year + 1;
+      }
+      $location.path(`/main=${params.year}`);
+    };
+
+    function getGraphicData() {
+      MainServices.getTransactionsByYear(params.year)
+        .then(function(response) {
+          status.transactionIsNull = false;
+          status.purchaseIsNull = false;
+
+          if(response[0].length == 0) {//transaction
+            status.transactionIsNull = true;
+          } else {
+            renderTransactionGraphic(response[0]);
+          }
+          if(response[1].length == 0) {//purchase
+            status.purchaseIsNull = true;
+          } else {
+            renderPurchaseGraphic(response[1]);
+          }
+          status.isLoading = false;
+        }).catch(function(error) {
+          status.noSettings = true;
+          status.errorView = true;
+          status.isLoading = false;
+          state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
     }
 
     function renderTransactionGraphic(response) {
-      transactionsData = response.map(function(value) {
+      let transactionChart = document.getElementById("transactionChart");
+      data.transactions = response.map(function(value) {
         switch(value.transactionLabel) {
           case 'C':
             value.TotalAmountByLabel;
@@ -129,7 +166,7 @@ angular.module('MyApp')
         data: {
           labels: transactionsLabel,
           datasets: [{
-            data: transactionsData,
+            data: data.transactions,
             backgroundColor: pieChartColoursBackground,
             borderColor: '#383838',
             hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
@@ -137,10 +174,10 @@ angular.module('MyApp')
           }]
         }
       });
-      data.isLoading = false;
     }
 
     function renderPurchaseGraphic(response) {
+      let purchaseChart = document.getElementById("purchaseChart");
       let barChartOptions = {
             scales: {
               yAxes: [{
@@ -152,9 +189,7 @@ angular.module('MyApp')
       };
 
       barChartLabelsMonths = response.map(function(value) {
-        let date = moment(value.purchaseDate);
-        let month = date.format('M');
-        month = month.toString();
+        let month = moment(value.purchaseDate).format('M').toString();
         switch(month){
           case '1':
             value.barChartLabelsMonths = 'Jan';
@@ -199,9 +234,7 @@ angular.module('MyApp')
       });
 
       barChartColoursBackground = response.map(function(value) {
-        let date = moment(value.purchaseDate);
-        let month = date.format('M');
-        month = month.toString();
+        let month = moment(value.purchaseDate).format('M').toString();
         switch(month){
           case '1':
             value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
@@ -245,17 +278,16 @@ angular.module('MyApp')
         return [value.barChartColoursBackground];
       });
 
-      purchaseData = response.map(function(value) {
+      data.purchases = response.map(function(value) {
         return [value.TotalAmountByMonth];
       });
-
       barChart = new Chart(purchaseChart, {
         type: 'bar',
         data: {
             labels: barChartLabelsMonths,
             datasets: [{
                 label: 'Month',
-                data: purchaseData,
+                data: data.purchases,
                 backgroundColor: barChartColoursBackground,
                 borderColor: '#383838',
                 hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
@@ -263,8 +295,7 @@ angular.module('MyApp')
             }]
         },
         options: barChartOptions
-    });
-    }
-
-    $scope.data = data;
+      });
+    };
+    $scope.state = state;
   }]);

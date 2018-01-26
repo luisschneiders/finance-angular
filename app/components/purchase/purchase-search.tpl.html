@@ -4,7 +4,7 @@
 </div>
 <form name="standardForm" ng-submit="customSearchForm(standardForm.$valid)" class="form-horizontal">
   <div class="modal-body">
-    <section ng-include="'components/partials/messages.tpl.html'" ng-show="state.status.errorSearch"></section>
+    <section ng-include="'components/partials/messages.tpl.html'" ng-if="state.status.errorSearch"></section>
     <div class="row">
       <div class="col-sm-9">
         <div class="form-group">

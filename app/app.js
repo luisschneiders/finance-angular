@@ -35,7 +35,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'ResetCtrl',
         resolve: { skipIfAuthenticated: skipIfAuthenticated }
       })
-      .when('/main/:year', {
+      .when('/main=:year', {
         templateUrl: 'components/main/main-view.html',
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
@@ -118,7 +118,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
 
     function skipIfAuthenticated($location, $auth) {
       if ($auth.isAuthenticated()) {
-        $location.path('/main/:year');
+        $location.path('/main=:year');
       }
     }
 

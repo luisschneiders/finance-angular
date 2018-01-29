@@ -80,19 +80,9 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PeopleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/transactions=:year-:month', {
+      .when('/transactions/from=:from&to=:to&transactions=:id', {
         templateUrl: 'components/transaction/transaction-view.html',
         controller: 'TransactionCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/custom-search-transactions=:from&:to&:transactionType', {
-        templateUrl: 'components/transaction/transaction-custom-view.html',
-        controller: 'TransactionCustomCtrl',
-        resolve: { loginRequired: loginRequired }
-      })
-      .when('/transaction-new', {
-        templateUrl: 'components/transaction/transaction-update-view.html',
-        controller: 'TransactionUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/purchases/from=:from&to=:to&expenses=:id', {

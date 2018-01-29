@@ -39,11 +39,15 @@ angular.module('MyApp')
         this.isLoadingExpensesType = true;
         this.noSettings = true;
         this.isSaving = false;
-        this.noBalance = '';
         this.errorAdd = false;
         this.errorSearch = false;
         this.errorVIew = false;
       }
+
+      noBalance(amountInformed, amountAvailable ) {
+        return `Amount $${amountInformed} is higher than available($${amountAvailable})
+        in this account, please check!`
+      };
     };
     class Modal {
       constructor(title, cssClass, url){
@@ -53,13 +57,14 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(purchases, purchasesByGroup, purchasesDetails, expensesType, banks, form) {
+      constructor(purchases, purchasesByGroup, purchasesDetails, expensesType, banks, form, customSearch) {
         this.purchases = purchases;
         this.purchasesByGroup = purchasesByGroup;
         this.purchasesDetails = purchasesDetails;
         this.expensesType = expensesType;
         this.banks = banks;
         this.form = form;
+        this.customSearch = customSearch;
       }
     };
 
@@ -69,7 +74,6 @@ angular.module('MyApp')
     let status = new Status();
     let state = new State(null, params, status, null, null);
     let data = new Data();
-    // let messages = [];
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -134,13 +138,13 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(state.customSearch.expenseType == undefined) {
-        params.expenses = setExpensesType();
+      if(data.customSearch.expenseType == undefined) {
+        params.expenses = 'all';
       } else {
-        params.expenses = state.customSearch.expenseType;
+        params.expenses = data.customSearch.expenseType;
       }
-      params.from = state.customSearch.from;
-      params.to = state.customSearch.to;
+      params.from = data.customSearch.from;
+      params.to = data.customSearch.to;
       $(".modal").modal("hide");
       $timeout(function() {
         $location.path(`/purchases/from=${params.from}&to=${params.to}&expenses=${params.expenses}`);
@@ -177,11 +181,9 @@ angular.module('MyApp')
       });
 
       if (parseFloat(data.form.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
-        status.noBalance = `Amount $${data.form.purchaseAmount} is higher than available($${checKBalance.bankCurrentBalance})
-                          in your account, please check!`;
         state.messages = {
           error: [{
-            msg: status.noBalance
+            msg: status.noBalance(data.form.purchaseAmount, checKBalance.bankCurrentBalance)
           }]
         };
         return;
@@ -235,14 +237,6 @@ angular.module('MyApp')
             error: Array.isArray(error) ? error : [error]
           };
         });
-    };
-
-    function setExpensesType() {
-      let expenses = [];
-      _.forEach(data.expensesType, function(expense) {
-        expenses.push(expense.id);
-      });
-      return expenses;
     };
 
     function getActiveBanks() {

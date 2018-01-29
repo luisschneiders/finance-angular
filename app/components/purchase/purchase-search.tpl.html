@@ -1,6 +1,6 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title || 'Purchase'"></h4>
+  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title"></h4>
 </div>
 <form name="standardForm" ng-submit="customSearchForm(standardForm.$valid)" class="form-horizontal">
   <div class="modal-body">
@@ -10,23 +10,23 @@
         <div class="form-group">
           <label for="dateStart" class="col-sm-3">Start Date</label>
           <div class="col-sm-9">
-            <input type="text" name="dateStart" id="dateStart" class="form-control" ng-model='state.customSearch.from' calendar required/>
+            <input type="text" name="dateStart" id="dateStart" class="form-control" ng-model='data.customSearch.from' calendar required/>
           </div>
         </div>
         <div class="form-group">
           <label for="dateEnd" class="col-sm-3">End Date</label>
           <div class="col-sm-9">
-            <input type="text" name="dateEnd" id="dateEnd" class="form-control" ng-model='state.customSearch.to' calendar required/>
+            <input type="text" name="dateEnd" id="dateEnd" class="form-control" ng-model='data.customSearch.to' calendar required/>
           </div>
         </div>
         <div class="form-group">
-          <label for="transactionType" class="col-sm-3">Expense Type</label>
+          <label for="expenseType" class="col-sm-3">Expense Type</label>
           <div class="col-sm-9">
             <div class="loading text-center" ng-show="state.status.isLoadingExpensesType">
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
             </div>
-            <select name="purchasesMultipleSelect" id="transactionType" class="form-control text-uppercase" ng-model="state.customSearch.expenseType" multiple
+            <select name="purchasesMultipleSelect" id="expenseType" class="form-control text-uppercase" ng-model="data.customSearch.expenseType" multiple
             ng-options="type.id as type.expenseTypeDescription for type in data.expensesType | orderBy:'expenseTypeDescription'">
             </select>
           </div>

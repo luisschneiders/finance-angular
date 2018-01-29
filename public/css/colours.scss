@@ -62,3 +62,54 @@ $dark-black     : #383838;
 $light-pink     : #ff66ff;
 $mid-pink       : #8600b3;
 $dark-pink      : #600080;
+
+.green-gradient {
+  background: $mid-green; /* Old browsers */
+  background-image: -moz-linear-gradient(left, $dark-green 0%, $light-green 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-green), color-stop(100%, $light-green));
+  background-image: -webkit-linear-gradient(left, $dark-green 0%, $light-green 100%);
+  background-image: -o-linear-gradient(left, $dark-green 0%, $light-green 100%);
+  background-image: -ms-linear-gradient(left, $dark-green 0%, $light-green 100%);
+  background-image: linear-gradient(to right, $dark-green 0%, $light-green 100%);
+}
+.orange-gradient {
+  background: $mid-orange; /* Old browsers */
+  background-image: -moz-linear-gradient(left, $dark-orange 0%, $light-orange 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-orange), color-stop(100%, $light-orange));
+  background-image: -webkit-linear-gradient(left, $dark-orange 0%, $light-orange 100%);
+  background-image: -o-linear-gradient(left, $dark-orange 0%, $light-orange 100%);
+  background-image: -ms-linear-gradient(left, $dark-orange 0%, $light-orange 100%);
+  background-image: linear-gradient(to right, $dark-orange 0%, $light-orange 100%);
+}
+.blue-gradient {
+  background-image: $dark-blue;
+  background-image: -moz-linear-gradient(left, $dark-blue 0%, $light-blue 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-blue), color-stop(100%, $light-blue));
+  background-image: -webkit-linear-gradient(left, $dark-blue 0%, $light-blue 100%);
+  background-image: -o-linear-gradient(left, $dark-blue 0%, $light-blue 100%);
+  background-image: -ms-linear-gradient(left, $dark-blue 0%, $light-blue 100%);
+  background-image: linear-gradient(to right, $dark-blue 0%, $light-blue 100%);
+}
+.pink-gradient {
+  background-image: $dark-pink;
+  background-image: -moz-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-pink), color-stop(100%, $light-pink));
+  background-image: -webkit-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
+  background-image: -o-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
+  background-image: -ms-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
+  background-image: linear-gradient(to right, $dark-pink 0%, $light-pink 100%);
+}
+.black-gradient {
+  background-image: $dark-black;
+  background-image: -moz-linear-gradient(left, $dark-black 0%, $light-black 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-black), color-stop(100%, $light-black));
+  background-image: -webkit-linear-gradient(left, $dark-black 0%, $light-black 100%);
+  background-image: -o-linear-gradient(left, $dark-black 0%, $light-black 100%);
+  background-image: -ms-linear-gradient(left, $dark-black 0%, $light-black 100%);
+  background-image: linear-gradient(to right, $dark-black 0%, $light-black 100%);
+}
+.icon-settings {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

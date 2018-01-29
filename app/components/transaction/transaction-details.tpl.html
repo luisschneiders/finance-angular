@@ -1,6 +1,6 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="data.modal.title || 'Purchase'"></h4>
+  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title || 'Purchases'"></h4>
 </div>
 <div class="modal-body">
   <div id="no-more-tables">
@@ -13,13 +13,7 @@
           </tr>
         </thead>
         <tbody >
-          <tr class="loading text-center" ng-show="data.isLoading">
-            <td colspan="6">
-              <i ng-class="settings.defaults.cssClassLoading"></i>
-              <span class="sr-only">Loading...</span>
-            </td>
-          </tr>
-          <tr ng-repeat="item in data.modal.transactions | orderBy: '-transactionDate'">
+          <tr ng-repeat="item in data.transactionsDetails | orderBy: '-transactionDate'">
             <td data-title="Details">
               <div>{{::item.transactionDate | date: "dd/MM/yyyy"}}</div>
               <div>{{::item.transactionComments}}</div>

@@ -1,0 +1,80 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title || 'Add Transaction'"></h4>
+</div>
+<form name="standardForm" ng-submit="saveTransaction(standardForm.$valid)" class="form-horizontal" novalidate ng-if="!state.isNull && !state.noSettings">
+  <div class="modal-body">
+    <section ng-include="'components/partials/messages.tpl.html'" ng-if="state.status.errorAdd"></section>
+    <div class="row row-flex row-flex-wrap">
+      <div class="flex-col col-sm-9">
+        <div class="form-group">
+          <label for="transactionDate" class="col-sm-3">Date</label>
+          <div class="col-sm-9">
+            <input type="text" name="transactionDate" id="transactionDate" class="form-control" ng-model='data.form.transactionDate' calendar required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="transactionType" class="col-sm-3">Action</label>
+          <div class="col-sm-9">
+              <span ng-if="data.transactionsType.length == 0" class="text-danger">{{::state.settings.transactions.newRecord.table.transactionType.message}}
+                <a ng-href="{{::state.settings.transactions.newRecord.table.transactionType.url}}">({{::state.settings.transactions.newRecord.table.transactionType.title}})</a>
+              </span>
+              <select name="transactionType" id="transactionType" class="form-control text-uppercase" ng-model="data.form.transactionType" required
+              ng-options="type as type.transactionTypeDescription for type in data.transactionsType" ng-disabled="data.transactionsType.length == 0">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-3">
+            <label for="transactionFromBank">Bank </label><span> (from)</span>
+          </div>
+          <div class="col-sm-9">
+            <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.transactions.defaults.messages.notFound}}
+              <a ng-href="{{::state.settings.transactions.newRecord.table.bank.url}}">({{state.settings.transactions.newRecord.table.bank.title}})</a>
+            </span>
+            <select name="transactionFromBank" id="transactionFromBank" class="form-control text-uppercase" ng-model="data.form.transactionFromBank" required
+              ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-if="data.form.transactionType.transactionTypeAction == 'T'">
+          <div class="col-sm-3">
+            <label for="transactionToBank">Bank </label><span> (to)</span>
+          </div>
+          <div class="col-sm-9">
+            <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.transactions.defaults.messages.notFound}}
+              <a ng-href="{{::state.settings.transactions.newRecord.table.bank.url}}">({{::state.settings.transactions.newRecord.table.bank.title}})</a>
+            </span>
+            <select name="transactionToBank" id="transactionToBank" class="form-control text-uppercase" ng-model="data.form.transactionToBank" required
+              ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="transactionComments" class="col-sm-3">Comments</label>
+          <div class="col-sm-9">
+            <textarea name="transactionComments" id="transactionComments" class="form-control" ng-model="data.form.transactionComments" rows="3" required
+              ng-if="data.form.transactionType.transactionTypeAction == 'T' ? data.form.transactionComments = checkTransactionTypeAction(data.form.transactionType) : this"
+              ng-disabled="data.form.transactionType.transactionTypeAction == 'T'"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="transactionAmount" class="col-sm-3">Amount</label>
+          <div class="col-sm-9">
+            <input type="text" name="transactionAmount" id="transactionAmount" class="form-control" ng-model="data.form.transactionAmount" format="number" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9  text-right">
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex-col col-sm-3 text-center content-center">
+        <div class="text-center">
+          <div class="icon-defaults"><i class="fa fa-credit-card fa-lg" aria-hidden="true"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
       table.integer('transactionLink');
       table.date('transactionDate').notNullable();
       table.integer('transactionFromBank').notNullable();
-      table.integer('transactionToBank');
+      table.integer('transactionToBank').defaultTo(0);
       table.integer('transactionType').notNullable();
       table.string('transactionAction', [1]).notNullable();
       table.string('transactionLabel', [1]).notNullable();

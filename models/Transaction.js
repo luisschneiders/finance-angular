@@ -14,25 +14,17 @@ const Transaction = bookshelf.Model.extend({
         qr.groupBy('transactionLabel');
       }).fetchAll();
     },
-    getTransactionByYearAndMonth: function(user, startDate, endDate) {
-      let options = null;
-
-      startDate = moment(startDate).format('YYYY-MM-DD');
-      endDate = moment(endDate).format('YYYY-MM-DD');
-      options = new Options(user, startDate, endDate);
-
-      return this.query(function(qr){
-        queryTransactions(qr, options);
-      }).fetchAll();
-    },
-    transactionGetByCustomSearch: function(user, startDate, endDate, transactionType) {
+    getTransactionByCustomSearch: function(user, startDate, endDate, transactionType) {
       let options = new Options(user, startDate, endDate);
       let refineTransactionType = [];
+      let allTransactionsType = 'all';
       refineTransactionType = transactionType.split(',');
 
       return this.query(function(qr) {
         queryTransactions(qr, options);
-        qr.whereIn('transactionType', refineTransactionType);
+        if(transactionType !== allTransactionsType){
+          qr.whereIn('transactionType', refineTransactionType);
+        }
       }).fetchAll();
     }
   });

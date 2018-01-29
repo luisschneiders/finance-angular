@@ -114,16 +114,9 @@ a {
 
 // Panels
 // -------------------------
-.panel-hover {
-  &:hover {
-    border-left: solid 3px $dark-yellow;
-  }
-}
 .panel {
-  border-left: solid 3px $light-black;
   box-shadow: none;
   border-radius: 0;
-
   .panel-heading{
     border-radius: 0;
   }
@@ -135,10 +128,13 @@ a {
 }
 .panel-title {
   font-size: 2rem;
-  // color: #FFF;
 }
 .panel-body-content {
   font-size: 2.5rem;
+}
+.well {
+  margin-bottom: 10px;
+  padding: 0;
 }
 // Forms
 // -------------------------
@@ -234,11 +230,6 @@ select {
   outline: 0;
   border-bottom: solid 1px $dark-yellow;
 }
-.icon-educational {
-  i {
-    font-size: 5rem;
-  }
-}
 .feed {
   border-top: solid 2px $dark-gray;
   margin: 15px 0;
@@ -248,6 +239,7 @@ select {
   padding: 15px;
   background: $light-gray;
 }
+
 @media (min-width: 767px) {
   #main {
     margin-top: 58px;

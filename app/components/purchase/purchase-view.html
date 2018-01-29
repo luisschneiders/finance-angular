@@ -22,7 +22,7 @@
             <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
           </div>
           <div class="col-sm-12" ng-repeat="(key, value) in data.purchasesByGroup">
-            <div class="panel well box-shadow panel-hover">
+            <div class="panel well">
               <div class="panel-heading">
                 <h3 class="panel-title text-uppercase">{{::value.expenseTypeDescription || 'Purchase'}}</h3>
               </div>
@@ -32,7 +32,7 @@
                     <strong class="panel-body-content">$ {{::value.TotalAmountByExpenseType | number:2 }}</strong>
                   </div>
                   <div class="col-xs-6 text-right">
-                    <a class="btn btn-default btn-rounded" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></a>
+                    <a class="btn btn-link" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></a>
                   </div>
                 </div>
               </div>

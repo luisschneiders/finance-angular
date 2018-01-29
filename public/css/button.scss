@@ -29,49 +29,15 @@
   }
 }
 .btn-success {
-  border-color: $mid-green;
-  background: $mid-green; /* Old browsers */
-  background-image: -moz-linear-gradient(top,  $mid-green 0%, $mid-green 100%); /* FF3.6+ */
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$mid-green), color-stop(100%,$mid-green)); /* Chrome,Safari4+ */
-  background-image: -webkit-linear-gradient(top,  $mid-green 0%,$mid-green 100%); /* Chrome10+,Safari5.1+ */
-  background-image: -o-linear-gradient(top,  $mid-green 0%,$mid-green 100%); /* Opera 11.10+ */
-  background-image: -ms-linear-gradient(top,  $mid-green 0%,$mid-green 100%); /* IE10+ */
-  background-image: linear-gradient(to bottom,  $mid-green 0%,$mid-green 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$mid-green', endColorstr='$mid-green',GradientType=0 ); /* IE6-9 */
-
+  background: $mid-green;
   &:active, &:hover, &:focus{
-    border-color: $dark-green;
-    background: $dark-green; /* Old browsers */
-    background-image: -moz-linear-gradient(top,  $dark-green 0%, $dark-green 100%); /* FF3.6+ */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$dark-green), color-stop(100%,$dark-green)); /* Chrome,Safari4+ */
-    background-image: -webkit-linear-gradient(top,  $dark-green 0%,$dark-green 100%); /* Chrome10+,Safari5.1+ */
-    background-image: -o-linear-gradient(top,  $dark-green 0%,$dark-green 100%); /* Opera 11.10+ */
-    background-image: -ms-linear-gradient(top,  $dark-green 0%,$dark-green 100%); /* IE10+ */
-    background-image: linear-gradient(to bottom,  $dark-green 0%,$dark-green 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$dark-green', endColorstr='$dark-green',GradientType=0 ); /* IE6-9 */
+    background: $dark-green;
   }
 }
 .btn-danger {
-  border-color: $mid-orange;
-  background: $mid-orange; /* Old browsers */
-  background-image: -moz-linear-gradient(top,  $mid-orange 0%, $mid-orange 100%); /* FF3.6+ */
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$mid-orange), color-stop(100%,$mid-orange)); /* Chrome,Safari4+ */
-  background-image: -webkit-linear-gradient(top,  $mid-orange 0%,$mid-orange 100%); /* Chrome10+,Safari5.1+ */
-  background-image: -o-linear-gradient(top,  $mid-orange 0%,$mid-orange 100%); /* Opera 11.10+ */
-  background-image: -ms-linear-gradient(top,  $mid-orange 0%,$mid-orange 100%); /* IE10+ */
-  background-image: linear-gradient(to bottom,  $mid-orange 0%,$mid-orange 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$mid-orange', endColorstr='$mid-orange',GradientType=0 ); /* IE6-9 */
-
+  background: $mid-orange;
   &:active, &:hover, &:focus{
-    border-color: $dark-orange;
-    background: $dark-orange; /* Old browsers */
-    background-image: -moz-linear-gradient(top,  $dark-orange 0%, $dark-orange 100%); /* FF3.6+ */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$dark-orange), color-stop(100%,$dark-orange)); /* Chrome,Safari4+ */
-    background-image: -webkit-linear-gradient(top,  $dark-orange 0%,$dark-orange 100%); /* Chrome10+,Safari5.1+ */
-    background-image: -o-linear-gradient(top,  $dark-orange 0%,$dark-orange 100%); /* Opera 11.10+ */
-    background-image: -ms-linear-gradient(top,  $dark-orange 0%,$dark-orange 100%); /* IE10+ */
-    background-image: linear-gradient(to bottom,  $dark-orange 0%,$dark-orange 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$dark-orange', endColorstr='$dark-orange',GradientType=0 ); /* IE6-9 */
+    background: $dark-orange;
   }
 }
 .btn-rounded {
@@ -139,7 +105,28 @@
 .icon-delete {
   color: $dark-orange;
 }
-
+.icon-educational {
+  i {
+    @extend .pink-gradient;
+    @extend .icon-settings;
+    font-size: 5rem;
+    padding: 10px 0;
+  }
+}
+.icon-defaults {
+  i {
+    @extend .blue-gradient;
+    @extend .icon-settings;
+    font-size: 5rem;
+    padding: 10px 0;
+  }
+}
+.btn-link {
+  color: $dark-pink;
+  &:hover {
+    color: $light-pink;
+  }
+}
 // Switch Styles
 $toggleheight: 2em;
 $togglewidth: 3.2em;

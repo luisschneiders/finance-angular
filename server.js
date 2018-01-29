@@ -93,7 +93,7 @@ app.put('/account', userController.ensureAuthenticated, userController.accountPu
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 
 // Main
-app.get('/main-by-year/:year', mainController.mainGetByYear);
+app.get('/main-by-year/:year', mainController.getTransactionsAndPurchasesByYear);
 
 // Banks
 app.get('/get-all-banks/page=:page&pageSize=:pageSize', bankController.getAllBanks);
@@ -124,17 +124,16 @@ app.put('/people-id=:id', userController.ensureAuthenticated, peopleController.s
 app.post('/people-new', userController.ensureAuthenticated, peopleController.savePeople);
 
 // Transaction
-app.get('/transactions-by-year-and-month/:year/:month', transactionController.transactionGetByYearAndMonth);
-app.get('/transactions-by-custom-search/:from&:to&:transactionType', transactionController.transactionGetByCustomSearch);
+app.get('/transactions-by-custom-search/:from&:to&:transactionType', transactionController.getTransactionByCustomSearch);
+app.post('/transactions/new', userController.ensureAuthenticated, transactionController.saveTransaction);
 
 // Purchase
-app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController.purchaseGetByCustomSearch);
-app.post('/purchases/new', userController.ensureAuthenticated, purchaseController.purchasePost);
+app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController.getPurchasesByCustomSearch);
+app.post('/purchases/new', userController.ensureAuthenticated, purchaseController.savePurchase);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));
 });
-
 app.get('*', function(req, res) {
   res.redirect('/#' + req.originalUrl);
 });

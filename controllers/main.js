@@ -4,7 +4,7 @@ const async = require('async');
 /**
  * GET /main-by-year/:year
  */
-exports.mainGetByYear = function(req, res) {
+exports.getTransactionsAndPurchasesByYear = function(req, res) {
   let year = req.params.year;
   let startDate = `${year}-01-01`;
   let endDate = `${year}-12-31`;

@@ -209,6 +209,7 @@ angular.module('MyApp')
     function getPurchases() {
       PurchaseServices.getPurchasesByCustomSearch(params)
         .then(function(response) {
+          status.isNull = false;
           status.isLoading = false;
           data.purchases = response.data;
           if(response.data.length === 0) {
@@ -216,6 +217,8 @@ angular.module('MyApp')
           }
           data.purchasesByGroup = response.groupedBy;
         }).catch(function(error){
+          status.isNull = false;
+          status.isLoading = false;
           state.messages = {
             error: Array.isArray(error) ? error : [error]
           };

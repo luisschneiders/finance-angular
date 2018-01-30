@@ -29,15 +29,19 @@
   }
 }
 .btn-success {
-  background: $mid-green;
+  background: $dark-green;
+  border: transparent;
   &:active, &:hover, &:focus{
-    background: $dark-green;
+    background: $mid-green;
+    border: transparent;
   }
 }
 .btn-danger {
-  background: $mid-orange;
+  background: $dark-orange;
+  border: transparent;
   &:active, &:hover, &:focus{
-    background: $dark-orange;
+    background: $mid-orange;
+    border: transparent;
   }
 }
 .btn-rounded {

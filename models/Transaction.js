@@ -28,7 +28,6 @@ const Transaction = bookshelf.Model.extend({
       }).fetchAll();
     }
   });
-
 class Options {
   constructor(user, startDate, endDate) {
     this.user = user;

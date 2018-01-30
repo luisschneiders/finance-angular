@@ -16,9 +16,7 @@
         <div class="form-group">
           <label for="transactionType" class="col-sm-3">Action</label>
           <div class="col-sm-9">
-              <span ng-if="data.transactionsType.length == 0" class="text-danger">{{::state.settings.transactions.newRecord.table.transactionType.message}}
-                <a ng-href="{{::state.settings.transactions.newRecord.table.transactionType.url}}">({{::state.settings.transactions.newRecord.table.transactionType.title}})</a>
-              </span>
+              <span ng-if="data.transactionsType.length == 0" class="text-danger">{{::state.settings.component.defaults.message.notFound}}</span>
               <select name="transactionType" id="transactionType" class="form-control text-uppercase" ng-model="data.form.transactionType" required
               ng-options="type as type.transactionTypeDescription for type in data.transactionsType" ng-disabled="data.transactionsType.length == 0">
             </select>
@@ -29,9 +27,7 @@
             <label for="transactionFromBank">Bank </label><span> (from)</span>
           </div>
           <div class="col-sm-9">
-            <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.transactions.defaults.messages.notFound}}
-              <a ng-href="{{::state.settings.transactions.newRecord.table.bank.url}}">({{state.settings.transactions.newRecord.table.bank.title}})</a>
-            </span>
+            <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.component.defaults.message.notFound}}</span>
             <select name="transactionFromBank" id="transactionFromBank" class="form-control text-uppercase" ng-model="data.form.transactionFromBank" required
               ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">
             </select>
@@ -42,8 +38,8 @@
             <label for="transactionToBank">Bank </label><span> (to)</span>
           </div>
           <div class="col-sm-9">
-            <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.transactions.defaults.messages.notFound}}
-              <a ng-href="{{::state.settings.transactions.newRecord.table.bank.url}}">({{::state.settings.transactions.newRecord.table.bank.title}})</a>
+            <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.component.defaults.message.notFound}}
+              <a ng-href="{{::state.settings.component.newRecord.table.bank.url}}">({{::state.settings.component.newRecord.table.bank.title}})</a>
             </span>
             <select name="transactionToBank" id="transactionToBank" class="form-control text-uppercase" ng-model="data.form.transactionToBank" required
               ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">

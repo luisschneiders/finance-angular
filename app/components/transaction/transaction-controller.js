@@ -87,6 +87,7 @@ angular.module('MyApp')
         settings.templateTop = response.transactions.defaults.template.top;
         settings.modal = response.transactions.defaults.modal;
         state.settings = settings;
+        console.log(state)
         getTransactions();
       }).catch(function(error) {
         status.noSettings = true;
@@ -292,6 +293,7 @@ angular.module('MyApp')
     function getTransactions() {
       TransactionServices.getTransactionsByCustomSearch(params)
         .then(function(response) {
+          status.isNull = false;
           status.isLoading = false;
           data.transactions = response.data;
           if(response.data.length === 0) {
@@ -299,6 +301,8 @@ angular.module('MyApp')
           }
           data.transactionsByGroup = response.groupedBy;
         }).catch(function(error){
+          status.isNull = false;
+          status.isLoading = false;
           state.messages = {
             error: Array.isArray(error) ? error : [error]
           };

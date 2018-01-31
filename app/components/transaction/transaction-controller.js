@@ -87,7 +87,6 @@ angular.module('MyApp')
         settings.templateTop = response.transactions.defaults.template.top;
         settings.modal = response.transactions.defaults.modal;
         state.settings = settings;
-        console.log(state)
         getTransactions();
       }).catch(function(error) {
         status.noSettings = true;
@@ -234,6 +233,9 @@ angular.module('MyApp')
         });
     };
 
+    $scope.deleteTransaction = function(transactionID) {
+      console.log('transactionID', transactionID);
+    };
     function checkAmount() {
       if (parseFloat(data.form.transactionAmount) === 0) {
         state.messages = {

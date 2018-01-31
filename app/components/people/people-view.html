@@ -31,7 +31,9 @@
                 <tr ng-repeat="item in data.people | orderBy: 'peopleDescription' | filter:peopleDescription" ng-click="editPeople(item.id)">
                   <td data-title="Name" class="text-uppercase">{{::item.peopleDescription}}</td>
                   <td data-title="Type" class="text-uppercase">{{::item.peopleTypeDescription}}</td>
-                  <td data-title="Active"  class="text-center" ng-class="::item.peopleIsActive == 1 ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassInactive">{{::item.peopleIsActive == 1 ? "Yes" : "No"  }}</td>
+                  <td data-title="Active"  class="text-center">
+                    <span ng-class="::item.peopleIsActive == 1 ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassInactive">{{::item.peopleIsActive == 1 ? "Yes" : "No"  }}</span>
+                  </td>
                   <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
                 </tr>
               </tbody>

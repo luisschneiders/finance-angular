@@ -35,7 +35,9 @@
                   <td data-title="Account" >{{::item.bankAccount}}</td>
                   <td data-title="Initial Balance"  class="text-right">{{::item.bankInitialBalance | number:2}}</td>
                   <td data-title="Current Balance"  class="text-right">{{::item.bankCurrentBalance | number:2}}</td>
-                  <td data-title="Active"  class="text-center" ng-class="::item.bankIsActive == 1 ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassInactive">{{::item.bankIsActive == 1 ? "Yes" : "No"  }}</td>
+                  <td data-title="Active"  class="text-center">
+                    <span ng-class="::item.bankIsActive == 1 ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassInactive">{{::item.bankIsActive == 1 ? "Yes" : "No"  }}</span>
+                  </td>
                   <td data-title="Edit"  class="text-center"><i class="fa fa-edit fa-lg"></i></td>
                 </tr>
               </tbody>

@@ -140,6 +140,17 @@ a {
   padding: 0;
   box-shadow: none;
 }
+.label {
+  padding: .2em .4em;
+  font-weight: inherit;
+  font-size: inherit;
+}
+.label-success {
+  background-color: $dark-green;
+}
+.label-warning {
+  background-color: $dark-yellow;
+}
 // Forms
 // -------------------------
 input[type="checkbox"] {
@@ -184,12 +195,6 @@ select {
   border-radius: 2px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-}
-.is-active {
-  color: $dark-green;
-}
-.is-inactive {
-  color: $dark-yellow;
 }
 .is-disabled {
   color: $dark-gray;

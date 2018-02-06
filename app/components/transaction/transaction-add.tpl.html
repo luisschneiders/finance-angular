@@ -1,6 +1,6 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title || 'Add Transaction'"></h4>
+  <h5 ng-class="state.settings.defaults.cssClassModalTitle" id="myModalLabel" ng-bind="state.modal.title || 'Add Transaction'"></h5>
 </div>
 <form name="standardForm" ng-submit="saveTransaction(standardForm.$valid)" class="form-horizontal" novalidate ng-if="!state.isNull && !state.noSettings">
   <div class="modal-body">
@@ -57,7 +57,7 @@
         <div class="form-group">
           <label for="transactionAmount" class="col-sm-3">Amount</label>
           <div class="col-sm-9">
-            <input type="text" name="transactionAmount" id="transactionAmount" class="form-control" ng-model="data.form.transactionAmount" format="number" required>
+            <input type="text" name="transactionAmount" id="transactionAmount" class="form-control" ng-model="data.form.transactionAmount" format="number" required autocomplete="off">
           </div>
         </div>
         <div class="form-group">

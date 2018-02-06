@@ -1,5 +1,5 @@
 <div class="padding-bottom text-center">
   <a class="btn btn-default" ng-click="changePeriod('d')"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-  <a class="btn btn-default" ng-click="todayRecords()" title="Today's records"><i class="fa fa-calendar"></i> {{::state.params.from | date:'mediumDate'}} - {{::state.params.to | date:'mediumDate'}}</a>
+  <a class="btn btn-default btn-date" ng-click="todayRecords()" title="Today's records"><i class="fa fa-calendar"></i> {{::state.params.from | date:'mediumDate'}} - {{::state.params.to | date:'mediumDate'}}</a>
   <a class="btn btn-default" ng-click="changePeriod('i')"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
 </div>

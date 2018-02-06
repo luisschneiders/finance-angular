@@ -4,7 +4,7 @@
   </button>
   <ul class="dropdown-menu dropdown-menu-right">
     <li class="text-center" ng-repeat="row in state.settings.defaults.pageSize">
-      <a class="button cursor-pointer" ng-click="refreshList(row);">{{::row}} rows <i class="fa fa-check" ng-class="row === state.pagination.pageSize ? state.settings.defaults.cssClassActive : state.settings.defaults.cssClassDisabled"></i></a>
+      <a class="button cursor-pointer" ng-click="refreshList(row);">{{::row}} rows <i class="fa fa-check" ng-class="row === state.pagination.pageSize ? state.settings.defaults.cssClassEnabled : state.settings.defaults.cssClassDisabled"></i></a>
     </li>
   </ul>
 </div>

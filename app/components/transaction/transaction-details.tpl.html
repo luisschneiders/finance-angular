@@ -1,6 +1,6 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title text-uppercase" id="myModalLabel" ng-bind="state.modal.title || 'Purchases'"></h4>
+  <h5 ng-class="state.settings.defaults.cssClassModalTitle" id="myModalLabel" ng-bind="state.modal.title || 'Purchases'"></h5>
 </div>
 <div class="modal-body">
   <div id="no-more-tables">
@@ -9,7 +9,7 @@
           <tr>
             <th>Details</th>
             <th class="text-right">Amount</th>
-            <th class="text-center">Action</th>
+            <th class="text-center column-action">Action</th>
           </tr>
         </thead>
         <tbody >
@@ -19,8 +19,18 @@
               <div>{{::item.transactionComments}}</div>
             </td>
             <td data-title="Amount" class="text-right">{{::item.transactionAmount | number: 2}}</td>
-            <td data-title="Action" class="text-center">
-              <a class="cursor-pointer" title="Delete" ng-click="deleteTransaction(item.id)"><i class="fa fa-trash fa-lg icon-delete"></i></a>
+            <td data-title="Action" class="text-center td-no-padding">
+              <button class="btn btn-link" title="Delete" ng-click="checkDelete(this)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
+              <!-- <div ng-show="this.showConfirmDelete">
+                <a class="btn btn-danger cancel" ng-click="checkDelete(this)">
+                  <i class="fa fa-times fa-lg"></i><br>
+                  <span>Cancel</span>
+                </a>
+                <a class="btn btn-success confirm" ng-click="deleteTransaction(item.id)">
+                  <i class="fa fa-trash fa-lg"></i><br>
+                  <span>Delete</span>
+                </a>
+              </div> -->
             </td>
           </tr>
         </tbody>

@@ -82,6 +82,9 @@ a {
 .cursor-pointer {
   cursor: pointer;
 }
+.no-padding {
+  padding: 0;
+}
 .box-shadow {
   -webkit-box-shadow: 0px 4px 5px -3px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 4px 5px -3px rgba(0,0,0,0.75);
@@ -196,6 +199,9 @@ select {
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+.is-enabled {
+  color: $dark-blue;
+}
 .is-disabled {
   color: $dark-gray;
 }
@@ -249,8 +255,30 @@ select {
   padding: 15px;
   background: $light-gray;
 }
-
+.table > tbody > tr > .td-no-padding {
+  @extend .no-padding;
+  span {
+    font-weight: 200;
+    font-size: 10px;
+  }
+}
+.column-action {
+  width: 110px;
+}
 @media (min-width: 767px) {
+  .custom-slide {
+    width: 50%;
+    float: left;
+    display: block;
+  }
+  .cancel {
+    @extend .custom-slide;
+    background-color: $dark-orange;
+  }
+  .confirm {
+    @extend .custom-slide;
+    background-color: $dark-green;
+  }
   #main {
     margin-top: 58px;
     margin-bottom: 44px;

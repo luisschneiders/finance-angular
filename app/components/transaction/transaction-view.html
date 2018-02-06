@@ -28,10 +28,10 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-6">
-                    <strong class="panel-body-content">$ {{::value.TotalAmountByTransactionType | number:2 }}</strong>
+                    <strong class="panel-body-content">$ {{value.TotalAmountByTransactionType | number:2 }}</strong>
                   </div>
                   <div class="col-xs-6 text-right">
-                    <a class="btn btn-link" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></a>
+                    <button class="btn btn-link" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></button>
                   </div>
                 </div>
               </div>

@@ -44,6 +44,7 @@ angular.module('MyApp')
         this.errorSearch = false;
         this.errorVIew = false;
         this.isValidForm = false;
+        this.showConfirmDelete = false;
       }
 
       noBalance(amountInformed, amountAvailable ) {
@@ -233,9 +234,10 @@ angular.module('MyApp')
         });
     };
 
-    $scope.deleteTransaction = function(transactionID) {
-      console.log('transactionID', transactionID);
+    $scope.checkDelete = function(transactionID) {
+      return transactionID.showConfirmDelete = transactionID.showConfirmDelete ? false : true;
     };
+
     function checkAmount() {
       if (parseFloat(data.form.transactionAmount) === 0) {
         state.messages = {

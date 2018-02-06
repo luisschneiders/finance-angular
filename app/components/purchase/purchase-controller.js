@@ -57,7 +57,7 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(purchases, purchasesByGroup, purchasesDetails, expensesType, banks, form, customSearch) {
+      constructor(purchases, purchasesByGroup, purchasesDetails, expensesType, banks, form, customSearch, remainingAmount) {
         this.purchases = purchases;
         this.purchasesByGroup = purchasesByGroup;
         this.purchasesDetails = purchasesDetails;
@@ -65,6 +65,7 @@ angular.module('MyApp')
         this.banks = banks;
         this.form = form;
         this.customSearch = customSearch;
+        this.remainingAmount = remainingAmount;
       }
     };
 
@@ -159,6 +160,16 @@ angular.module('MyApp')
       modal.url = settings.modal.add.url;
       state.modal = modal;
     };
+
+    $scope.remainingAmount = function() {
+      if (!data.form.purchaseBank) {
+        return;
+      }
+      checKBalance = _.find(data.banks, function(bank) {
+        return bank.id == data.form.purchaseBank;
+      });
+      data.remainingAmount = parseFloat(checKBalance.bankCurrentBalance) - parseFloat(data.form.purchaseAmount);
+    }
 
     $scope.savePurchase = function($valid) {
       let checKBalance = null;

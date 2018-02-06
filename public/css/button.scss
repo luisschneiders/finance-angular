@@ -31,7 +31,7 @@
 .btn-success {
   background: $dark-green;
   border: transparent;
-  &:active, &:hover, &:focus{
+  &:active, &:hover, &:focus {
     background: $mid-green;
     border: transparent;
   }
@@ -39,7 +39,7 @@
 .btn-danger {
   background: $dark-orange;
   border: transparent;
-  &:active, &:hover, &:focus{
+  &:active, &:hover, &:focus {
     background: $mid-orange;
     border: transparent;
   }
@@ -112,7 +112,7 @@
 .icon-educational {
   i {
     @extend .pink-gradient;
-    @extend .icon-settings;
+    @extend .clip-settings;
     font-size: 5rem;
     padding: 10px 0;
   }
@@ -120,14 +120,14 @@
 .icon-defaults {
   i {
     @extend .blue-gradient;
-    @extend .icon-settings;
+    @extend .clip-settings;
     font-size: 5rem;
     padding: 10px 0;
   }
 }
 .btn-link {
   color: $dark-pink;
-  &:hover {
+  &:active, &:hover, &:focus {
     color: $light-pink;
   }
 }
@@ -245,4 +245,12 @@ $borderradius: 2em;
 .toggle-bg label.off {
   right: .55em;
   color: #aaa;
+}
+.btn-date {
+  font-size: 1.2rem;
+}
+@media (min-width: 767px) {
+  .btn-date {
+    font-size: inherit;
+  }
 }

@@ -108,7 +108,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
 
     function skipIfAuthenticated($location, $auth) {
       if ($auth.isAuthenticated()) {
-        $location.path('/main=:year');
+        $location.path(`/main=${moment().format('YYYY')}`);
       }
     }
 

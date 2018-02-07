@@ -52,9 +52,9 @@
 }
 .btn-add {
   @extend .btn-rounded;
-  -webkit-box-shadow: 0px 4px 23px 0px $light-black;
-  -moz-box-shadow: 0px 4px 23px 0px $light-black;
-  box-shadow: 0px 4px 23px 0px $light-black;
+  -webkit-box-shadow: 0px 12px 35px 0px $light-black;
+  -moz-box-shadow: 0px 12px 35px 0px $light-black;
+  box-shadow: 0px 12px 35px 0px $light-black;
 }
 .btn-facebook {
   color: #fff;

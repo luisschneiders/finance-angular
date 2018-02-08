@@ -14,10 +14,10 @@
 }
 .btn-primary {
   border-color: transparent;
-  background: $dark-blue; /* Old browsers */
+  background: $dark-blue;
   &:active, &:hover, &:focus {
     border-color: transparent;
-    background: $mid-blue; /* Old browsers */
+    background: $mid-blue;
   }
 }
 .btn-default {

@@ -15,7 +15,7 @@
 @import "colours";
 @import "sidebar";
 @import "carousel";
-@import "no-table";
+@import "table";
 @import "button";
 @import "flex";
 
@@ -220,7 +220,7 @@ select {
   border-right: 0;
   outline: 0;
   border-bottom: solid 1px $dark-yellow;
-  background-color: $body-bg;
+  background-color: transparent;
 }
 .feed {
   border-top: solid 2px $dark-gray;
@@ -237,6 +237,9 @@ select {
     font-weight: 200;
     font-size: 10px;
   }
+}
+.table-hover > tbody > tr:hover {
+  background: $dark-gray;
 }
 .column-action {
   width: 110px;

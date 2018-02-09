@@ -1,7 +1,7 @@
 <div ng-controller="MenuCtrl" class="nav-side-menu">
     <div class="brand">
       <span ng-if="!isAuthenticated()" class="navbar-logo text-center">
-        <img ng-src="{{state.logo}}" alt="{{state.alt}}" title="{{state.title}}" width="{{state.width}}">
+        <img ng-src="{{state.logo}}" alt="{{state.alt}}" title="{{state.title}}" width="{{state.width}}" height="{{state.height}}">
       </span>      
       <span ng-if="isAuthenticated()" class="navbar-avatar">
         <img ng-src="{{currentUser.picture || currentUser.gravatar}}">  {{currentUser.name || currentUser.email || currentUser.id}}

@@ -1,10 +1,11 @@
 angular.module('MyApp')
   .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
     let state = {
-      logo: '/img/schneiders-tech-software-development.svg',
+      logo: '/img/schneiders-tech.svg',
       title: 'Your personal finance app',
       alt: 'Your personal finance app',
       width: 170,
+      height: 170,
       year: moment().format('YYYY'),
       month: moment().format('MM'),
       period: {

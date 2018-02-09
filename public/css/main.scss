@@ -46,7 +46,7 @@ footer {
   height: 44px;
   padding: 10px 30px;
   bottom: 0;
-  background-color: $body-bg;
+  background-color: $footer-bg;
   border-top: 1px solid #e0e0e0;
 }
 a {
@@ -238,9 +238,6 @@ select {
     font-size: 10px;
   }
 }
-.table-hover > tbody > tr:hover {
-  background: $dark-gray;
-}
 .column-action {
   width: 110px;
 }
@@ -273,7 +270,7 @@ select {
     width: calc(100% - 200px);
     height: 51px;
     padding-top: 8px;
-    background-color: $body-bg;
+    background-color: $header-bg;
     z-index: 10;
   }
 }

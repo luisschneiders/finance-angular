@@ -202,7 +202,7 @@ exports.forgotPost = function(req, res, next) {
         .fetch()
         .then(function(user) {
           if (!user) {
-        return res.status(400).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account.' });
+            return res.status(400).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account.' });
           }
           user.set('passwordResetToken', token);
           user.set('passwordResetExpires', new Date(Date.now() + 3600000)); // expire in 1 hour
@@ -225,7 +225,7 @@ exports.forgotPost = function(req, res, next) {
         subject: '✔ Reset your password on Your Finance App',
         text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+        'https://' + req.headers.host + '/reset/' + token + '\n\n' +
         'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
       transporter.sendMail(mailOptions, function(err) {
@@ -237,9 +237,9 @@ exports.forgotPost = function(req, res, next) {
 };
 
 /**
- * POST /reset
+ * POST /reset=:token
  */
-exports.resetPost = function(req, res, next) {
+exports.resetPassword = function(req, res, next) {
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirm', 'Passwords must match').equals(req.body.password);
 
@@ -248,7 +248,6 @@ exports.resetPost = function(req, res, next) {
   if (errors) {
       return res.status(400).send(errors);
   }
-
   async.waterfall([
     function(done) {
       new User({ passwordResetToken: req.params.token })
@@ -256,13 +255,13 @@ exports.resetPost = function(req, res, next) {
         .fetch()
         .then(function(user) {
           if (!user) {
-          return res.status(400).send({ msg: 'Password reset token is invalid or has expired.' });
+            return res.status(400).send({ msg: 'Password reset token is invalid or has expired.' });
           }
           user.set('password', req.body.password);
           user.set('passwordResetToken', null);
           user.set('passwordResetExpires', null);
           user.save(user.changed, { patch: true }).then(function() {
-          done(err, user.toJSON());
+          done(errors, user.toJSON());
           });
         });
     },

@@ -61,6 +61,8 @@ $light-pink     : #ff66ff;
 $mid-pink       : #8600b3;
 $dark-pink      : #600080;
 
+$header-bg: $light-gray;
+$footer-bg: $light-gray;
 .green-gradient {
   background: $mid-green; /* Old browsers */
   background-image: -moz-linear-gradient(left, $dark-green 0%, $light-green 100%);
@@ -113,8 +115,8 @@ $dark-pink      : #600080;
 }
 .background-bg {
   background: $body-bg;
-  background: -moz-linear-gradient(left, $mid-gray 0%, $body-bg 100%);
-  background: -webkit-linear-gradient(left, $mid-gray 0%,$body-bg 100%);
-  background: linear-gradient(to right, $mid-gray 0%,$body-bg 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#fbfbfb',GradientType=1 );
+  // background: -moz-linear-gradient(left, $mid-gray 0%, $body-bg 100%);
+  // background: -webkit-linear-gradient(left, $mid-gray 0%,$body-bg 100%);
+  // background: linear-gradient(to right, $mid-gray 0%,$body-bg 100%);
+  // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#fbfbfb',GradientType=1 );
 }

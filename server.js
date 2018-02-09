@@ -80,7 +80,7 @@ app.post('/contact', contactController.contactPost);
 app.post('/signup', userController.signupPost);
 app.post('/login', userController.loginPost);
 app.post('/forgot', userController.forgotPost);
-app.post('/reset/:token', userController.resetPost);
+app.post('/reset-password=:token', userController.resetPassword);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);

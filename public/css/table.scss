@@ -14,11 +14,13 @@
     top: -9999px;
     left: -9999px;
   }
-  #no-more-tables tr { border: 1px solid $mid-gray; }
+  #no-more-tables tr { 
+    border: 1px solid $light-gray;
+  }
   #no-more-tables td { 
     /* Behave  like a "row" */
     border: none;
-    border-bottom: 1px solid $dark-gray; 
+    border-bottom: 1px solid $light-gray;
     position: relative;
     padding-left: 50%; 
     white-space: normal;

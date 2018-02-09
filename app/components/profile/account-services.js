@@ -14,7 +14,7 @@ angular.module('MyApp')
         return $http.post('/forgot', data);
       },
       resetPassword: function(data) {
-        return $http.post('/reset', data);
+        return $http.post(`/reset-password=${data.token}`, data);
       }
     };
   }]);

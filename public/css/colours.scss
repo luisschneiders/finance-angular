@@ -108,15 +108,18 @@ $footer-bg: $light-gray;
   background-image: -ms-linear-gradient(left, $dark-black 0%, $light-black 100%);
   background-image: linear-gradient(to right, $dark-black 0%, $light-black 100%);
 }
+.gray-gradient {
+  background: $body-bg;
+  background: -moz-linear-gradient(left, $mid-gray 0%, $body-bg 100%);
+  background: -webkit-linear-gradient(left, $mid-gray 0%,$body-bg 100%);
+  background: linear-gradient(to right, $mid-gray 0%,$body-bg 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#fbfbfb',GradientType=1 );
+}
 .clip-settings {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.background-bg {
+.body-bg {
   background: $body-bg;
-  // background: -moz-linear-gradient(left, $mid-gray 0%, $body-bg 100%);
-  // background: -webkit-linear-gradient(left, $mid-gray 0%,$body-bg 100%);
-  // background: linear-gradient(to right, $mid-gray 0%,$body-bg 100%);
-  // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#fbfbfb',GradientType=1 );
 }

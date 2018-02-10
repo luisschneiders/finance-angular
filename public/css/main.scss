@@ -34,7 +34,7 @@ html {
 body {
   width: 100%;
   margin-bottom: 44px;
-  @extend .background-bg;
+  @extend .body-bg;
   @extend .font-family;
 }
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -221,15 +221,6 @@ select {
   outline: 0;
   border-bottom: solid 1px $dark-yellow;
   background-color: transparent;
-}
-.feed {
-  border-top: solid 2px $dark-gray;
-  margin: 15px 0;
-  padding: 15px;
-}
-.feed-content {
-  padding: 15px;
-  background: $light-gray;
 }
 .table > tbody > tr > .td-no-padding {
   @extend .no-padding;

@@ -34,9 +34,10 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(purchases, transactions) {
+      constructor(purchases, transactions, daily) {
         this.purchases = purchases;
         this.transactions = transactions;
+        this.daily = daily;
       }
     };
 
@@ -47,9 +48,10 @@ angular.module('MyApp')
     let data = new Data();
     let pieChart = null;
     let barChart = null;
+    let horizontalBar = null;
     let pieChartColoursBackground = [];
-    let transactionsLabel = [];
     let barChartColoursBackground = [];
+    let transactionsLabel = [];
     let barChartLabelsMonths = [];
 
     DefaultServices.getSettings()
@@ -87,6 +89,7 @@ angular.module('MyApp')
             status.transactionIsNull = true;
           } else {
             renderTransactionGraphic(response[0]);
+            renderDailyGraphic(response[0]);
           }
           if(response[1].length == 0) {//purchase
             status.purchaseIsNull = true;
@@ -104,7 +107,10 @@ angular.module('MyApp')
     }
 
     function renderTransactionGraphic(response) {
+      let isLeap = moment([params.year]).isLeapYear();
+      let days = isLeap == true ? 366 : 365;
       let transactionChart = document.getElementById("transactionChart");
+
       data.transactions = response.map(function(value) {
         switch(value.transactionLabel) {
           case 'C':
@@ -120,6 +126,10 @@ angular.module('MyApp')
             value.TotalAmountByLabel;
         }
         return [value.TotalAmountByLabel];
+      });
+
+      data.daily = response.map(function(value) {
+        return [Number(value.TotalAmountByLabel / days).toFixed(2)];
       });
 
       transactionsLabel = response.map(function(value) {
@@ -293,5 +303,35 @@ angular.module('MyApp')
         options: barChartOptions
       });
     };
+
+    function renderDailyGraphic(response) {
+      let dailyChart = document.getElementById("dailyChart");
+      let horizontalBarChartOptions = {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      };
+
+      horizontalBar = new Chart(dailyChart, {
+        type: 'horizontalBar',
+        data: {
+            labels: transactionsLabel,
+            datasets: [{
+                label: 'Amount per Day',
+                data: data.daily,
+                backgroundColor: pieChartColoursBackground,
+                borderColor: '#383838',
+                hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: horizontalBarChartOptions
+      });
+    }
+
     $scope.state = state;
   }]);

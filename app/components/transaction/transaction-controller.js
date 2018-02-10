@@ -142,7 +142,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.transactionType == undefined) {
+      if(data.customSearch.transactionType == undefined || data.customSearch.transactionType.length == 0) {
         params.transactions = setTransactionsType();
       } else {
         params.transactions = data.customSearch.transactionType;

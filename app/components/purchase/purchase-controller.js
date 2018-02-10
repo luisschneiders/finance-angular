@@ -139,7 +139,7 @@ angular.module('MyApp')
       if(!$valid) {
         return;
       }
-      if(data.customSearch.expenseType == undefined) {
+      if(data.customSearch.expenseType == undefined || data.customSearch.expenseType.length == 0) {
         params.expenses = 'all';
       } else {
         params.expenses = data.customSearch.expenseType;

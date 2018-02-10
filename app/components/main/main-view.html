@@ -45,9 +45,23 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-12">
-          <div ng-include src="'components/feed/feed-view.html'"></div>
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-sm-12" ng-show="state.status.transactionIsNull">
+                <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
+              </div>
+              <div class="col-md-12" ng-show="!state.status.transactionIsNull">
+                <canvas id="dailyChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <section ng-include src="'components/feed/feed-view.html'"></section>
+          </div>
         </div>
+        <hr>        
       </section>
     </div>
   </div>

@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'DefaultServices', 'PeopleServices',
-  function($scope, $auth, $location, $filter, $routeParams, DefaultServices, PeopleServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'PeopleServices',
+  function($scope, $auth, $location, $routeParams, DefaultServices, PeopleServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;

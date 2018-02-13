@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'DefaultServices', 'BankServices',
-  function($scope, $auth, $location, $filter, $routeParams, DefaultServices, BankServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'BankServices',
+  function($scope, $auth, $location, $routeParams, DefaultServices, BankServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;

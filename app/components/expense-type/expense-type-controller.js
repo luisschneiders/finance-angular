@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'DefaultServices', 'ExpenseTypeServices',
-  function($scope, $auth, $location, $filter, $routeParams, DefaultServices, ExpenseTypeServices) {
+  .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'ExpenseTypeServices',
+  function($scope, $auth, $location, $routeParams, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;

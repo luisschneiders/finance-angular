@@ -4,7 +4,7 @@ angular.module('MyApp')
     getSettings: function() {
       let settings = $http.get(`/settings`, {cache: true})
           .then(function(response){
-            return response.data;
+            return $q.resolve(response.data);
           })
           .catch(function(response) {
             return $q.reject(response.data);

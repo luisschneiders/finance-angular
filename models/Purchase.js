@@ -38,7 +38,8 @@ class Options {
 }
 
 function queryPurchases(qr, options) {
-  qr.select('expense-type.expenseTypeDescription', 'banks.bankDescription', 'purchase.id', 'purchaseExpenseId', 'purchaseAmount', 'purchaseComments', 'purchaseDate');
+  qr.select('expense-type.expenseTypeDescription', 'banks.bankDescription', 'purchase.id', 'purchaseExpenseId', 'purchaseAmount',
+    'purchaseComments', 'purchaseDate', 'purchaseAddress', 'purchaseLatitude', 'purchaseLongitude');
   qr.leftJoin('expense-type', 'purchase.purchaseExpenseId', '=', 'expense-type.id');
   qr.leftJoin('banks', 'purchase.purchaseBank', '=', 'banks.id');
   qr.where({'purchaseInsertedBy': options.user, 'purchaseFlag': 'r'});

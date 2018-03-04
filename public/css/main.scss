@@ -232,6 +232,15 @@ select {
 .column-action {
   width: 110px;
 }
+// fix to display the list of google search addresses, when using modal
+.pac-container {
+  position: fixed !important;
+  display: block;
+  z-index: 1051;
+}
+.ng-invalid, .ng-invalid-required {
+  border-color: $alert-danger-border;
+}
 @media (min-width: 767px) {
   .custom-slide {
     width: 50%;

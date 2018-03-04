@@ -86,7 +86,7 @@ app.post('/auth/google', userController.authGoogle);
 app.get('/auth/google/callback', userController.authGoogleCallback);
 
 // Settings
-app.get('/settings', userController.ensureAuthenticated, settingsController.getSettings);
+app.get('/settings', settingsController.getSettings);
 
 // Profile
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);

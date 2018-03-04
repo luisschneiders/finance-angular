@@ -8,6 +8,7 @@
         <thead>
           <tr>
             <th>Details</th>
+            <th>Location</th>
             <th class="text-right">Amount</th>
           </tr>
         </thead>
@@ -17,6 +18,7 @@
               <div>{{::item.purchaseDate | date: "dd/MM/yyyy"}}</div>
               <div>{{::item.purchaseComments + ' (Debit from: ' + item.bankDescription + ')'}}</div>
             </td>
+            <td data-title="Location">{{::item.purchaseAddress}}</td>
             <td data-title="Amount" class="text-right">{{::item.purchaseAmount | number: 2}}</td>
           </tr>
         </tbody>

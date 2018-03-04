@@ -135,13 +135,13 @@ angular.module('MyApp')
       transactionsLabel = response.map(function(value) {
         switch(value.transactionLabel) {
           case 'C':
-            value.transactionLabel = 'Incomes';
+            value.transactionLabel = settings.defaults.graphic.labels[0];
             break;
           case 'D':
-            value.transactionLabel = 'Outcomes';
+            value.transactionLabel = settings.defaults.graphic.labels[1];
             break;
           case 'T':
-            value.transactionLabel = 'Transfers';
+            value.transactionLabel = settings.defaults.graphic.labels[2];
             break;
           default:
             value.transactionLabel = 'Label';
@@ -151,17 +151,17 @@ angular.module('MyApp')
 
       pieChartColoursBackground = response.map(function(value){
         switch(value.transactionLabel) {
-          case 'Incomes':
-            value.pieChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+          case settings.defaults.graphic.labels[0]:
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.blue;
             break;
-          case 'Outcomes':
-            value.pieChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+          case settings.defaults.graphic.labels[1]:
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.orange;
             break;
-          case 'Transfers':
-            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+          case settings.defaults.graphic.labels[2]:
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.green;
             break;
           default:
-            value.pieChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.default;
 
         }
         return [value.pieChartColoursBackground];
@@ -174,8 +174,8 @@ angular.module('MyApp')
           datasets: [{
             data: data.transactions,
             backgroundColor: pieChartColoursBackground,
-            borderColor: '#383838',
-            hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+            borderColor: settings.defaults.graphic.colors.border,
+            hoverBackgroundColor: settings.defaults.graphic.colors.background,
             borderWidth: 1
           }]
         }
@@ -192,46 +192,46 @@ angular.module('MyApp')
                 }
               }]
             }
-      };
+          };
 
       barChartLabelsMonths = response.map(function(value) {
         let month = moment(value.purchaseDate).format('M').toString();
         switch(month){
           case '1':
-            value.barChartLabelsMonths = 'Jan';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[0];
             break;
           case '2':
-            value.barChartLabelsMonths = 'Feb';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[1];
             break;
           case '3':
-            value.barChartLabelsMonths = 'Mar';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[2];
             break;
           case '4':
-            value.barChartLabelsMonths = 'Apr';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[3];
             break;
           case '5':
-            value.barChartLabelsMonths = 'May';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[4];
             break;
           case '6':
-            value.barChartLabelsMonths = 'Jun';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[5];
             break;
           case '7':
-            value.barChartLabelsMonths = 'Jul';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[6];
             break;
           case '8':
-            value.barChartLabelsMonths = 'Aug';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[7];
             break;
           case '9':
-            value.barChartLabelsMonths = 'Sep';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[8];
             break;
           case '10':
-            value.barChartLabelsMonths = 'Oct';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[9];
             break;
           case '11':
-            value.barChartLabelsMonths = 'Nov';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[10];
             break;
           case '12':
-            value.barChartLabelsMonths = 'Dec';
+            value.barChartLabelsMonths = settings.defaults.graphic.months[11];
             break;
           default:
             value.barChartLabelsMonths = 'Month';
@@ -243,43 +243,43 @@ angular.module('MyApp')
         let month = moment(value.purchaseDate).format('M').toString();
         switch(month){
           case '1':
-            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.purple;
             break;
           case '2':
-            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.yellow;
             break;
           case '3':
-            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.pink;
             break;
           case '4':
-            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.blue;
             break;
           case '5':
-            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.green;
             break;
           case '6':
-            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.orange;
             break;
           case '7':
-            value.barChartColoursBackground = 'rgba(255, 99, 132, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.purple;
             break;
           case '8':
-            value.barChartColoursBackground = 'rgba(54, 162, 235, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.yellow;
             break;
           case '9':
-            value.barChartColoursBackground = 'rgba(255, 206, 86, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.pink;
             break;
           case '10':
-            value.barChartColoursBackground = 'rgba(75, 192, 192, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.blue;
             break;
           case '11':
-            value.barChartColoursBackground = 'rgba(153, 102, 255, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.green;;
             break;
           case '12':
-            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.orange;
             break;
           default:
-            value.barChartColoursBackground = 'rgba(255, 159, 64, 0.2)';
+            value.barChartColoursBackground = settings.defaults.graphic.colors.default;
         }
         return [value.barChartColoursBackground];
       });
@@ -295,8 +295,8 @@ angular.module('MyApp')
                 label: 'Month',
                 data: data.purchases,
                 backgroundColor: barChartColoursBackground,
-                borderColor: '#383838',
-                hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+                borderColor: settings.defaults.graphic.colors.border,
+                hoverBackgroundColor: settings.defaults.graphic.colors.background,
                 borderWidth: 1
             }]
         },
@@ -324,8 +324,8 @@ angular.module('MyApp')
                 label: 'Amount per Day',
                 data: data.daily,
                 backgroundColor: pieChartColoursBackground,
-                borderColor: '#383838',
-                hoverBackgroundColor: 'rgba(77, 77, 51,0.2)',
+                borderColor: settings.defaults.graphic.colors.border,
+                hoverBackgroundColor: settings.defaults.graphic.colors.background,
                 borderWidth: 1
             }]
         },

@@ -1,17 +1,18 @@
 angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'ExpenseTypeServices', 'BankServices', 'PurchaseServices',
-  function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, ExpenseTypeServices, BankServices, PurchaseServices) {
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'AppStatusServices', 'ExpenseTypeServices', 'BankServices', 'PurchaseServices',
+  function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, AppStatusServices, ExpenseTypeServices, BankServices, PurchaseServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     class State {
-      constructor(settings, params, status, messages, modal) {
+      constructor(settings, params, status, messages, modal, fieldDisabled) {
         this.settings = settings;
         this.params = params;
         this.status = status;
         this.messages = messages;
         this.modal = modal;
+        this.fieldDisabled = fieldDisabled;
       }
     };
     class Params {
@@ -44,7 +45,7 @@ angular.module('MyApp')
         this.errorVIew = false;
       }
 
-      noBalance(amountInformed, amountAvailable ) {
+      noBalance(amountInformed, amountAvailable) {
         return `Amount $${amountInformed} is higher than available($${amountAvailable})
         in this account, please check!`
       };
@@ -73,7 +74,7 @@ angular.module('MyApp')
     let modal = new Modal();
     let params = new Params($routeParams);
     let status = new Status();
-    let state = new State(null, params, status, null, null);
+    let state = new State(null, params, status, null, null, false);
     let data = new Data();
 
     DefaultServices.getSettings()
@@ -266,6 +267,10 @@ angular.module('MyApp')
         });
     };
 
+    $scope.appStatus = AppStatusServices;
+    $scope.$watch('appStatus.isOnline()', function(online) {
+      state.fieldDisabled = online ? false : true;
+    });
     $scope.state = state;
     $scope.data = data;
   }]);

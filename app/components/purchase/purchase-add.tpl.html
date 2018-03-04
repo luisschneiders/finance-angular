@@ -8,6 +8,12 @@
     <div class="row row-flex row-flex-wrap">
         <div class="flex-col col-sm-9">
           <div class="form-group">
+            <label for="address" class="col-sm-3">Location</label>
+            <div class="col-sm-9">
+              <search-places ng-model="data.form.purchaseAddress" latitude="data.form.latitude" longitude="data.form.longitude" ng-disabled="state.fieldDisabled"></search-places>
+            </div>
+          </div>
+          <div class="form-group">
             <label for="purchaseDate" class="col-sm-3">Date</label>
             <div class="col-sm-9">
               <input type="text" name="purchaseDate" id="purchaseDate" class="form-control" ng-model='data.form.purchaseDate' calendar required/>

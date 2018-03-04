@@ -105,7 +105,10 @@ exports.savePurchase = function(req, res) {
         purchaseComments: req.body.purchaseComments,
         purchaseTransactionId: transactionID,
         purchaseInsertedBy: req.user.id,
-        purchaseFlag: 'r'
+        purchaseFlag: 'r',
+        purchaseAddress: req.body.purchaseAddress,
+        purchaseLatitude: req.body.latitude,
+        purchaseLongitude: req.body.longitude
       })
       .then(function(model) {
         resolve();

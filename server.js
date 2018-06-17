@@ -43,7 +43,7 @@ let peopleController = require('./controllers/people');
 let transactionController = require('./controllers/transaction');
 
 app.disable('x-powered-by');
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 4040);
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());

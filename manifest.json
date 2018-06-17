@@ -5,7 +5,7 @@
   "short_name": "FinanceApp",
   "author": "Luis Schneiders",
   "manifest_version": 2,
-  "start_url": "https://local.developing:3000/",
+  "start_url": "https://local.developing:4040/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#0057B8"  

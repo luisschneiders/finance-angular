@@ -5,8 +5,8 @@
 <form name="standardForm" ng-submit="customSearchForm(standardForm.$valid)" class="form-horizontal">
   <div class="modal-body">
     <section ng-include="'components/partials/messages.tpl.html'" ng-if="state.status.errorSearch"></section>
-    <div class="row">
-      <div class="col-sm-9">
+    <div class="row row-flex row-flex-wrap">
+      <div class="flex-col col-sm-8">
         <div class="form-group">
           <label for="dateStart" class="col-sm-3">Start Date</label>
           <div class="col-sm-9">
@@ -32,10 +32,9 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-3">
-        <div class="text-center icon-educational">
-          <div><i class="fa fa-graduation-cap fa-lg" aria-hidden="true"></i></div>
-          <div class="padding-top-bottom">Educational Ads...</div>
+      <div class="flex-col col-sm-4  content-center">
+        <div class="icon-educational">
+          <div class="text-center"><i class="fa fa-search fa-lg" aria-hidden="true"></i></div>
         </div>
       </div>
     </div>

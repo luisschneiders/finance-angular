@@ -152,13 +152,13 @@ angular.module('MyApp')
       pieChartColoursBackground = response.map(function(value){
         switch(value.transactionLabel) {
           case settings.defaults.graphic.labels[0]:
-            value.pieChartColoursBackground = settings.defaults.graphic.colors.blue;
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.color1;
             break;
           case settings.defaults.graphic.labels[1]:
-            value.pieChartColoursBackground = settings.defaults.graphic.colors.orange;
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.color2;
             break;
           case settings.defaults.graphic.labels[2]:
-            value.pieChartColoursBackground = settings.defaults.graphic.colors.green;
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.color3;
             break;
           default:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.default;
@@ -243,40 +243,40 @@ angular.module('MyApp')
         let month = moment(value.purchaseDate).format('M').toString();
         switch(month){
           case '1':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.purple;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color1;
             break;
           case '2':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.yellow;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color2;
             break;
           case '3':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.pink;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color3;
             break;
           case '4':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.blue;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color4;
             break;
           case '5':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.green;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color5;
             break;
           case '6':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.orange;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color6;
             break;
           case '7':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.purple;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color1;
             break;
           case '8':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.yellow;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color2;
             break;
           case '9':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.pink;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color3;
             break;
           case '10':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.blue;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color4;
             break;
           case '11':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.green;;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color5;
             break;
           case '12':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.orange;
+            value.barChartColoursBackground = settings.defaults.graphic.colors.color6;
             break;
           default:
             value.barChartColoursBackground = settings.defaults.graphic.colors.default;

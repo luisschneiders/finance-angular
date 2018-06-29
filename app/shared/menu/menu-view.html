@@ -10,7 +10,7 @@
     <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
     <div class="menu-list">
       <ul id="menu-content" ng-if="isAuthenticated()" class="menu-content collapse out">
-        <li><a href="/main={{state.year}}"><i class="fa fa-dashboard fa-lg"></i>Dashboard</a></li>
+        <li><a ng-click="getAnnualData()"><i class="fa fa-dashboard fa-lg"></i>Dashboard</a></li>
         <li data-toggle="collapse" data-target="#setup" class="collapsed">
             <a href="#"><i class="fa fa-cogs fa-lg"></i>Setup <span class="arrow"></span></a>
         </li>
@@ -22,8 +22,8 @@
             <li><a href="/populate-database">Populate DB</a></li>
         </ul>
         <ul>
-          <li><a href="/transactions/from={{state.period.from}}&to={{state.period.to}}&transactions=all"><i class="fa fa-money fa-lg"></i>Transactions</a></li>
-          <li><a href="/purchases/from={{state.period.from}}&to={{state.period.to}}&expenses=all"><i class="fa fa-shopping-cart fa-lg"></i>Purchases</a></li>
+          <li><a ng-click="getMonthlyTransactions()"><i class="fa fa-money fa-lg"></i>Transactions</a></li>
+          <li><a ng-click="getMonthlyPurchases()"><i class="fa fa-shopping-cart fa-lg"></i>Purchases</a></li>
           <li><a href="/account"><i class="fa fa-user fa-lg"></i>Profile</a></li>
           <li><a href="/login" ng-click="logout()"><i class="fa fa-sign-out fa-lg"></i>Logout</a></li>
         </ul>

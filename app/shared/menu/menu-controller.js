@@ -28,5 +28,17 @@ angular.module('MyApp')
       $location.path('/');
     };
 
+    $scope.getAnnualData = function() {
+      $location.path(`/main=${moment().format('YYYY')}`);
+    };
+
+    $scope.getMonthlyTransactions = function() {
+      $location.path(`/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`);
+    };
+
+    $scope.getMonthlyPurchases = function() {
+      $location.path(`/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`);
+    }
+
     $scope.state = state;
   }]);

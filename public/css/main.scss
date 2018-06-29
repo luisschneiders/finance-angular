@@ -6,7 +6,7 @@
        url('../fonts/fontawesome-webfont.woff') format('woff'),
        url('../fonts/fontawesome-webfont.ttf') format('truetype'),
        url('../fonts/fontawesome-webfont.svg#fontawesomeregular') format('svg');
-  font-weight: normal;
+  font-weight: 300;
   font-style: normal;
 }
 
@@ -80,19 +80,20 @@ a {
 // Modals
 // -------------------------
 .modal-content {
-  border-radius: 2px;
+  border-radius: 15px;
+  background-color: $mid-gray;
 }
 // Alerts
 // -------------------------
 .alert {
   border-width: 0 0 0 3px;
-  border-radius: 0;
+  border-radius: 15px;
 }
 
 // Panels
 // -------------------------
 .panel {
-  border-radius: 1px;
+  border-radius: 15px;
 }
 .panel-body {
   h1, h2, h3, h4, h5, h6 {
@@ -148,7 +149,7 @@ select {
 .form-control {
   height: 40px;
   padding: 8px 12px;
-  border-radius: 0;
+  border-radius: 10px;
   box-shadow: inset 0 1px 2px rgba(150, 160, 175, 0.1), inset 0 1px 15px rgba(150, 160, 175, 0.05);
 }
 .form-group label {
@@ -184,10 +185,6 @@ select {
 .table-cursor, .panel-cursor {
   @extend .cursor-pointer;
 }
-.title-border-left {
-  border-left: 3px solid $dark-yellow;
-  padding-left: 5px;
-}
 .loading {
   color: $mid-pink;
 }
@@ -199,12 +196,6 @@ select {
 }
 .padding-bottom {
   padding-bottom: 15px;
-}
-.sum-amount {
-  background-color: $dark-yellow;
-  border-radius: 2px;
-  color: $alert-text-1-light;
-  padding: 2px;
 }
 // datepicker - updates
 // -------------------------
@@ -241,6 +232,12 @@ select {
 .ng-invalid, .ng-invalid-required {
   border-color: $alert-danger-border;
 }
+.fixed-row {
+  color: $dark-black;
+  h5 {
+    font-weight: 300;
+  }
+}
 @media (min-width: 767px) {
   .custom-slide {
     width: 50%;
@@ -265,12 +262,13 @@ select {
   }
   .fixed-row {
     border-bottom: 1px solid $dark-gray;
+    color: #fff;
     position: fixed;
     top: 0;
     width: calc(100% - 200px);
     height: 51px;
     padding-top: 8px;
-    background-color: $header-bg;
+    background-color: $mid-pink;
     z-index: 10;
   }
 }

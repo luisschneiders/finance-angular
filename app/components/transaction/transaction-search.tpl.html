@@ -5,45 +5,44 @@
 <form name="standardForm" ng-submit="customSearchForm(standardForm.$valid)" class="form-horizontal">
   <div class="modal-body">
     <section ng-include="'components/partials/messages.tpl.html'" ng-if="state.status.errorSearch"></section>
-    <div class="row">
-        <div class="col-sm-9">
-          <div class="form-group">
-            <label for="dateStart" class="col-sm-3">Start Date</label>
-            <div class="col-sm-9">
-              <input type="text" name="dateStart" id="dateStart" class="form-control" ng-model='data.customSearch.from' calendar required  autocomplete="off"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="dateEnd" class="col-sm-3">End Date</label>
-            <div class="col-sm-9">
-              <input type="text" name="dateEnd" id="dateEnd" class="form-control" ng-model='data.customSearch.to' calendar required  autocomplete="off"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="transactionType" class="col-sm-3">Transaction Type</label>
-            <div class="col-sm-9">
-              <div class="loading text-center" ng-show="state.status.isLoadingTransactionsType">
-                <i ng-class="state.settings.defaults.cssClassLoading"></i>
-                <span class="sr-only">Loading...</span>
-              </div>
-              <select name="transactionsMultipleSelect" id="transactionType" class="form-control" ng-model="data.customSearch.transactionType" multiple
-              ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType | orderBy:'transactionTypeDescription'">
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="transactionType" class="col-sm-3">Purchases</label>
-            <div class="col-sm-9">
-              <input type="checkbox" name="purchases" id="purchases" ng-model='data.customSearch.checked'> List all
-            </div>
+    <div class="row row-flex row-flex-wrap">
+      <div class="flex-col col-sm-8">
+        <div class="form-group">
+          <label for="dateStart" class="col-sm-3">Start Date</label>
+          <div class="col-sm-9">
+            <input type="text" name="dateStart" id="dateStart" class="form-control" ng-model='data.customSearch.from' calendar required  autocomplete="off"/>
           </div>
         </div>
-        <div class="col-sm-3">
-          <div class="text-center icon-educational">
-            <div><i class="fa fa-graduation-cap fa-lg" aria-hidden="true"></i></div>
-            <div class="padding-top-bottom">Educational Ads...</div>
+        <div class="form-group">
+          <label for="dateEnd" class="col-sm-3">End Date</label>
+          <div class="col-sm-9">
+            <input type="text" name="dateEnd" id="dateEnd" class="form-control" ng-model='data.customSearch.to' calendar required  autocomplete="off"/>
           </div>
         </div>
+        <div class="form-group">
+          <label for="transactionType" class="col-sm-3">Transaction Type</label>
+          <div class="col-sm-9">
+            <div class="loading text-center" ng-show="state.status.isLoadingTransactionsType">
+              <i ng-class="state.settings.defaults.cssClassLoading"></i>
+              <span class="sr-only">Loading...</span>
+            </div>
+            <select name="transactionsMultipleSelect" id="transactionType" class="form-control" ng-model="data.customSearch.transactionType" multiple
+            ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType | orderBy:'transactionTypeDescription'">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="transactionType" class="col-sm-3">Purchases</label>
+          <div class="col-sm-9">
+            <input type="checkbox" name="purchases" id="purchases" ng-model='data.customSearch.checked'> List all
+          </div>
+        </div>
+      </div>
+      <div class="flex-col col-sm-4 content-center">
+        <div class="icon-educational">
+          <div class="text-center"><i class="fa fa-search fa-lg" aria-hidden="true"></i></div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

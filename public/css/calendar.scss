@@ -1,0 +1,35 @@
+.calendar {
+  margin: auto;
+  padding-bottom: 20px;
+
+  .panel {
+    padding: 30px 0;
+  }
+}
+.calendar-header {
+  padding-bottom: 10px;
+  flex-basis: 14%;
+}
+.calendar-item {
+  border: dotted 1px $colour-2-light;
+  flex-basis: 14%;
+  padding: 16px 0;
+  font-size: 2.5rem;
+
+  &.today {
+    font-weight: 400;
+    color: #fff;
+    border: solid 1px $mid-pink;
+    background-color: $mid-pink;
+  }
+
+  &.different-month {
+    background-color: $light-gray;
+    color: $dark-gray;
+  }
+
+  &.selected {
+    border: solid 1px $colour-1-light;
+    background-color: $colour-1-light;
+  }
+}

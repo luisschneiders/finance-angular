@@ -1,5 +1,5 @@
 angular.module('MyApp')
-.factory('DefaultServices', ['$http', '$q', 'moment', function($http, $q, moment) {
+.factory('DefaultServices', ['$http', '$q', function($http, $q) {
   return {
     getSettings: function() {
       let settings = $http.get(`/settings`, {cache: true})

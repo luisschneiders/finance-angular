@@ -13,6 +13,11 @@ angular.module('MyApp')
         let options = {
             types: []
         };
+
+        if (typeof google === "undefined") {
+          return;
+        }
+
         let autocomplete = new google.maps.places.Autocomplete(element[0], options);
 
         google.maps.event.addListener(autocomplete, 'place_changed', function() {

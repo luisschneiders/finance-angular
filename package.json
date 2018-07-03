@@ -11,7 +11,9 @@
     "test:client": "karma start app/karma.conf.js --single-run",
     "test:server": "mocha --recursive",
     "test-coverage": "nyc --reporter=html --reporter=text mocha",
-    "watch": "gulp"
+    "watch": "gulp",
+    "pm2-restart": "pm2 restart server.js",
+    "pm2-stop": "pm2 stop server.js"
   },
   "dependencies": {
     "async": "^1.5.2",

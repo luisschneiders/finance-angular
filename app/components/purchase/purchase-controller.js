@@ -42,7 +42,7 @@ angular.module('MyApp')
         this.isSaving = false;
         this.errorAdd = false;
         this.errorSearch = false;
-        this.errorVIew = false;
+        this.errorView = false;
       }
 
       noBalance(amountInformed, amountAvailable) {

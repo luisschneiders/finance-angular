@@ -6,12 +6,6 @@ angular.module('MyApp')
       alt: 'Your personal finance app',
       width: 170,
       height: 170,
-      year: moment().format('YYYY'),
-      month: moment().format('MM'),
-      period: {
-        from: moment().startOf('month').format('YYYY-MM-DD'),
-        to: moment().endOf('month').format('YYYY-MM-DD')
-      }
     };
 
     $scope.isActive = function (viewLocation) {
@@ -29,7 +23,7 @@ angular.module('MyApp')
     };
 
     $scope.getAnnualData = function() {
-      $location.path(`/main=${moment().format('YYYY')}`);
+      $location.url(`/main=${moment().format('YYYY')}`);
     };
 
     $scope.getMonthlyTransactions = function() {
@@ -38,6 +32,10 @@ angular.module('MyApp')
 
     $scope.getMonthlyPurchases = function() {
       $location.path(`/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`);
+    }
+
+    $scope.getMonthlyTimesheet = function() {
+      $location.url(`/timesheets?calendar=${moment().startOf('month').format('YYYY-MM')}`);
     }
 
     $scope.state = state;

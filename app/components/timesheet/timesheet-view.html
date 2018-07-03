@@ -1,0 +1,15 @@
+<div class="container-fluid" ng-controller="TimesheetCtrl as ctrl">
+  <div class="row fixed-row" ng-include src="'components/top/top-view.html'"></div>
+  <div class="row">
+    <div class="col-sm-12">
+      <section ng-include="'components/partials/messages.tpl.html'" ng-if="ctrl.status.errorView"></section>
+      <section ng-if="!ctrl.status.noSettings">
+        <div class="loading text-center" ng-show="ctrl.status.isLoading">
+          <i ng-class="ctrl.settings.defaults.cssClassLoading"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
+        <calendar-widget selected="day"></calendar-widget>
+      </section>
+    </div>
+  </div>
+</div>

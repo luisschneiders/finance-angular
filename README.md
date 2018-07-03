@@ -36,14 +36,23 @@ To run our test we have following commands:
 
 Back-End test: 
 ```
-npm run test:server
+npm run-script test:server
 ```
 
 Front-End test: 
 ```
-npm run test:client
+npm run-script test:client
 ```
 
+To run PM2 restart:
+```
+npm run-script pm2-restart
+```
+
+To run PM2 stop:
+```
+npm run-script pm2-stop
+```
 
 ## License
 

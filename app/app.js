@@ -1,7 +1,7 @@
 angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash'])
   .config(function($routeProvider, $locationProvider, $authProvider) {
     $locationProvider.hashPrefix(''); // angularjs version 1.6.x
-    $locationProvider.html5Mode(true);
+    // $locationProvider.html5Mode(true);
     $routeProvider
       .when('/', {
         templateUrl: 'components/home/home-view.html'
@@ -93,6 +93,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       .when('/populate-database', {
         templateUrl: 'components/settings/populate-database-view.html',
         controller: 'PopulateDatabaseCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/timesheets', {
+        templateUrl: 'components/timesheet/timesheet-view.html',
+        controller: 'TimesheetCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({

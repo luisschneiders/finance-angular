@@ -40,7 +40,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'MainCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-banks/page=:page&pageSize=:pageSize', {
+      .when('/all-banks', {
         templateUrl: 'components/bank/bank-view.html',
         controller: 'BankCtrl',
         resolve: { loginRequired: loginRequired }
@@ -50,7 +50,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'BankUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-expenses-type/page=:page&pageSize=:pageSize', {
+      .when('/all-expenses-type', {
         templateUrl: 'components/expense-type/expense-type-view.html',
         controller: 'ExpenseTypeCtrl',
         resolve: { loginRequired: loginRequired }
@@ -60,7 +60,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'ExpenseTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-transactions-type/page=:page&pageSize=:pageSize', {
+      .when('/all-transactions-type', {
         templateUrl: 'components/transaction-type/transaction-type-view.html',
         controller: 'TransactionTypeCtrl',
         resolve: { loginRequired: loginRequired }
@@ -70,7 +70,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'TransactionTypeUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/all-users/page=:page&pageSize=:pageSize', {
+      .when('/all-users', {
         templateUrl: 'components/people/people-view.html',
         controller: 'PeopleCtrl',
         resolve: { loginRequired: loginRequired }
@@ -92,12 +92,12 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       })
       .when('/populate-database', {
         templateUrl: 'components/settings/populate-database-view.html',
-        controller: 'PopulateDatabaseCtrl',
+        // controller: 'PopulateDatabaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/timesheets', {
         templateUrl: 'components/timesheet/timesheet-view.html',
-        controller: 'TimesheetCtrl',
+        // controller: 'TimesheetCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
@@ -113,13 +113,13 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
 
     function skipIfAuthenticated($location, $auth) {
       if ($auth.isAuthenticated()) {
-        $location.path(`/main=${moment().format('YYYY')}`);
+        $location.url(`/main=${moment().format('YYYY')}`);
       }
     }
 
     function loginRequired($location, $auth) {
       if (!$auth.isAuthenticated()) {
-        $location.path('/login');
+        $location.url('/login');
       }
     }
   })

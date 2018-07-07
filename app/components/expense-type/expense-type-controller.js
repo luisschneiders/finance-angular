@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('ExpenseTypeCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'ExpenseTypeServices',
   function($scope, $auth, $location, $routeParams, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     };
     class State {
@@ -62,20 +62,24 @@ angular.module('MyApp')
       });
 
     $scope.editExpenseType = function(id) {
-      $location.path(`/expense-type=${id}`);
+      $location.url(`/expense-type=${id}`);
     };
 
     $scope.previousPage = function() {
-      $location.path(`/all-expenses-type/page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.nextPage = function() {
-      $location.path(`/all-expenses-type/page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $location.path(`/all-expenses-type/page=${state.pagination.page}&pageSize=${pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
     };
+
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
 
     function getExpenseType() {
       ExpenseTypeServices.getAllExpensesType(params)

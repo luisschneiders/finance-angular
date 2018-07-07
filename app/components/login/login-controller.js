@@ -9,7 +9,7 @@ angular.module('MyApp')
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main=${data.year}`);
+          $location.url(`/main=${data.year}`);
         })
         .catch(function(response) {
           $scope.messages = {
@@ -18,12 +18,26 @@ angular.module('MyApp')
         });
     };
 
+    $scope.goToLocation = function(location) {
+      switch(location) {
+        case 'forgot':
+          $location.url(`/forgot`);
+          break;
+        case 'signup':
+          $location.url(`/signup`);
+          break;
+        default:
+          $location.url(`/`);
+          break;
+      }
+    }
+
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path(`/main=${data.year}`);
+          $location.url(`/main=${data.year}`);
         })
         .catch(function(response) {
           if (response.error) {

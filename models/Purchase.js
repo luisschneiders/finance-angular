@@ -1,5 +1,4 @@
 const bookshelf = require('../config/bookshelf');
-const moment = require('moment');
 
 const Purchase = bookshelf.Model.extend({
     tableName: 'purchase',

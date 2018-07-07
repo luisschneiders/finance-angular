@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'PeopleServices',
   function($scope, $auth, $location, $routeParams, DefaultServices, PeopleServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     }
     class State {
@@ -62,20 +62,24 @@ angular.module('MyApp')
       });
 
     $scope.editPeople = function(id) {
-      $location.path(`/user=${id}`);
+      $location.url(`/user=${id}`);
     };
 
     $scope.previousPage = function() {
-      $location.path(`/all-users/page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.nextPage = function() {
-      $location.path(`/all-users/page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $location.path(`/all-users/page=${state.pagination.page}&pageSize=${pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
     };
+
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
 
     function getPeople() {
       PeopleServices.getAllPeople(params)

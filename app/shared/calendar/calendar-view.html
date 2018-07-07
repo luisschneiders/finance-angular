@@ -2,13 +2,20 @@
   <div class="row padding-top-bottom select-period">
     <div class="padding-bottom text-center">
       <a class="btn btn-default" ng-click="previous()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-      <a class="btn btn-default btn-date" ng-click="currentMonth()" title="Current Month"><i class="fa fa-calendar"></i> {{displayCurrentMonth}}</a>
+      <a class="btn btn-default btn-date" ng-click="currentMonth()" title="Current Month"><i class="fa fa-calendar"></i> {{::displayCurrentMonth}}</a>
       <a class="btn btn-default" ng-click="next()"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <div class="panel well">
+      <div ng-if="!isValidDate || !isValidLocation">
+        <div class="row">
+          <div class="col-sm-push-3 col-sm-6">
+            <h3 class="alert alert-danger text-center">{{::errorMessage}}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="panel well" ng-if="isValidDate || isValidLocation">
         <div class="panel-heading">
           <div class="flex-wrap">
             <div class="flex-wrap-item calendar-header" ng-repeat="weekday in weekDays">
@@ -18,12 +25,22 @@
         </div>
         <div class="panel-body">
           <div class="flex-wrap content-center week" ng-repeat="week in weeks">
-            <span class="day flex-wrap-item calendar-item content-center" ng-class="{ 
-              today: day.isToday, 
-              'different-month': !day.isCurrentMonth, 
-              selected: day.date.isSame(selected) }" 
-              ng-click="select(day)" ng-repeat="day in week.days">{{::("0"+day.number).slice(-2)}}
-            </span>
+            <div class="day flex-wrap-item calendar-item content-center" ng-class="{ 
+                        today: day.isToday, 
+                        'different-month': !day.isCurrentMonth, 
+                        selected: day.date.isSame(selected) }" 
+                        ng-click="select(day)" ng-repeat="day in week.days">
+                <div class="flex-wrap">
+                  <div class="flex-wrap-item">
+                    <span class="content-center day">
+                      {{::("0"+day.number).slice(-2)}}
+                    </span>
+                    <span class="item">
+                      {{::day.item}}
+                    </span>
+                  </div>
+                </div>
+            </div>
           </div>
         </div>
       </div>

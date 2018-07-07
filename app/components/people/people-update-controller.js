@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('PeopleUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'PeopleServices',
   function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, PeopleServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     }
     class State {
@@ -58,6 +58,10 @@ angular.module('MyApp')
 
     setControllerSettings(status.newRecord);
 
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
+
     $scope.savePeople = function($valid) {
       if (status.isSaving) {
         return;
@@ -74,7 +78,7 @@ angular.module('MyApp')
           };
           if(status.newRecord) {
             $timeout(function() {
-              $location.path(`/user=${response.people.id}`);
+              $location.url(`/user=${response.people.id}`);
             }, 1000);
           }
         }).catch(function(error) {

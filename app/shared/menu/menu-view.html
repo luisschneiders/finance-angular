@@ -12,26 +12,26 @@
       <ul id="menu-content" ng-if="isAuthenticated()" class="menu-content collapse out">
         <li><a ng-click="getAnnualData()"><i class="fa fa-dashboard fa-lg"></i>Dashboard</a></li>
         <li data-toggle="collapse" data-target="#setup" class="collapsed">
-            <a href="#"><i class="fa fa-cogs fa-lg"></i>Setup <span class="arrow"></span></a>
+            <a href=""><i class="fa fa-cogs fa-lg"></i>Setup <span class="arrow"></span></a>
         </li>
         <ul class="sub-menu collapse" id="setup">
-            <li><a href="/all-banks/page=1&pageSize=12">Banks</a></li>
-            <li><a href="/all-users/page=1&pageSize=12">Users</a></li>
-            <li><a href="/all-expenses-type/page=1&pageSize=12">Expenses Type</a></li>
-            <li><a href="/all-transactions-type/page=1&pageSize=12">Transactions Type</a></li>
-            <li><a href="/populate-database">Populate DB</a></li>
+            <li><a ng-click="goToLocation('all-banks')">Banks</a></li>
+            <li><a ng-click="goToLocation('all-users')">Users</a></li>
+            <li><a ng-click="goToLocation('all-expenses-type')">Expenses Type</a></li>
+            <li><a ng-click="goToLocation('all-transactions-type')">Transactions Type</a></li>
+            <li><a ng-click="goToLocation('populate-database')">Populate DB</a></li>
         </ul>
         <ul>
           <li><a ng-click="getMonthlyPurchases()"><i class="fa fa-shopping-cart fa-lg"></i>Purchases</a></li>
           <li><a ng-click="getMonthlyTimesheet()"><i class="fa fa-clock-o fa-lg"></i>Timesheet</a></li>
           <li><a ng-click="getMonthlyTransactions()"><i class="fa fa-money fa-lg"></i>Transactions</a></li>
-          <li><a href="/account"><i class="fa fa-user fa-lg"></i>Profile</a></li>
-          <li><a href="/login" ng-click="logout()"><i class="fa fa-sign-out fa-lg"></i>Logout</a></li>
+          <li><a ng-click="goToLocation('account')"><i class="fa fa-user fa-lg"></i>Profile</a></li>
+          <li><a ng-click="logout()"><i class="fa fa-sign-out fa-lg"></i>Logout</a></li>
         </ul>
       </ul>
       <ul id="menu-content" ng-if="!isAuthenticated()" class="menu-content collapse out text-center">
-        <li><a href="/login">Log in</a></li>
-        <li><a href="/signup">Sign up</a></li>
+        <li><a ng-click="goToLocation('login')">Log in</a></li>
+        <li><a ng-click="goToLocation('signup')">Sign up</a></li>
       </ul>
     </div>
 </div>

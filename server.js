@@ -41,6 +41,7 @@ let expenseTypeController = require('./controllers/expense-type');
 let transactionTypeController = require('./controllers/transaction-type');
 let peopleController = require('./controllers/people');
 let transactionController = require('./controllers/transaction');
+let timesheetController = require('./controllers/timesheet');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 4040);
@@ -130,6 +131,9 @@ app.post('/transactions/new', userController.ensureAuthenticated, transactionCon
 // Purchase
 app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController.getPurchasesByCustomSearch);
 app.post('/purchases/new', userController.ensureAuthenticated, purchaseController.savePurchase);
+
+// Timesheet
+app.get('/get-all-timesheets-month/:period', timesheetController.getAllTimesheets);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .directive('calendarWidget', ['$location', '$routeParams', function($location, $routeParams) {
+  .directive('calendarWidget', ['$location', '$routeParams', 'CalendarServices', function($location, $routeParams, CalendarServices) {
     return {
       restrict: 'EAC',
       templateUrl: 'components/calendar/calendar-view.html',
@@ -7,43 +7,74 @@ angular.module('MyApp')
         selected: '='
       },
       link: function (scope) {
+        let vm = this;
+
+        vm.isValidDate = moment($routeParams.calendar, 'YYYY-MM', true).isValid();
+
+        if (!vm.isValidDate) {
+          scope.errorMessage = 'Date is not valid!'
+          scope.isValidDate = false;
+          return;
+        }
+
+        scope.isValidDate = true;
+        scope.isValidLocation = true;
         scope.selected = moment($routeParams.calendar);
         scope.month = scope.selected.clone();
         scope.displayCurrentMonth = _displayCurrentMonth(scope.month);
         scope.weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        let start = scope.selected.clone();
+        switch($location.path()) {
+          case '/timesheets':
+            CalendarServices.getTimesheets($routeParams.calendar)
+              .then(function(response) {
+                buildCalendar(_mapTimesheetData(response));
+              }).catch(function(error) {
+                console.log('Error getting timesheets:', error);
+              });
+            break;
+          default:
+            scope.errorMessage = 'Error loading calendar for this location!';
+            scope.isValidLocation = false;
+            break;
+        }
 
-        start.date(1);
-        _removeTime(start.day(0));
-        _buildMonth(scope, start, scope.month);
-        scope.select = function(day) {
-          scope.selected = day.date;
-        };
-        // next click
-        scope.next = function() {
-          let next = scope.month.clone();
+        
+        function buildCalendar(data) {
 
-          _removeTime(next.month(next.month() + 1).date(1));
-          scope.month.month(scope.month.month() + 1);
-          _buildMonth(scope, next, scope.month);
-          scope.displayCurrentMonth = _displayCurrentMonth(scope.month);
-          $location.url(`${$location.path()}?calendar=${scope.displayCurrentMonth}`);
-        };
-        // previous click
-        scope.previous = function() {
-          let previous = scope.month.clone();
+          let start = scope.selected.clone();
 
-          _removeTime(previous.month(previous.month()-1).date(1));
-          scope.month.month(scope.month.month()-1);
-          _buildMonth(scope, previous, scope.month);
-          scope.displayCurrentMonth = _displayCurrentMonth(scope.month);
-          $location.url(`${$location.path()}?calendar=${scope.displayCurrentMonth}`);
-        };
-        //current month click
-        scope.currentMonth = function() {
-          return _displayCurrentMonth(scope.month);
-        };
+          start.date(1);
+          _removeTime(start.day(0));
+          _buildMonth(scope, start, scope.month, data);
+          scope.select = function(day) {
+            scope.selected = day.date;
+          };
+          // next click
+          scope.next = function() {
+            let next = scope.month.clone();
+
+            _removeTime(next.month(next.month() + 1).date(1));
+            scope.month.month(scope.month.month() + 1);
+            _buildMonth(scope, next, scope.month, data);
+            scope.displayCurrentMonth = _displayCurrentMonth(scope.month);
+            $location.url(`${$location.path()}?calendar=${scope.displayCurrentMonth}`);
+          };
+          // previous click
+          scope.previous = function() {
+            let previous = scope.month.clone();
+
+            _removeTime(previous.month(previous.month()-1).date(1));
+            scope.month.month(scope.month.month()-1);
+            _buildMonth(scope, previous, scope.month, data);
+            scope.displayCurrentMonth = _displayCurrentMonth(scope.month);
+            $location.url(`${$location.path()}?calendar=${scope.displayCurrentMonth}`);
+          };
+          //current month click
+          scope.currentMonth = function() {
+            return _displayCurrentMonth(scope.month);
+          };
+        }
       }
     };
 
@@ -55,21 +86,21 @@ angular.module('MyApp')
       return date.day(0).hour(0).minute(0).second(0).millisecond(0);
     }
 
-    function _buildMonth(scope, start, month) {
+    function _buildMonth(scope, start, month, data) {
         scope.weeks = [];
         let done = false, 
             date = start.clone(), 
             monthIndex = date.month(), count = 0;
 
         while (!done) {
-          scope.weeks.push({ days: _buildWeek(date.clone(), month) });
+          scope.weeks.push({ days: _buildWeek(date.clone(), month, data) });
           date.add(1, "w");
           done = count++ > 2 && monthIndex !== date.month();
           monthIndex = date.month();
         }
     }
 
-    function _buildWeek(date, month) {
+    function _buildWeek(date, month, data) {
         let days = [];
 
         for (var i = 0; i < 7; i++) {
@@ -78,12 +109,28 @@ angular.module('MyApp')
             number: date.date(),
             isCurrentMonth: date.month() === month.month(),
             isToday: date.isSame(new Date(), "day"),
-            date: date
+            date: date,
+            item: _.result(_.find(data, function(item) {
+              if (moment(item.date).format('DD') == date.date() && date.month() === month.month()) {
+                return item;
+              }
+            }), 'item')
           });
           date = date.clone();
           date.add(1, "d");
         }
-
         return days;
+    }
+    // Timesheet
+    function _mapTimesheetData(data) {
+      let dataFormatted = [];
+      let dataFormattedObj = {};
+
+      _.forEach(data, function(item) {
+        dataFormattedObj.date = item.timesheetStartDate;
+        dataFormattedObj.item = item.timesheetTotalhours;
+        dataFormatted.push(_.clone(dataFormattedObj))
+      });
+      return dataFormatted;
     }
   }]);

@@ -2,5 +2,5 @@
   <h5 class="text-uppercase" ng-bind="state.settings.templateTop.pageTitle"></h5>
 </div>
 <div class="col-xs-4 col-sm-offset-3 col-sm-3 text-right" ng-if="state.settings.templateTop.buttonDisplay">
-  <a class="btn btn-primary btn-add" ng-href="{{state.settings.templateTop.buttonUrl}}" title="{{::state.settings.templateTop.buttonTitle}}"><i class="fa fa-plus fa-lg"></i></a>
+  <a class="btn btn-primary btn-add" ng-click="addNewRecord()" title="{{::state.settings.templateTop.buttonTitle}}"><i class="fa fa-plus fa-lg"></i></a>
 </div>

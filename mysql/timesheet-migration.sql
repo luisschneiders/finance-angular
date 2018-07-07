@@ -1,0 +1,32 @@
+INSERT INTO `finance-angular`.`timesheets`(
+  `id`,
+  `timesheetInsertedby`,
+  `timesheetEmployer`,
+  `timesheetStartDate`,
+  `timesheetEndDate`,
+  `timesheetTimeIn`,
+  `timesheetTimeOut`,
+  `timesheetTimeBreak`,
+  `timesheetHourly`,
+  `timesheetTotal`,
+  `timesheetTotalhours`,
+  `timesheetStatus`,
+  `timesheetFlag`,
+  `created_at`
+)
+SELECT
+  `timesheet_id`,
+  `timesheet_insertedby`,
+  `timesheet_employer`,
+  `timesheet_startdate`,
+  `timesheet_enddate`,
+  `timesheet_timein`,
+  `timesheet_timeou`,
+  `timesheet_tbreak`,
+  `timesheet_hourly`,
+  `timesheet_total`,
+  `timesheet_totalhours`,
+  `timesheet_status`,
+  `timesheet_flag`,
+  `timesheet_startdate`
+FROM `financephonegap`.`timesheet`

@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('TransactionTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'TransactionTypeServices',
   function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, TransactionTypeServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     }
     class State {
@@ -58,6 +58,10 @@ angular.module('MyApp')
 
     setControllerSettings(status.newRecord);
 
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
+
     $scope.saveTransactionType = function($valid) {
       if (status.isSaving) {
         return;
@@ -74,7 +78,7 @@ angular.module('MyApp')
           };
           if(status.newRecord) {
             $timeout(function() {
-              $location.path(`/transaction-type=${response.transactionType.id}`);
+              $location.url(`/transaction-type=${response.transactionType.id}`);
             }, 1000);
           }
         }).catch(function(error) {

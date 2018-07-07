@@ -13,14 +13,24 @@
 .calendar-item {
   border: dotted 1px $colour-2-light;
   flex-basis: 14%;
-  padding: 16px 0;
-  font-size: 2.5rem;
+  padding: 16px 0 5px 0;
+  min-height: 80px;
 
+  .day {
+    font-size: 2.5rem;
+
+  }
+  
   &.today {
     font-weight: 400;
     color: #fff;
     border: solid 1px $mid-pink;
     background-color: $mid-pink;
+
+    .item {
+      font-weight: 200;
+      color: #fff;
+    }
   }
 
   &.different-month {
@@ -31,5 +41,9 @@
   &.selected {
     border: solid 1px $colour-1-light;
     background-color: $colour-1-light;
+  }
+
+  .item {
+    color: $mid-pink;
   }
 }

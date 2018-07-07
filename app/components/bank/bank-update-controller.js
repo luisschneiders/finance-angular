@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('BankUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'BankServices',
   function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, BankServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     }
     class State {
@@ -57,6 +57,10 @@ angular.module('MyApp')
 
     setControllerSettings(status.newRecord);
 
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
+
     $scope.saveBank = function($valid) {
       if (status.isSaving) {
         return;
@@ -73,7 +77,7 @@ angular.module('MyApp')
           };
           if(status.newRecord) {
             $timeout(function() {
-              $location.path(`/bank=${response.bank.id}`);
+              $location.url(`/bank=${response.bank.id}`);
             }, 1000);
           }
         }).catch(function(error) {

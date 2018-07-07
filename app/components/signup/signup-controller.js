@@ -6,7 +6,7 @@ angular.module('MyApp')
           $auth.setToken(response);
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/');
+          $location.url('/');
         })
         .catch(function(response) {
           $scope.messages = {
@@ -15,12 +15,23 @@ angular.module('MyApp')
         });
     };
 
+    $scope.goToLocation = function(location) {
+      switch(location) {
+        case 'login':
+          $location.url(`/login`);
+          break;
+        default:
+          $location.url(`/`);
+          break;
+      }
+    }
+
     $scope.authenticate = function(provider) {
       $auth.authenticate(provider)
         .then(function(response) {
           $rootScope.currentUser = response.data.user;
           $window.localStorage.user = JSON.stringify(response.data.user);
-          $location.path('/');
+          $location.url('/');
         })
         .catch(function(response) {
           if (response.error) {

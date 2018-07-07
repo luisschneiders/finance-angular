@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid login-container">
   <div class="row">
     <div class="col-sm-push-3 col-sm-6">
       <div class="panel">
@@ -16,7 +16,7 @@
               <label for="password">Password</label>
               <input type="password" name="password" id="password" placeholder="Password" class="form-control" ng-model="user.password">
             </div>
-            <div class="form-group"><a href="/forgot"><strong>Forgot your password?</strong></a></div>
+            <div class="form-group"><a class="btn btn-link btn-xs" ng-click="goToLocation('forgot')"><strong>Forgot your password?</strong></a></div>
             <button type="submit" class="btn btn-success">Log in</button>
           </form>
           <!-- <div class="hr-title"><span>or</span></div>
@@ -26,7 +26,7 @@
         </div>
       </div>
       <p class="text-center">
-        Don't have an account? <a href="/signup"><strong>Sign up</strong></a>
+        Don't have an account? <a class="btn btn-link btn-xs" ng-click="goToLocation('signup')"><strong>Sign up</a></button>
       </p>
     </div>
   </div>

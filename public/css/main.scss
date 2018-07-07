@@ -239,6 +239,11 @@ select {
     font-weight: 300;
   }
 }
+.login-container {
+  .panel {
+    padding: 15px 5px;
+  }
+}
 @media (min-width: 767px) {
   .custom-slide {
     width: 50%;

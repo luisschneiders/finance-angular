@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('BankCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'BankServices',
   function($scope, $auth, $location, $routeParams, DefaultServices, BankServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     }
     class State {
@@ -62,20 +62,24 @@ angular.module('MyApp')
       });
 
     $scope.editBank = function(id) {
-      $location.path(`/bank=${id}`);
+      $location.url(`/bank=${id}`);
     };
 
     $scope.previousPage = function() {
-      $location.path(`/all-banks/page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page - 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.nextPage = function() {
-      $location.path(`/all-banks/page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page + 1}&pageSize=${state.pagination.pageSize}`);
     };
 
     $scope.refreshList = function(pageSize) {
-      $location.path(`/all-banks/page=${state.pagination.page}&pageSize=${pageSize}`);
+      $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
     };
+
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
 
     function getBanks() {
       BankServices.getAllBanks(params)

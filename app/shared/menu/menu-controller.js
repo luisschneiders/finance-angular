@@ -9,7 +9,7 @@ angular.module('MyApp')
     };
 
     $scope.isActive = function (viewLocation) {
-      return viewLocation === $location.path();
+      return viewLocation === $location.url();
     };
 
     $scope.isAuthenticated = function() {
@@ -19,7 +19,7 @@ angular.module('MyApp')
     $scope.logout = function() {
       $auth.logout();
       delete $window.localStorage.user;
-      $location.path('/');
+      $location.url(`/`);
     };
 
     $scope.getAnnualData = function() {
@@ -36,6 +36,39 @@ angular.module('MyApp')
 
     $scope.getMonthlyTimesheet = function() {
       $location.url(`/timesheets?calendar=${moment().startOf('month').format('YYYY-MM')}`);
+    }
+
+    $scope.goToLocation = function(location) {
+
+      switch(location) {
+        case 'all-banks':
+          $location.url(`all-banks?page=1&pageSize=12`);
+          break;
+        case 'all-users':
+          $location.url(`all-users?page=1&pageSize=12`);
+          break;
+        case 'all-expenses-type':
+          $location.url(`all-expenses-type?page=1&pageSize=12`);
+          break;
+        case 'all-transactions-type':
+          $location.url(`all-transactions-type?page=1&pageSize=12`);
+          break;
+        case 'populate-database':
+          $location.url(`populate-database`);
+          break;
+        case 'account':
+          $location.url(`account`);
+          break;
+        case 'login':
+          $location.url(`login`);
+          break;
+        case 'signup':
+          $location.url(`signup`);
+          break;
+        default:
+          getAnnualData();
+          break;
+      }
     }
 
     $scope.state = state;

@@ -6,7 +6,6 @@ angular.module('MyApp')
       let data = $http.get(`/purchases-by-custom-search/${params.from}&${params.to}&${params.expenses}`)
           .then(function(response) {
             let groupedBy = {};
-            let type = 0;
 
             groupedBy = _.groupBy(response.data, function(type) {
               return type = type.purchaseExpenseId;

@@ -1,6 +1,7 @@
 angular.module('MyApp')
-  .controller('TimesheetCtrl', ['$scope', '$auth', '$location', '$routeParams', 'moment', 'DefaultServices',
-  function($scope, $auth, $location, $routeParams, moment, DefaultServices) {
+  .controller('TimesheetCtrl', ['$scope', '$auth', '$location', '$routeParams', 
+              'DefaultServices', 'TimesheetServices', 'CalendarServices',
+  function($scope, $auth, $location, $routeParams, DefaultServices, TimesheetServices, CalendarServices) {
     if (!$auth.isAuthenticated()) {
       $location.url('/login');
       return;
@@ -52,15 +53,8 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(purchases, purchasesByGroup, purchasesDetails, expensesType, banks, form, customSearch, remainingAmount) {
-        this.purchases = purchases;
-        this.purchasesByGroup = purchasesByGroup;
-        this.purchasesDetails = purchasesDetails;
-        this.expensesType = expensesType;
-        this.banks = banks;
-        this.form = form;
-        this.customSearch = customSearch;
-        this.remainingAmount = remainingAmount;
+      constructor(timesheets) {
+        this.timesheets = timesheets;
       }
     };
 
@@ -72,7 +66,7 @@ angular.module('MyApp')
     vm.status = new Status();
     vm.data = new Data();
     vm.state = new State(null, vm.params, vm.status, null, null, false);
-    vm.paramsLFS = vm.params;
+
 
     DefaultServices.getSettings()
       .then(function(response) {
@@ -84,6 +78,7 @@ angular.module('MyApp')
         vm.settings.templateTop = response.timesheets.defaults.template.top;
         vm.settings.modal = response.timesheets.defaults.modal;
         vm.state.settings = vm.settings;
+        // getTimesheets();
       }).catch(function(error) {
         vm.status.noSettings = true;
         vm.status.errorView = true;
@@ -92,11 +87,11 @@ angular.module('MyApp')
         };
       });
 
-    this.modalAddNewRecord = function() {
-      vm.modal.title = vm.settings.modal.add.title
-      vm.modal.cssClass = vm.settings.modal.add.cssClass;
-      vm.modal.url = vm.settings.modal.add.url;
-      vm.state.modal = vm.modal;
-    };
+    // this.modalAddNewRecord = function() {
+    //   vm.modal.title = vm.settings.modal.add.title
+    //   vm.modal.cssClass = vm.settings.modal.add.cssClass;
+    //   vm.modal.url = vm.settings.modal.add.url;
+    //   vm.state.modal = vm.modal;
+    // };
 
   }]);

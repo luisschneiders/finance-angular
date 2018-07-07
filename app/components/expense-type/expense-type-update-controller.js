@@ -2,7 +2,7 @@ angular.module('MyApp')
   .controller('ExpenseTypeUpdateCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'DefaultServices', 'ExpenseTypeServices',
   function($scope, $auth, $location, $timeout, $routeParams, DefaultServices, ExpenseTypeServices) {
     if (!$auth.isAuthenticated()) {
-      $location.path('/login');
+      $location.url('/login');
       return;
     }
     class State {
@@ -57,6 +57,10 @@ angular.module('MyApp')
 
     setControllerSettings(status.newRecord);
 
+    $scope.addNewRecord = function() {
+      $location.url(state.settings.templateTop.buttonUrl);
+    }
+
     $scope.saveExpenseType = function($valid) {
       if (status.isSaving) {
         return;
@@ -73,7 +77,7 @@ angular.module('MyApp')
           };
           if(status.newRecord) {
             $timeout(function() {
-              $location.path(`/expense-type=${response.expenseType.id}`);
+              $location.url(`/expense-type=${response.expenseType.id}`);
             }, 1000);
           }
         }).catch(function(error) {

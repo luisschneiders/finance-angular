@@ -6,8 +6,9 @@ const Timesheets = bookshelf.Model.extend({
   },{
     getAllTimesheets: function(user, startDate, endDate) {
       return this.query(function(qr) {
-        // qr.select('purchaseExpenseId', 'purchaseAmount', 'timesheetInsertedby', 'timesheetStartDate');
-        qr.where({'timesheetInsertedby': user, 'timesheetFlag': 'r'});
+        qr.select('people.peopleDescription', 'timesheets.*');
+        qr.leftJoin('people', 'timesheets.timesheetEmployer', '=', 'people.id');
+        qr.where({'timesheetInsertedBy': user, 'timesheetFlag': 'r'});
         qr.whereBetween('timesheetStartDate', [startDate, endDate]);
       }).fetchAll();
     },

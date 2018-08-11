@@ -1,14 +1,95 @@
-<div class="container-fluid" ng-controller="TimesheetCtrl as ctrl">
-  <div class="row fixed-row" ng-include src="'components/top/top-view.html'"></div>
+<div class="container-fluid timesheet" ng-controller="TimesheetCtrl as ctrl">
+  <div class="row fixed-row" ng-include src="'components/top/top-view-new.html'"></div>
   <div class="row">
     <div class="col-sm-12">
       <section ng-include="'components/partials/messages.tpl.html'" ng-if="ctrl.status.errorView"></section>
-      <section ng-if="!ctrl.status.noSettings">
+      <section ng-show="!ctrl.status.noSettings">
         <div class="loading text-center" ng-show="ctrl.status.isLoading">
           <i ng-class="ctrl.settings.defaults.cssClassLoading"></i>
           <span class="sr-only">Loading...</span>
         </div>
-        <calendar-widget selected="day"></calendar-widget>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="flex-wrap content-start switchViewButton">
+              <div class="flex-wrap-item content-center text-uppercase switchLabel">
+                  <span ng-class="{ 'view-selected': ctrl.switchAlternate == 'calendar' }">{{::ctrl.state.switchBtn.calendar}}</span>
+              </div>
+              <div class="flex-wrap-item content-center">
+                <span class="toggle-bg toggle-alternate on">
+                  <input type="radio" name="toggle" value="calendar" ng-model="ctrl.switchAlternate" ng-click="changeView('timesheetsView','calendar')">
+                  <input type="radio" name="toggle" value="list" ng-model="ctrl.switchAlternate" ng-click="changeView('timesheetsView','list')">
+                  <span class="switch {{ctrl.switchAlternate}}"></span>
+                </span>
+              </div>
+              <div class="flex-wrap-item content-center text-uppercase switchLabel">
+                <span ng-class="{ 'view-selected': ctrl.switchAlternate == 'list' }">{{::ctrl.state.switchBtn.list}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-push-2 col-sm-8" ng-if="ctrl.switchAlternate == 'list'">
+        <div class="row select-period">
+          <div class="col-xs-12 col-md-6 col-md-push-3">
+            <div class="padding-bottom text-center">
+              <a class="btn btn-default" ng-click="previous()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+              <a class="btn btn-default btn-date" ng-click="currentMonth()" title="Current Month"><i class="fa fa-calendar"></i> {{::displayCurrentMonth}}</a>
+              <a class="btn btn-default" ng-click="next()"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </div>
+          </div>
+          <div ng-if="!timesheets.length">
+            <h3 class="alert alert-danger text-center">{{::ctrl.state.settings.component.defaults.message.notFound}}</h3>
+          </div>
+          <div ng-if="timesheets.length" class="panel well padding">
+            <div id="no-more-tables">
+              <table class="table table-responsive table-hover">
+                <thead>
+                  <tr>
+                    <th>Employer</th>
+                    <th>Date</th>
+                    <th class="text-right">Status</th>
+                    <th class="text-center">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="loading text-center" ng-show="ctrl.state.status.isLoading">
+                    <td colspan="4">
+                      <i ng-class="ctrl.state.settings.defaults.cssClassLoading"></i>
+                      <span class="sr-only">Loading...</span>
+                    </td>
+                  </tr>
+                  <tr ng-repeat="item in timesheets | orderBy: '-timesheetStartDate'">
+                    <td data-title="Employer">{{::item.peopleDescription}}</td>
+                    <td data-title="Date">{{::item.timesheetStartDate | date: 'dd/MM/yyyy'}}</td>
+                    <td data-title="Status"
+                        ng-init="item.timesheetStatus == 'P' ? ctrl.totalPaid = ctrl.getPaid(item.timesheetTotal) : ctrl.totalUnpaid = ctrl.getUnpaid(item.timesheetTotal)"
+                        class="text-right">
+                      <div ng-class="::item.timesheetStatus == 'P' ? ctrl.state.settings.defaults.cssClassActive : ctrl.state.settings.defaults.cssClassInactive">{{::item.timesheetStatus == 'P' ? 'Paid' : 'Unpaid' }}</div>
+                      <div>({{::item.timesheetTotal | number:2}})</div>
+                    </td>
+                    <td data-title="Remove" class="text-center">
+                      <button class="btn btn-link" title="Delete" ng-click="ctrl.checkDelete(this)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><strong>Total Paid</strong></td>
+                    <td colspan="1" class="text-right"><strong>{{::ctrl.totalPaid | number:2}}</strong></td>
+                    <td class="text-center"></td>
+                  </tr>
+                  <tr>
+                      <td colspan="2"><strong>Total Unpaid</strong></td>
+                      <td colspan="1" class="text-right"><strong>{{::ctrl.totalUnpaid | number:2}}</strong></td>
+                      <td class="text-center"></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div ng-show="ctrl.switchAlternate == 'calendar'">
+          <calendar-widget selected="day"></calendar-widget>
+        </div>
+        <div ng-include src="'components/modal/modal-view-new.html'"></div>
       </section>
     </div>
   </div>

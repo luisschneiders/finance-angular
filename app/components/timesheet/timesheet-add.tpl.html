@@ -1,0 +1,79 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h5 ng-class="ctrl.state.settings.defaults.cssClassModalTitle" id="myModalLabel" ng-bind="ctrl.state.modal.title || 'Add Purchase'"></h5>
+</div>
+<form name="standardForm" ng-submit="ctrl.saveTimesheet(standardForm.$valid)" class="form-horizontal" novalidate ng-if="!ctrl.state.isNull && !ctrl.state.noSettings">
+  <div class="modal-body">
+    <section ng-include="'components/partials/messages-new.tpl.html'" ng-if="ctrl.state.status.errorAdd"></section>
+    <div class="row row-flex row-flex-wrap">
+        <div class="flex-col col-sm-8">
+          <div class="form-group">
+            <label for="address" class="col-sm-4">Location</label>
+            <div class="col-sm-8">
+              <search-places ng-model="ctrl.data.form.timesheetAddress" latitude="ctrl.data.form.latitude" longitude="ctrl.data.form.longitude" ng-disabled="fieldDisabled"></search-places>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timesheetStartDate" class="col-sm-4">Date</label>
+            <div class="col-sm-8">
+              <input type="text" name="timesheetStartDate" id="timesheetStartDate" class="form-control" ng-model='ctrl.data.form.timesheetStartDate' calendar required  autocomplete="off"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timesheetEmployer" class="col-sm-4">Employer</label>
+            <div class="col-sm-8">
+              <div class="loading text-center" ng-show="ctrl.state.status.isLoadingPeople">
+                <i ng-class="ctrl.state.settings.defaults.cssClassLoading"></i>
+                <span class="sr-only">Loading...</span>
+              </div>
+              <span ng-if="ctrl.data.people.length == 0" class="text-danger">{{::ctrl.state.settings.component.defaults.message.notFound}}</span>
+              <select name="timesheetEmployer" id="timesheetEmployer" class="form-control text-uppercase" ng-model="ctrl.data.form.timesheetEmployer" required
+                ng-options="user.id as user.peopleDescription for user in ctrl.data.people | orderBy:'peopleDescription'" ng-disabled="ctrl.data.people == 0">
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timesheetTimeIn" class="col-sm-4">Punch In</label>
+            <div class="col-sm-8">
+              <input type="text" name="timesheetTimeIn" id="timesheetTimeIn" class="form-control" ng-model='ctrl.data.form.timesheetTimeIn' timepicker required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timesheetTimeBreak" class="col-sm-4">Break</label>
+            <div class="col-sm-8">
+              <input type="text" name="timesheetTimeBreak" id="timesheetTimeBreak" class="form-control" ng-model='ctrl.data.form.timesheetTimeBreak' timepicker/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timesheetTimeOut" class="col-sm-4">Punch Out</label>
+            <div class="col-sm-8">
+              <input type="text" name="timesheetTimeOut" id="timesheetTimeOut" class="form-control" ng-model='ctrl.data.form.timesheetTimeOut' timepicker required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="timesheetHourly" class="col-sm-12">Public Holiday or Different Rate?
+              <input type="checkbox" name="isNewRate" id="isNewRate" ng-model="ctrl.state.isNewRate" ng-true-value="true" ng-false-value="false">
+            </label>
+          </div>
+          <div class="form-group" ng-show="ctrl.state.isNewRate">
+            <label for="timesheetHourly" class="col-sm-4">New rate</label>
+            <div class="col-sm-8">
+              <input type="text" name="timesheetHourly" id="timesheetHourly" class="form-control" ng-model="ctrl.data.form.timesheetHourly"
+                format="number" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8  text-right">
+              <button type="submit" class="btn btn-success">Insert</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex-col col-sm-4 text-center content-center">
+          <div class="text-center">
+            <div class="icon-defaults"><i class="fa fa-clock-o fa-lg" aria-hidden="true"></i></div>
+          </div>
+          <div class="padding-top-bottom"><h4>"Make sure to get enough sleep, and do your best to achieve your goals!"</h4></div>
+        </div>
+      </div>
+  </div>
+</form>

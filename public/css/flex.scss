@@ -3,7 +3,6 @@
   display: -webkit-flex;
   flex-wrap: wrap;
   flex-direction: row;
-  // align-items: center;
   justify-content: center;
 }
 .flex-wrap-item {
@@ -12,18 +11,20 @@
 }
 .content-start {
   display: flex;
-  // align-items: flex-start;
   justify-content: flex-start;
 }
 .content-center {
   display: flex;
-  // align-items: center;
+  align-items: center;
   justify-content: center;
 }
 .content-end {
   display: flex;
-  // align-items: flex-end;
   justify-content: flex-end;
+}
+
+.content-gap {
+  justify-content: space-between;
 }
 
 @media (min-width: 767px) {

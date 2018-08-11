@@ -123,6 +123,7 @@ app.get('/get-active-people', peopleController.getActivePeople);
 app.get('/people-id=:id', peopleController.getPeopleById);
 app.put('/people-id=:id', userController.ensureAuthenticated, peopleController.savePeople);
 app.post('/people-new', userController.ensureAuthenticated, peopleController.savePeople);
+app.get('/get-people-by-role=:role', peopleController.getPeopleByRole);
 
 // Transaction
 app.get('/transactions-by-custom-search/:from&:to&:transactionType', transactionController.getTransactionByCustomSearch);
@@ -134,6 +135,7 @@ app.post('/purchases/new', userController.ensureAuthenticated, purchaseControlle
 
 // Timesheet
 app.get('/get-all-timesheets-month/:period', timesheetController.getAllTimesheets);
+app.post('/timesheets/new', userController.ensureAuthenticated, timesheetController.saveTimesheet);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

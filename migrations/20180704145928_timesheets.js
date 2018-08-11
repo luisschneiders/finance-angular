@@ -3,10 +3,10 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('timesheets', function(table) {
       table.increments();
-      table.integer('timesheetInsertedby').notNullable();
+      table.integer('timesheetInsertedBy').notNullable();
       table.integer('timesheetEmployer').notNullable();
-      table.date('timesheetStartDate').notNullable();
-      table.date('timesheetEndDate');
+      table.datetime('timesheetStartDate').notNullable();
+      table.datetime('timesheetEndDate').notNullable();
       table.time('timesheetTimeIn').notNullable();
       table.time('timesheetTimeOut').notNullable();
       table.time('timesheetTimeBreak');
@@ -21,5 +21,4 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  
 };

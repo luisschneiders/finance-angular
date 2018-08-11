@@ -19,6 +19,7 @@
 @import "button";
 @import "flex";
 @import "calendar";
+@import "timesheet";
 
 .font-family {
   font-family: "Helvetica Neue", Helvetica;
@@ -191,6 +192,9 @@ select {
 }
 .field-required {
   border-color: $dark-orange;
+}
+.padding {
+  padding: 15px;
 }
 .padding-top-bottom {
   padding: 15px 0;

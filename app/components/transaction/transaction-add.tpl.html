@@ -6,16 +6,16 @@
   <div class="modal-body">
     <section ng-include="'components/partials/messages.tpl.html'" ng-if="state.status.errorAdd"></section>
     <div class="row row-flex row-flex-wrap">
-      <div class="flex-col col-sm-7">
+      <div class="flex-col col-sm-8">
         <div class="form-group">
-          <label for="transactionDate" class="col-sm-3">Date</label>
-          <div class="col-sm-9">
+          <label for="transactionDate" class="col-sm-4">Date</label>
+          <div class="col-sm-8">
             <input type="text" name="transactionDate" id="transactionDate" class="form-control" ng-model='data.form.transactionDate' calendar required  autocomplete="off"/>
           </div>
         </div>
         <div class="form-group">
-          <label for="transactionType" class="col-sm-3">Action</label>
-          <div class="col-sm-9">
+          <label for="transactionType" class="col-sm-4">Action</label>
+          <div class="col-sm-8">
               <span ng-if="data.transactionsType.length == 0" class="text-danger">{{::state.settings.component.defaults.message.notFound}}</span>
               <select name="transactionType" id="transactionType" class="form-control text-uppercase" ng-model="data.form.transactionType" required
               ng-options="type as type.transactionTypeDescription for type in data.transactionsType" ng-disabled="data.transactionsType.length == 0">
@@ -23,10 +23,10 @@
           </div>
         </div>
         <div class="form-group">
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label for="transactionFromBank">Bank </label><span> (from)</span>
           </div>
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.component.defaults.message.notFound}}</span>
             <select name="transactionFromBank" id="transactionFromBank" class="form-control text-uppercase" ng-model="data.form.transactionFromBank" required
               ng-options="bank.id as bank.bankDescription + ' - $' + bank.bankCurrentBalance for bank in data.banks" ng-disabled="data.banks.length == 0">
@@ -34,10 +34,10 @@
           </div>
         </div>
         <div class="form-group" ng-if="data.form.transactionType.transactionTypeAction == 'T'">
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label for="transactionToBank">Bank </label><span> (to)</span>
           </div>
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <span ng-if="data.banks.length == 0" class="text-danger">{{::state.settings.component.defaults.message.notFound}}
               <a ng-href="{{::state.settings.component.newRecord.table.bank.url}}">({{::state.settings.component.newRecord.table.bank.title}})</a>
             </span>
@@ -47,26 +47,26 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="transactionComments" class="col-sm-3">Comments</label>
-          <div class="col-sm-9">
+          <label for="transactionComments" class="col-sm-4">Comments</label>
+          <div class="col-sm-8">
             <textarea name="transactionComments" id="transactionComments" class="form-control" ng-model="data.form.transactionComments" rows="3" required
               ng-if="data.form.transactionType.transactionTypeAction == 'T' ? data.form.transactionComments = checkTransactionTypeAction(data.form.transactionType) : this"
               ng-disabled="data.form.transactionType.transactionTypeAction == 'T'"></textarea>
           </div>
         </div>
         <div class="form-group">
-          <label for="transactionAmount" class="col-sm-3">Amount</label>
-          <div class="col-sm-9">
+          <label for="transactionAmount" class="col-sm-4">Amount</label>
+          <div class="col-sm-8">
             <input type="text" name="transactionAmount" id="transactionAmount" class="form-control" ng-model="data.form.transactionAmount" format="number" required autocomplete="off">
           </div>
         </div>
         <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-9  text-right">
+          <div class="col-sm-offset-4 col-sm-8  text-right">
             <button type="submit" class="btn btn-success">Insert</button>
           </div>
         </div>
       </div>
-      <div class="flex-col col-sm-5 text-center content-center">
+      <div class="flex-col col-sm-4 text-center content-center">
         <div class="text-center">
           <div class="icon-defaults"><i class="fa fa-credit-card fa-lg" aria-hidden="true"></i></div>
         </div>

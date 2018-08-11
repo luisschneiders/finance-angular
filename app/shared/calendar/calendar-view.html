@@ -1,5 +1,5 @@
 <div class="calendar">
-  <div class="row padding-top-bottom select-period">
+  <div class="row select-period">
     <div class="padding-bottom text-center">
       <a class="btn btn-default" ng-click="previous()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       <a class="btn btn-default btn-date" ng-click="currentMonth()" title="Current Month"><i class="fa fa-calendar"></i> {{::displayCurrentMonth}}</a>
@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div class="panel well" ng-if="isValidDate || isValidLocation">
+      <div class="panel well" ng-if="isValidDate || !isValidLocation">
         <div class="panel-heading">
           <div class="flex-wrap">
             <div class="flex-wrap-item calendar-header" ng-repeat="weekday in weekDays">

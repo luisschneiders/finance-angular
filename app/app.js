@@ -1,7 +1,7 @@
 angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash'])
   .config(function($routeProvider, $locationProvider, $authProvider) {
     $locationProvider.hashPrefix(''); // angularjs version 1.6.x
-    // $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true);
     $routeProvider
       .when('/', {
         templateUrl: 'components/home/home-view.html'
@@ -97,6 +97,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       })
       .when('/timesheets', {
         templateUrl: 'components/timesheet/timesheet-view.html',
+        // reloadOnSearch: false,
         // controller: 'TimesheetCtrl',
         resolve: { loginRequired: loginRequired }
       })
@@ -124,7 +125,18 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
     }
   })
   .run(function($rootScope, $window) {
+    let userSettings = {
+      banksPageSize: 12,
+      usersPageSize: 12,
+      expensesTypePageSize: 12,
+      transactionsTypePageSize: 12,
+      timesheetsView: "calendar",
+    }
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
+    }
+    if(typeof $window.localStorage.userSettings === "undefined"){
+      // $window.localStorage.userSettings = JSON.stringify(userSettings);
+      $window.localStorage.userSettings = angular.toJson(userSettings);
     }
   });

@@ -3,7 +3,7 @@
   padding-bottom: 20px;
 
   .panel {
-    padding: 30px 0;
+    padding-bottom: 30px;
   }
 }
 .calendar-header {
@@ -13,12 +13,14 @@
 .calendar-item {
   border: dotted 1px $colour-2-light;
   flex-basis: 14%;
-  padding: 16px 0 5px 0;
   min-height: 80px;
 
   .day {
     font-size: 2.5rem;
+  }
 
+  .item {
+    color: $mid-pink;
   }
   
   &.today {
@@ -43,7 +45,4 @@
     background-color: $colour-1-light;
   }
 
-  .item {
-    color: $mid-pink;
-  }
 }

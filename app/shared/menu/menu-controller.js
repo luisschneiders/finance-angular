@@ -35,6 +35,7 @@ angular.module('MyApp')
     }
 
     $scope.getMonthlyTimesheet = function() {
+      // $location.url(`/timesheets?view=calendar&calendar=${moment().startOf('month').format('YYYY-MM')}`);
       $location.url(`/timesheets?calendar=${moment().startOf('month').format('YYYY-MM')}`);
     }
 

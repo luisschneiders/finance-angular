@@ -1,0 +1,13 @@
+.timesheet {
+  .view-selected {
+    color: $mid-green;
+  }
+  .switchViewButton {
+    .flex-wrap-item {
+      min-width: 70px;
+    }
+    .switchLabel {
+      color: $dark-gray;
+    }
+  }
+}

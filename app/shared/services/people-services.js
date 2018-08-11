@@ -71,6 +71,17 @@ angular.module('MyApp')
           });
       }
       return people;
+    },
+    getPeopleByRole: function(role) {
+      console.log('LFS - Role', role);
+      let people = $http.get(`/get-people-by-role=${role}`)
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(response) {
+            return $q.reject(response.data);
+          });
+      return people;
     }
   };
 }]);

@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
       table.integer('transactionTypeInsertedBy').notNullable();
       table.timestamps();
     })
-  ]);  
+  ]);
 };
 
 exports.down = function(knex, Promise) {

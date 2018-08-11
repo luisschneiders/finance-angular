@@ -9,6 +9,16 @@ angular.module('MyApp')
           return $q.reject(response.data);
         });
       return data;
+    },
+    save: function(data) {
+      let timesheet = {};
+      timesheet = $http.post(`/timesheets/new`, data)
+        .then(function(response) {
+          return response.data;
+        }).catch(function(response) {
+          return $q.reject(response.data);
+        });
+      return timesheet;
     }
   };
 }]);

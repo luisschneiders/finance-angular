@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
       table.string('transactionFlag', [1]).notNullable();
       table.timestamps();
     })
-  ]);  
+  ]);
 };
 
 exports.down = function(knex, Promise) {

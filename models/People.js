@@ -15,6 +15,9 @@ const People = bookshelf.Model.extend({
     },
     getById: function(user, people) {
       return this.where({'peopleInsertedBy': user, 'id': people}).fetch();
+    },
+    getByRole: function(user, role) {
+      return this.where({'peopleInsertedBy': user, 'peopleType': role, 'peopleIsActive': 1}).fetchAll();
     }
   });
 

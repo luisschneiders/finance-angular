@@ -41,6 +41,18 @@ exports.getPeopleById = function(req, res) {
 };
 
 /**
+ * GET /get-people-by-role/role=:role
+ */
+exports.getPeopleByRole = function(req, res) {
+  People.getByRole(req.user.id, req.params.role)
+    .then(function(people) {
+      res.json(people);
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
  * SAVE /people-new
  * or
  * SAVE /people=:id

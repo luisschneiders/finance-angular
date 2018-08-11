@@ -1,18 +1,17 @@
 angular.module('MyApp')
-  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'AppStatusServices', 'ExpenseTypeServices', 'BankServices', 'PurchaseServices',
-  function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, AppStatusServices, ExpenseTypeServices, BankServices, PurchaseServices) {
+  .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'ExpenseTypeServices', 'BankServices', 'PurchaseServices',
+  function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, ExpenseTypeServices, BankServices, PurchaseServices) {
     if (!$auth.isAuthenticated()) {
       $location.path('/login');
       return;
     }
     class State {
-      constructor(settings, params, status, messages, modal, fieldDisabled) {
+      constructor(settings, params, status, messages, modal) {
         this.settings = settings;
         this.params = params;
         this.status = status;
         this.messages = messages;
         this.modal = modal;
-        this.fieldDisabled = fieldDisabled;
       }
     };
     class Params {
@@ -166,14 +165,14 @@ angular.module('MyApp')
       if (!data.form.purchaseBank) {
         return;
       }
-      checKBalance = _.find(data.banks, function(bank) {
+      checkBalance = _.find(data.banks, function(bank) {
         return bank.id == data.form.purchaseBank;
       });
-      data.remainingAmount = parseFloat(checKBalance.bankCurrentBalance) - parseFloat(data.form.purchaseAmount);
+      data.remainingAmount = parseFloat(checkBalance.bankCurrentBalance) - parseFloat(data.form.purchaseAmount);
     }
 
     $scope.savePurchase = function($valid) {
-      let checKBalance = null;
+      let checkBalance = null;
       status.errorAdd = true;
 
       if (status.isSaving) {
@@ -188,14 +187,14 @@ angular.module('MyApp')
         return;
       }
 
-      checKBalance = _.find(data.banks, function(bank) {
+      checkBalance = _.find(data.banks, function(bank) {
         return bank.id == data.form.purchaseBank;
       });
 
-      if (parseFloat(data.form.purchaseAmount) > parseFloat(checKBalance.bankCurrentBalance)) {
+      if (parseFloat(data.form.purchaseAmount) > parseFloat(checkBalance.bankCurrentBalance)) {
         state.messages = {
           error: [{
-            msg: status.noBalance(data.form.purchaseAmount, checKBalance.bankCurrentBalance)
+            msg: status.noBalance(data.form.purchaseAmount, checkBalance.bankCurrentBalance)
           }]
         };
         return;
@@ -267,10 +266,6 @@ angular.module('MyApp')
         });
     };
 
-    $scope.appStatus = AppStatusServices;
-    $scope.$watch('appStatus.isOnline()', function(online) {
-      state.fieldDisabled = online ? false : true;
-    });
     $scope.state = state;
     $scope.data = data;
   }]);

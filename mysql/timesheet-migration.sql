@@ -1,6 +1,6 @@
 INSERT INTO `finance-angular`.`timesheets`(
   `id`,
-  `timesheetInsertedby`,
+  `timesheetInsertedBy`,
   `timesheetEmployer`,
   `timesheetStartDate`,
   `timesheetEndDate`,

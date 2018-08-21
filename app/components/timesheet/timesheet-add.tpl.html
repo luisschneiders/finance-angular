@@ -10,13 +10,7 @@
           <div class="form-group">
             <label for="address" class="col-sm-4">Location</label>
             <div class="col-sm-8">
-              <search-places ng-model="ctrl.data.form.timesheetAddress" latitude="ctrl.data.form.latitude" longitude="ctrl.data.form.longitude" ng-disabled="fieldDisabled"></search-places>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="timesheetStartDate" class="col-sm-4">Date</label>
-            <div class="col-sm-8">
-              <input type="text" name="timesheetStartDate" id="timesheetStartDate" class="form-control" ng-model='ctrl.data.form.timesheetStartDate' calendar required  autocomplete="off"/>
+              <search-places ng-model="ctrl.data.form.timesheetAddress" latitude="ctrl.data.form.latitude" longitude="ctrl.data.form.longitude" ng-disabled="ctrl.data.form.fieldDisabled"></search-places>
             </div>
           </div>
           <div class="form-group">
@@ -34,20 +28,20 @@
           </div>
           <div class="form-group">
             <label for="timesheetTimeIn" class="col-sm-4">Punch In</label>
-            <div class="col-sm-8">
-              <input type="text" name="timesheetTimeIn" id="timesheetTimeIn" class="form-control" ng-model='ctrl.data.form.timesheetTimeIn' timepicker required />
+            <div class="col-sm-8" moment-picker="ctrl.data.form.timesheetTimeIn" format="YYYY-MM-DD HH:mm:ss" today="true" start-view="hour">
+              <input type="text" name="timesheetTimeIn" id="timesheetTimeIn" class="form-control" ng-model="ctrl.data.form.timesheetTimeIn" autocomplete="off" required/>
             </div>
           </div>
           <div class="form-group">
             <label for="timesheetTimeBreak" class="col-sm-4">Break</label>
-            <div class="col-sm-8">
-              <input type="text" name="timesheetTimeBreak" id="timesheetTimeBreak" class="form-control" ng-model='ctrl.data.form.timesheetTimeBreak' timepicker/>
+            <div class="col-sm-8" moment-picker="ctrl.data.form.timesheetTimeBreak" format="HH:mm">
+              <input type="text" name="timesheetTimeBreak" id="timesheetTimeBreak" class="form-control" ng-model="ctrl.data.form.timesheetTimeBreak" autocomplete="off"/>
             </div>
           </div>
           <div class="form-group">
             <label for="timesheetTimeOut" class="col-sm-4">Punch Out</label>
-            <div class="col-sm-8">
-              <input type="text" name="timesheetTimeOut" id="timesheetTimeOut" class="form-control" ng-model='ctrl.data.form.timesheetTimeOut' timepicker required/>
+            <div class="col-sm-8" moment-picker="ctrl.data.form.timesheetTimeOut" format="YYYY-MM-DD HH:mm:ss" today="true" start-view="hour">
+              <input type="text" name="timesheetTimeOut" id="timesheetTimeOut" class="form-control" ng-model="ctrl.data.form.timesheetTimeOut" autocomplete="off" required/>
             </div>
           </div>
           <div class="form-group">
@@ -56,9 +50,9 @@
             </label>
           </div>
           <div class="form-group" ng-show="ctrl.state.isNewRate">
-            <label for="timesheetHourly" class="col-sm-4">New rate</label>
+            <label for="newTimesheetHourly" class="col-sm-4">New rate</label>
             <div class="col-sm-8">
-              <input type="text" name="timesheetHourly" id="timesheetHourly" class="form-control" ng-model="ctrl.data.form.timesheetHourly"
+              <input type="text" name="newTimesheetHourly" id="newTimesheetHourly" class="form-control" ng-model="ctrl.data.form.newTimesheetHourly"
                 format="number" autocomplete="off">
             </div>
           </div>

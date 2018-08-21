@@ -43,7 +43,7 @@
     "knex": "0.14.3",
     "lodash": "3.10.1",
     "minimatch": "^3.0.4",
-    "moment": "^2.12.0",
+    "moment": "latest",
     "morgan": "^1.7.0",
     "mysql": "^2.10.2",
     "node-sass": "^4.7.2",

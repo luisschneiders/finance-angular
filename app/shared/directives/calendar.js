@@ -38,12 +38,15 @@ angular.module('MyApp')
             break;
         }
 
+        $scope.timesheetView = function() {
+          timesheetView();
+        }
+
         function timesheetView() {
           vm.location.path = $location.path();
           CalendarServices.getTimesheets($routeParams.calendar)
             .then(function(response) {
               $scope.timesheets = response;
-              console.log('LFS - timesheets: ', response);
               buildCalendar(_mapTimesheetData(response));
             }).catch(function(error) {
               console.log('Error getting timesheets:', error);
@@ -67,7 +70,7 @@ angular.module('MyApp')
             $scope.month.month($scope.month.month() + 1);
             _buildMonth($scope, next, $scope.month, data);
             $scope.displayCurrentMonth = _displayCurrentMonth($scope.month);
-            $location.url(`${vm.location.path}?calendar=${$scope.displayCurrentMonth}`);          
+            $location.url(`${vm.location.path}?calendar=${$scope.displayCurrentMonth}`);
           };
           // previous click
           $scope.previous = function() {
@@ -119,11 +122,7 @@ angular.module('MyApp')
           isCurrentMonth: date.month() === month.month(),
           isToday: date.isSame(new Date(), "day"),
           date: date,
-          item: _.result(_.find(data, function(item) {
-            if (moment(item.date).format('DD') == date.date() && date.month() === month.month()) {
-              return item;
-            }
-          }), 'item')
+          item: getAllItems(date, month, data)
         });
         date = date.clone();
         date.add(1, "d");
@@ -141,5 +140,18 @@ angular.module('MyApp')
         dataFormatted.push(_.clone(dataFormattedObj))
       });
       return dataFormatted;
+    }
+
+    function getAllItems(date, month, data) {
+
+      let items = [];
+
+      _.result(_.find(data, function(item) {
+          if (moment(item.date).format('DD') == date.date() && date.month() === month.month()) {
+            items.push(item);
+          }
+        }), 'item')
+
+      return items;
     }
   }]);

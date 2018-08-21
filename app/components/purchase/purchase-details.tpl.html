@@ -16,7 +16,8 @@
           <tr ng-repeat="item in data.purchasesDetails | orderBy: '-purchaseDate'">
             <td data-title="Details">
               <div>{{::item.purchaseDate | date: "dd/MM/yyyy"}}</div>
-              <div>{{::item.purchaseComments + ' (Debit from: ' + item.bankDescription + ')'}}</div>
+              <div>{{::item.purchaseComments}}</div>
+              <strong>Debit from: {{::item.bankDescription}}</strong>
             </td>
             <td data-title="Location">{{::item.purchaseAddress}}</td>
             <td data-title="Amount" class="text-right">{{::item.purchaseAmount | number: 2}}</td>

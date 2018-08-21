@@ -30,16 +30,16 @@
                         'different-month': !day.isCurrentMonth, 
                         selected: day.date.isSame(selected) }" 
                         ng-click="select(day)" ng-repeat="day in week.days">
-                <div class="flex-wrap">
-                  <div class="flex-wrap-item">
-                    <span class="content-center day">
-                      {{::("0"+day.number).slice(-2)}}
-                    </span>
-                    <span class="item">
-                      {{::day.item}}
-                    </span>
+              <div class="flex-wrap">
+                <div class="flex-wrap-item align-center">
+                  <span class="content-center day">
+                    {{::("0"+day.number).slice(-2)}}
+                  </span>
+                  <div class="item" ng-repeat="item in day.item">
+                    <span>{{item.item}}</span>
                   </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>

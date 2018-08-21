@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash'])
+angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-lodash', 'moment-picker'])
   .config(function($routeProvider, $locationProvider, $authProvider) {
     $locationProvider.hashPrefix(''); // angularjs version 1.6.x
     $locationProvider.html5Mode(true);
@@ -136,7 +136,6 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }
     if(typeof $window.localStorage.userSettings === "undefined"){
-      // $window.localStorage.userSettings = JSON.stringify(userSettings);
       $window.localStorage.userSettings = angular.toJson(userSettings);
     }
   });

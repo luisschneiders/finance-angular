@@ -73,7 +73,7 @@ angular.module('MyApp')
     let modal = new Modal();
     let params = new Params($routeParams);
     let status = new Status();
-    let state = new State(null, params, status, null, null, false);
+    let state = new State(null, params, status, null, null);
     let data = new Data();
 
     DefaultServices.getSettings()

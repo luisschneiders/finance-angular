@@ -7,9 +7,8 @@ const moment = require('moment');
 exports.getAllTimesheets = function(req, res) {
   let user = req.user.id;
   let period = req.params.period;
-  let startDate = moment(period).startOf('month').format('YYYY-MM-DD');
-  let endDate = moment(period).endOf('month').format('YYYY-MM-DD')
-
+  let startDate = moment(period).startOf('month').format('YYYY-MM-DD HH:mm:ss');
+  let endDate = moment(period).endOf('month').format('YYYY-MM-DD HH:mm:ss')
 
   Timesheet.getAllTimesheets(user, startDate, endDate)
     .then(function(timesheets) {
@@ -24,9 +23,18 @@ exports.getAllTimesheets = function(req, res) {
  */
 exports.saveTimesheet = function(req, res) {
   let errors = null;
-  let isValidTime = false;
-  
-  req.assert('timesheetStartDate', 'Date cannot be blank').notEmpty();
+  let timeIsValid = false;
+  let breakIsValid = false;
+  let timesheet = null;
+  let totalHours = 0;
+  let checkRecord = 0;
+  let totalAmount = 0;
+
+  let punchIn = moment(req.body.timesheetTimeIn);
+  let punchOut = moment(req.body.timesheetTimeOut);
+  let workedHours = moment.duration(punchOut.diff(punchIn)).asSeconds();
+  let breakDuration = moment.duration(req.body.timesheetTimeBreak).asSeconds();
+
   req.assert('timesheetEmployer', 'Employer cannot be blank').notEmpty();
   req.assert('timesheetTimeIn', 'Punch In cannot be blank').notEmpty();
   req.assert('timesheetTimeOut', 'Punch Out cannot be blank').notEmpty();
@@ -37,10 +45,8 @@ exports.saveTimesheet = function(req, res) {
     return res.status(400).send(errors);
   }
 
-  isValidTime = checkTime();
-
-  if (!isValidTime) {
-    // res.json({msg: 'Incorrect Time format!'});
+  timeIsValid = checkTimeIsValid();
+  if (!timeIsValid) {
     res.status(400).send({msg: 'Incorrect Time format!'});
     return;
   };
@@ -51,43 +57,100 @@ exports.saveTimesheet = function(req, res) {
     return;
   }
 
-  res.json({msg: 'Saved!'});
-  return;
+  breakIsValid = checkBreakIsValid();
+  if (!breakIsValid) {
+    res.status(400).send({msg: 'Break must be smaller than duration of work!'});
+    return;
+  }
 
-  bank.save({
+  totalHours = setTotalHours();
+  totalAmount = roundToTwo(totalHours, req.body.timesheetHourly);
+
+  checkRecord = new Timesheet({id: req.params.id});
+  timesheet = new Timesheet();
+
+  if(!checkRecord.isNew()) {
+    timesheet.save({
       timesheetInsertedBy: req.user.id,
       timesheetEmployer: req.body.timesheetEmployer,
-      timesheetStartDate: req.body.timesheetStartDate,
-      timesheetTimeIn: req.body.timesheetTimeIn,
-      timesheetTimeOut: req.body.timesheetTimeOut,
+      timesheetStartDate: req.body.timesheetTimeIn,
+      timesheetEndDate: req.body.timesheetTimeOut,
+      timesheetTimeIn: moment(req.body.timesheetTimeIn).format('HH:mm:ss'),
+      timesheetTimeOut: moment(req.body.timesheetTimeOut).format('HH:mm:ss'),
       timesheetTimeBreak: req.body.timesheetTimeBreak,
       timesheetHourly: req.body.timesheetHourly,
-      timesheetTotal: req.body.timesheetTotal,
-      timesheetTotalhours: req.body.timesheetTotalhours,
-      timesheetStatus: req.body.timesheetStatus,
-      timesheetFlag: req.body.timesheetFlag,
+      timesheetTotal: totalAmount,
+      timesheetTotalhours: moment.utc(totalHours * 1000).format('HH:mm:ss'),
+      timesheetStatus: 'P',
+      timesheetFlag: 'r',
+      timesheetAddress: req.body.timesheetAddress,
+      timesheetLatitude: req.body.latitude,
+      timesheetLongitude: req.body.longitude
     })
     .then(function(model) {
-      res.send({ bank: model, msg: 'Timesheet has been added.' });
+      res.send({ bank: model, msg: 'Timesheet has been updated!' });
     })
     .catch(function(err) {
       return res.status(400).send({ msg: err });
     });
+  } else {
+    timesheet.save({
+      timesheetInsertedBy: req.user.id,
+      timesheetEmployer: req.body.timesheetEmployer,
+      timesheetStartDate: req.body.timesheetTimeIn,
+      timesheetEndDate: req.body.timesheetTimeOut,
+      timesheetTimeIn: moment(req.body.timesheetTimeIn).format('HH:mm:ss'),
+      timesheetTimeOut: moment(req.body.timesheetTimeOut).format('HH:mm:ss'),
+      timesheetTimeBreak: req.body.timesheetTimeBreak,
+      timesheetHourly: req.body.timesheetHourly,
+      timesheetTotal: totalAmount,
+      timesheetTotalhours: moment.utc(totalHours * 1000).format('HH:mm:ss'),
+      timesheetStatus: 'W',
+      timesheetFlag: 'r',
+      timesheetAddress: req.body.timesheetAddress,
+      timesheetLatitude: req.body.latitude,
+      timesheetLongitude: req.body.longitude
+    })
+    .then(function(model) {
+      res.send({ bank: model, msg: 'Timesheet has been added!' });
+    })
+    .catch(function(err) {
+      return res.status(400).send({ msg: err });
+    });
+  }
 
-  function checkTime() {
-    console.log('req.body.timesheetTimeIn', req.body.timesheetTimeIn);
+  function checkTimeIsValid() {
     let punchIn = moment(req.body.timesheetTimeIn).format('hh:mm:ss');
     let punchOut = moment(req.body.timesheetTimeOut).format('hh:mm:ss');
     let timeBreak = true;
 
     if (req.body.timesheetTimeBreak) {
-      timeBreak = moment(req.body.timesheetTimeBreak, 'hh:mm:ss', true).isValid();
+      timeBreak = moment(req.body.timesheetTimeBreak, 'hh:mm').isValid();
     }
-    console.log('punchIn', punchIn, 'punchOut', punchOut, 'timeBreak', timeBreak )
     if (punchIn && punchOut && timeBreak) {
       return true;
     }
 
     return false;
+  }
+
+  function checkBreakIsValid() {
+    if (breakDuration >= workedHours) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function setTotalHours() {
+    let totalHours = workedHours - breakDuration;
+
+    return totalHours;
+  }
+
+  function roundToTwo(hours, value) {
+    let total = (hours * value) / 3600 /* Convert to seconds*/;
+
+    return +(Math.round(total + "e+2") + "e-2");
   }
 }

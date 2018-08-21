@@ -20,3 +20,9 @@ UPDATE `timesheets` SET
 `timesheetStartDate` = TIMESTAMP(`timesheetStartDate`,`timesheetTimeIn`),
 `timesheetEndDate` = TIMESTAMP(`timesheetEndDate`,`timesheetTimeOut`)
 WHERE `id` > 0;
+
+
+/* STEP 03 */
+UPDATE `timesheets` SET
+`timesheetTimeBreakNewFormat` = TO_SECONDS(`timesheetTimeBreak`)
+WHERE `id` > 0;

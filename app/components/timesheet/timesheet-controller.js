@@ -45,7 +45,8 @@ angular.module('MyApp')
         this.errorAdd = false;
         this.errorSearch = false;
         this.errorView = false;
-        this.isValidTime = false;
+        this.timeIsValid = false;
+        this.breakIsValid = false;
       }
 
       checkPunch(punchIn, punchOut) {
@@ -133,43 +134,61 @@ angular.module('MyApp')
     };
 
     vm.saveTimesheet = function($valid) {
+      let userRate = {};
       vm.status.errorAdd = true;
 
+      if (vm.status.isSaving) {
+        return;
+      }
 
-      console.log('vm.data.form.timesheetTimeIn', vm.data.form.timesheetTimeIn);
+      if (!$valid) {
+        vm.state.messages = {
+          error: [{
+            msg: vm.state.settings.component.defaults.message.required
+          }]
+        };
+        return;
+      }
 
-      // if (vm.status.isSaving) {
-      //   return;
-      // }
+      vm.status.timeIsValid = checkTimeIsValid();
+      if (!vm.status.timeIsValid) {
+        vm.state.messages = {
+          error: [{
+            msg: vm.state.settings.component.defaults.message.time
+          }]
+        };
+        return;
+      };
 
-      // if (!$valid) {
-      //   vm.state.messages = {
-      //     error: [{
-      //       msg: vm.state.settings.component.defaults.message.required
-      //     }]
-      //   };
-      //   return;
-      // }
+      if (vm.data.form.timesheetTimeIn >= vm.data.form.timesheetTimeOut) {
+        vm.state.messages = {
+          error: [{
+            msg: vm.status.checkPunch(vm.data.form.timesheetTimeIn, vm.data.form.timesheetTimeOut)
+          }]
+        };
+        return;
+      }
 
-      vm.status.isValidTime = checkTime();
+      vm.status.breakIsValid = checkBreakIsValid();
+      if (!vm.status.breakIsValid) {
+        vm.state.messages = {
+          error: [{
+            msg: vm.state.settings.component.defaults.message.break
+          }]
+        };
+        return;
+      }
 
-      // if (!vm.status.isValidTime) {
-      //   vm.state.messages = {
-      //     error: [{
-      //       msg: vm.state.settings.component.defaults.message.time
-      //     }]
-      //   };
-      //   return;
-      // };
+      // get rate
+      userRate = getUserRate();
 
-      // if (vm.data.form.timesheetTimeIn >= vm.data.form.timesheetTimeOut) {
-      //   vm.state.messages = {
-      //     error: [{
-      //       msg: vm.status.checkPunch(vm.data.form.timesheetTimeIn, vm.data.form.timesheetTimeOut)
-      //     }]
-      //   };
-      //   return;
-      // }
+      if (typeof vm.data.form.newTimesheetHourly == "undefined") {
+        vm.data.form.timesheetHourly = vm.data.form.newTimesheetHourly ? vm.data.form.newTimesheetHourly : userRate.peopleRates;
+      } else if (vm.data.form.newTimesheetHourly == '0.00') {
+        vm.data.form.timesheetHourly = userRate.peopleRates;
+      } else {
+        vm.data.form.timesheetHourly = vm.data.form.newTimesheetHourly;
+      }
 
       status.isSaving = true;
 
@@ -179,14 +198,14 @@ angular.module('MyApp')
           vm.state.messages = {
             success: [response]
           };
-          vm.data.form = {};
+          // vm.data.form = {};
+          $scope.timesheetView();
         }).catch(function(error) {
           vm.status.isSaving = false;
           vm.state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
-
     };
 
     $scope.changeView = function(params, value) {
@@ -195,13 +214,13 @@ angular.module('MyApp')
       UserLocalStorageServices.updateUserSettings(params, value)
     }
 
-    function checkTime() {
-      let punchIn = moment(vm.data.form.timesheetTimeIn, 'hh:mm', true).isValid();
-      let punchOut = moment(vm.data.form.timesheetTimeOut, 'hh:mm', true).isValid();
+    function checkTimeIsValid() {
+      let punchIn = moment(vm.data.form.timesheetTimeIn, 'YYYY-MM-DD HH:mm:ss', true).isValid();
+      let punchOut = moment(vm.data.form.timesheetTimeOut, 'YYYY-MM-DD HH:mm:ss', true).isValid();
       let timeBreak = true;
 
       if (vm.data.form.timesheetTimeBreak) {
-        timeBreak = moment(vm.data.form.timesheetTimeBreak, 'hh:mm', true).isValid();
+        timeBreak = moment(vm.data.form.timesheetTimeBreak, 'hh:mm').isValid();
       }
       
       if (punchIn && punchOut && timeBreak) {
@@ -209,6 +228,26 @@ angular.module('MyApp')
       }
 
       return false;
+    }
+
+    function checkBreakIsValid() {
+      let punchIn = moment(vm.data.form.timesheetTimeIn);
+      let punchOut = moment(vm.data.form.timesheetTimeOut);
+      let workedHours = moment.duration(punchOut.diff(punchIn)).asSeconds();
+      let breakDuration = moment.duration(vm.data.form.timesheetTimeBreak).asSeconds();
+
+      if (breakDuration >= workedHours) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function getUserRate() {
+      let rate = null;
+      return rate = _.find(vm.data.people, function(item) {
+        return item.id == vm.data.form.timesheetEmployer;
+      })
     }
 
   }]);

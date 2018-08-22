@@ -84,7 +84,7 @@ angular.module('MyApp')
           };
           //current month click
           $scope.currentMonth = function() {
-            return _displayCurrentMonth($scope.month);
+            $location.url(`${vm.location.path}?calendar=${moment().startOf('month').format('YYYY-MM')}`);
           };
         }
       }
@@ -102,6 +102,7 @@ angular.module('MyApp')
       let done = false;
       let date = start.clone();
       let monthIndex = date.month(), count = 0;
+
       $scope.weeks = [];
 
       while (!done) {

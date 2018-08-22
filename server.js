@@ -136,6 +136,7 @@ app.post('/purchases/new', userController.ensureAuthenticated, purchaseControlle
 // Timesheet
 app.get('/get-all-timesheets-month/:period', timesheetController.getAllTimesheets);
 app.post('/timesheets/new', userController.ensureAuthenticated, timesheetController.saveTimesheet);
+app.put('/timesheets/update-status=:id', userController.ensureAuthenticated, timesheetController.saveTimesheet);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

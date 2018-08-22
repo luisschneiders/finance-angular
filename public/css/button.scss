@@ -22,6 +22,10 @@
   &:focus {
     outline: 0 !important;
   }
+  &.btn-status {
+    padding: 0 5px;
+    min-width: 75px;
+  }
 }
 .btn-primary {
   border-color: transparent;
@@ -133,6 +137,7 @@
 }
 .icon-delete {
   color: $dark-orange;
+  vertical-align: -36%;
 }
 .icon-educational {
   i {

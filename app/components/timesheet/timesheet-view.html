@@ -11,23 +11,23 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="flex-wrap content-start switchViewButton">
-              <div class="flex-wrap-item content-center text-uppercase switchLabel">
+              <div class="flex-wrap-item content-center align-center text-uppercase switchLabel">
                   <span ng-class="{ 'view-selected': ctrl.switchAlternate == 'calendar' }">{{::ctrl.state.switchBtn.calendar}}</span>
               </div>
-              <div class="flex-wrap-item content-center">
+              <div class="flex-wrap-item content-center align-center">
                 <span class="toggle-bg toggle-alternate on">
                   <input type="radio" name="toggle" value="calendar" ng-model="ctrl.switchAlternate" ng-click="changeView('timesheetsView','calendar')">
                   <input type="radio" name="toggle" value="list" ng-model="ctrl.switchAlternate" ng-click="changeView('timesheetsView','list')">
                   <span class="switch {{ctrl.switchAlternate}}"></span>
                 </span>
               </div>
-              <div class="flex-wrap-item content-center text-uppercase switchLabel">
+              <div class="flex-wrap-item content-center align-center text-uppercase switchLabel">
                 <span ng-class="{ 'view-selected': ctrl.switchAlternate == 'list' }">{{::ctrl.state.switchBtn.list}}</span>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-sm-push-2 col-sm-8" ng-if="ctrl.switchAlternate == 'list'">
+        <div class="col-md-push-2 col-md-8" ng-if="ctrl.switchAlternate == 'list'">
         <div class="row select-period">
           <div class="col-xs-12 col-md-6 col-md-push-3">
             <div class="padding-bottom text-center">
@@ -47,39 +47,36 @@
                   <tr>
                     <th>Employer</th>
                     <th>Date</th>
-                    <th class="text-right">Status</th>
+                    <th>Hours</th>
+                    <th>Total</th>
+                    <th class="text-center">Status</th>
                     <th class="text-center">Remove</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="loading text-center" ng-show="ctrl.state.status.isLoading">
-                    <td colspan="4">
-                      <i ng-class="ctrl.state.settings.defaults.cssClassLoading"></i>
-                      <span class="sr-only">Loading...</span>
-                    </td>
-                  </tr>
                   <tr ng-repeat="item in timesheets | orderBy: '-timesheetStartDate'">
                     <td data-title="Employer">{{::item.peopleDescription}}</td>
                     <td data-title="Date">{{::item.timesheetStartDate | date: 'dd/MM/yyyy'}}</td>
-                    <td data-title="Status"
-                        ng-init="item.timesheetStatus == 'P' ? ctrl.totalPaid = ctrl.getPaid(item.timesheetTotal) : ctrl.totalUnpaid = ctrl.getUnpaid(item.timesheetTotal)"
-                        class="text-right">
-                      <div ng-class="::item.timesheetStatus == 'P' ? ctrl.state.settings.defaults.cssClassActive : ctrl.state.settings.defaults.cssClassInactive">{{::item.timesheetStatus == 'P' ? 'Paid' : 'Unpaid' }}</div>
-                      <div>({{::item.timesheetTotal | number:2}})</div>
+                    <td data-title="Hours">{{::item.timesheetTotalhours}}</td>
+                    <td data-title="Total">$ {{::item.timesheetTotal | number:2}}</td>
+                    <td data-title="Status" class="text-center">
+                      <button ng-click="ctrl.updateStatus(item);"
+                              class="btn btn-status"
+                              ng-class="::item.timesheetStatus == 'P' ? ctrl.state.settings.defaults.cssButtonSuccess : ctrl.state.settings.defaults.cssButtonDefault">{{::item.timesheetStatus == 'P' ? 'Paid' : 'Unpaid' }}</button>
                     </td>
                     <td data-title="Remove" class="text-center">
-                      <button class="btn btn-link" title="Delete" ng-click="ctrl.checkDelete(this)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
+                      <button class="btn btn-link" title="Delete" ng-click="ctrl.checkDelete(item)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="2"><strong>Total Paid</strong></td>
-                    <td colspan="1" class="text-right"><strong>{{::ctrl.totalPaid | number:2}}</strong></td>
-                    <td class="text-center"></td>
+                    <td colspan="3"><strong>Total Paid</strong></td>
+                    <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' :  'P' : 'timesheet' | number:2"></strong></td>
+                    <td colspan="1"></td>
                   </tr>
                   <tr>
-                      <td colspan="2"><strong>Total Unpaid</strong></td>
-                      <td colspan="1" class="text-right"><strong>{{::ctrl.totalUnpaid | number:2}}</strong></td>
-                      <td class="text-center"></td>
+                      <td colspan="3"><strong>Total Unpaid</strong></td>
+                      <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' :  'W' : 'timesheet' | number:2"></strong></td>
+                      <td colspan="1"></td>
                     </tr>
                 </tbody>
               </table>

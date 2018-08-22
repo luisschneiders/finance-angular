@@ -37,7 +37,6 @@ angular.module('MyApp')
     class Status {
       constructor() {
         this.isNull = false;
-        this.isLoading = true;
         this.isLoadingModal = true;
         this.isLoadingPeople = true;
         this.noSettings = true;
@@ -88,7 +87,6 @@ angular.module('MyApp')
       .then(function(response) {
         vm.status.noSettings = false;
         vm.status.errorView = false;
-        vm.status.isLoading = false;
         vm.settings.defaults = response.defaults;
         vm.settings.component = response.timesheets;
         vm.settings.templateTop = response.timesheets.defaults.template.top;
@@ -190,7 +188,7 @@ angular.module('MyApp')
         vm.data.form.timesheetHourly = vm.data.form.newTimesheetHourly;
       }
 
-      status.isSaving = true;
+      vm.status.isSaving = true;
 
       TimesheetServices.save(vm.data.form)
         .then(function(response) {
@@ -198,14 +196,37 @@ angular.module('MyApp')
           vm.state.messages = {
             success: [response]
           };
-          // vm.data.form = {};
+          vm.data.form = {};
+
           $scope.timesheetView();
+
         }).catch(function(error) {
           vm.status.isSaving = false;
           vm.state.messages = {
             error: Array.isArray(error) ? error : [error]
           };
         });
+    };
+
+    vm.updateStatus = function(data) {
+      if (vm.status.isSaving) {
+        return;
+      }
+
+      vm.status.isSaving = true;
+      TimesheetServices.updateStatus(data)
+        .then(function(response) {
+          vm.status.isSaving = false;
+          vm.state.messages = {
+            success: [response]
+          };
+          $scope.timesheetView();
+        }).catch(function(error){
+          vm.status.isSaving = false;
+          vm.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        })
     };
 
     $scope.changeView = function(params, value) {

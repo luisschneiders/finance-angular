@@ -27,73 +27,72 @@ exports.saveTimesheet = function(req, res) {
   let breakIsValid = false;
   let timesheet = null;
   let totalHours = 0;
-  let checkRecord = 0;
   let totalAmount = 0;
 
-  let punchIn = moment(req.body.timesheetTimeIn);
-  let punchOut = moment(req.body.timesheetTimeOut);
-  let workedHours = moment.duration(punchOut.diff(punchIn)).asSeconds();
-  let breakDuration = moment.duration(req.body.timesheetTimeBreak).asSeconds();
-
-  req.assert('timesheetEmployer', 'Employer cannot be blank').notEmpty();
-  req.assert('timesheetTimeIn', 'Punch In cannot be blank').notEmpty();
-  req.assert('timesheetTimeOut', 'Punch Out cannot be blank').notEmpty();
-
-  errors = req.validationErrors();
-
-  if (errors) {
-    return res.status(400).send(errors);
-  }
-
-  timeIsValid = checkTimeIsValid();
-  if (!timeIsValid) {
-    res.status(400).send({msg: 'Incorrect Time format!'});
-    return;
-  };
-
-  if (req.body.timesheetTimeIn >= req.body.timesheetTimeOut) {
-    res.json({msg: `Punch Out ${moment(req.body.timesheetTimeOut).format('hh:mm a')} must be higher than Punch In ${moment(req.body.timesheetTimeIn).format('hh:mm a')}
-    for the period, please check!`});
-    return;
-  }
-
-  breakIsValid = checkBreakIsValid();
-  if (!breakIsValid) {
-    res.status(400).send({msg: 'Break must be smaller than duration of work!'});
-    return;
-  }
-
-  totalHours = setTotalHours();
-  totalAmount = roundToTwo(totalHours, req.body.timesheetHourly);
-
-  checkRecord = new Timesheet({id: req.params.id});
-  timesheet = new Timesheet();
+  let checkRecord = new Timesheet({id: req.params.id});
 
   if(!checkRecord.isNew()) {
+    let timesheetStatus = '';
+
+    timesheet = new Timesheet();
+
+    if (req.body.timesheetStatus === 'W') {
+      timesheetStatus = 'P';
+    } else {
+      timesheetStatus = 'W';
+    }
+
     timesheet.save({
-      timesheetInsertedBy: req.user.id,
-      timesheetEmployer: req.body.timesheetEmployer,
-      timesheetStartDate: req.body.timesheetTimeIn,
-      timesheetEndDate: req.body.timesheetTimeOut,
-      timesheetTimeIn: moment(req.body.timesheetTimeIn).format('HH:mm:ss'),
-      timesheetTimeOut: moment(req.body.timesheetTimeOut).format('HH:mm:ss'),
-      timesheetTimeBreak: req.body.timesheetTimeBreak,
-      timesheetHourly: req.body.timesheetHourly,
-      timesheetTotal: totalAmount,
-      timesheetTotalhours: moment.utc(totalHours * 1000).format('HH:mm:ss'),
-      timesheetStatus: 'P',
-      timesheetFlag: 'r',
-      timesheetAddress: req.body.timesheetAddress,
-      timesheetLatitude: req.body.latitude,
-      timesheetLongitude: req.body.longitude
-    })
-    .then(function(model) {
-      res.send({ bank: model, msg: 'Timesheet has been updated!' });
-    })
-    .catch(function(err) {
-      return res.status(400).send({ msg: err });
-    });
+      id: req.params.id,
+      timesheetStatus: timesheetStatus,
+      }, { patch: true })
+      .then(function(model) {
+        res.send({ timesheet: model, msg: 'Timesheet status has been updated.' });
+      })
+      .catch(function(err) {
+        res.send({ msg: err });
+      });
+
+      return;
+
   } else {
+    let punchIn = moment(req.body.timesheetTimeIn);
+    let punchOut = moment(req.body.timesheetTimeOut);
+    let workedHours = moment.duration(punchOut.diff(punchIn)).asSeconds();
+    let breakDuration = moment.duration(req.body.timesheetTimeBreak).asSeconds();
+
+    req.assert('timesheetEmployer', 'Employer cannot be blank').notEmpty();
+    req.assert('timesheetTimeIn', 'Punch In cannot be blank').notEmpty();
+    req.assert('timesheetTimeOut', 'Punch Out cannot be blank').notEmpty();
+
+    errors = req.validationErrors();
+
+    if (errors) {
+      return res.status(400).send(errors);
+    }
+
+    timeIsValid = checkTimeIsValid();
+    if (!timeIsValid) {
+      res.status(400).send({msg: 'Incorrect Time format!'});
+      return;
+    };
+
+    if (req.body.timesheetTimeIn >= req.body.timesheetTimeOut) {
+      res.json({msg: `Punch Out ${moment(req.body.timesheetTimeOut).format('hh:mm a')} must be higher than Punch In ${moment(req.body.timesheetTimeIn).format('hh:mm a')}
+      for the period, please check!`});
+      return;
+    }
+
+    breakIsValid = checkBreakIsValid(workedHours, breakDuration);
+    if (!breakIsValid) {
+      res.status(400).send({msg: 'Break must be smaller than duration of work!'});
+      return;
+    }
+
+    totalHours = setTotalHours(workedHours, breakDuration);
+    totalAmount = roundToTwo(totalHours, req.body.timesheetHourly);
+
+    timesheet = new Timesheet();
     timesheet.save({
       timesheetInsertedBy: req.user.id,
       timesheetEmployer: req.body.timesheetEmployer,
@@ -134,7 +133,7 @@ exports.saveTimesheet = function(req, res) {
     return false;
   }
 
-  function checkBreakIsValid() {
+  function checkBreakIsValid(workedHours, breakDuration) {
     if (breakDuration >= workedHours) {
       return false;
     }
@@ -142,7 +141,7 @@ exports.saveTimesheet = function(req, res) {
     return true;
   }
 
-  function setTotalHours() {
+  function setTotalHours(workedHours, breakDuration) {
     let totalHours = workedHours - breakDuration;
 
     return totalHours;

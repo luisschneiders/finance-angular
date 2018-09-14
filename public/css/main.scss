@@ -20,6 +20,7 @@
 @import "flex";
 @import "calendar";
 @import "timesheet";
+@import "data-maintenance";
 
 .font-family {
   font-family: "Helvetica Neue", Helvetica;
@@ -183,6 +184,12 @@ select {
 }
 .is-disabled {
   color: $dark-gray;
+}
+.is-unpaid {
+  background-color: $dark-orange;
+}
+.is-paid {
+  background-color: $dark-green;
 }
 .table-cursor, .panel-cursor {
   @extend .cursor-pointer;

@@ -4,13 +4,13 @@ const moment = require('moment');
 /**
  * GET /get-all-timesheets-month/:year-month
  */
-exports.getAllTimesheets = function(req, res) {
+exports.getAllTimesheetsByMonth = function(req, res) {
   let user = req.user.id;
   let period = req.params.period;
   let startDate = moment(period).startOf('month').format('YYYY-MM-DD HH:mm:ss');
-  let endDate = moment(period).endOf('month').format('YYYY-MM-DD HH:mm:ss')
+  let endDate = moment(period).endOf('month').format('YYYY-MM-DD HH:mm:ss');
 
-  Timesheet.getAllTimesheets(user, startDate, endDate)
+  Timesheet.getAllTimesheetsByMonth(user, startDate, endDate)
     .then(function(timesheets) {
       res.json(timesheets);
     }).catch(function(err) {
@@ -19,7 +19,7 @@ exports.getAllTimesheets = function(req, res) {
 };
 
 /**
- * POST /timesheets/new
+ * POST & PUT /timesheets/new
  */
 exports.saveTimesheet = function(req, res) {
   let errors = null;
@@ -34,14 +34,13 @@ exports.saveTimesheet = function(req, res) {
   if(!checkRecord.isNew()) {
     let timesheetStatus = '';
 
-    timesheet = new Timesheet();
-
     if (req.body.timesheetStatus === 'W') {
       timesheetStatus = 'P';
     } else {
       timesheetStatus = 'W';
     }
 
+    timesheet = new Timesheet();
     timesheet.save({
       id: req.params.id,
       timesheetStatus: timesheetStatus,
@@ -151,5 +150,28 @@ exports.saveTimesheet = function(req, res) {
     let total = (hours * value) / 3600 /* Convert to seconds*/;
 
     return +(Math.round(total + "e+2") + "e-2");
+  }
+}
+
+/**
+ * PUT /timesheets/remove-timesheet=id
+ */
+exports.removeTimesheet = function(req, res) {
+  let timesheet = null;
+  let checkRecord = new Timesheet({id: req.params.id});
+
+  if(!checkRecord.isNew()) {
+
+    timesheet = new Timesheet();
+    timesheet.save({
+      id: req.params.id,
+      timesheetFlag: 'd',
+      }, { patch: true })
+      .then(function(model) {
+        res.send({ timesheet: model, msg: 'Timesheet status has been removed.' });
+      })
+      .catch(function(err) {
+        res.send({ msg: err });
+      });
   }
 }

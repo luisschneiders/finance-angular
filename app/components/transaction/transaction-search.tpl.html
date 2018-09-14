@@ -26,7 +26,7 @@
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
             </div>
-            <select name="transactionsMultipleSelect" id="transactionType" class="form-control" ng-model="data.customSearch.transactionType" multiple
+            <select name="transactionsMultipleSelect" id="transactionType" class="form-control text-uppercase" ng-model="data.customSearch.transactionType" multiple
             ng-options="type.id as type.transactionTypeDescription for type in data.transactionsType | orderBy:'transactionTypeDescription'">
             </select>
           </div>

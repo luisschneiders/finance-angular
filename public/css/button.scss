@@ -137,7 +137,6 @@
 }
 .icon-delete {
   color: $dark-orange;
-  vertical-align: -36%;
 }
 .icon-educational {
   i {
@@ -150,6 +149,14 @@
 .icon-defaults {
   i {
     @extend .blue-gradient;
+    @extend .clip-settings;
+    font-size: 8rem;
+    padding: 10px 5px;
+  }
+}
+.icon-warning {
+  i {
+    @extend .orange-gradient;
     @extend .clip-settings;
     font-size: 8rem;
     padding: 10px 5px;

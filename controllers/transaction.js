@@ -3,6 +3,23 @@ const Transaction = require('../models/Transaction');
 const Bank = require('../models/Bank');
 
 /**
+ * GET /get-all-transactions-month/:year-month
+ */
+exports.getAllTransactions = function(req, res) {
+  let user = req.user.id;
+  let period = req.params.period;
+  let startDate = moment(period).startOf('month').format('YYYY-MM-DD');
+  let endDate = moment(period).endOf('month').format('YYYY-MM-DD');
+
+  Transaction.getAllTransactions(user, startDate, endDate)
+    .then(function(transactions) {
+      res.json(transactions);
+    }).catch(function(err) {
+      console.error(err);
+    });
+};
+
+/**
  * GET /transactions-by-custom-search/:from&:to&:transactionType
  */
 exports.getTransactionByCustomSearch = function(req, res) {
@@ -52,8 +69,6 @@ exports.saveTransaction = function(req, res) {
 
   switch(req.body.transactionType.transactionTypeAction) {
     case 'C':
-      transaction(req.body.transactionType.transactionTypeAction, null);
-      break;
     case 'D':
       transaction(req.body.transactionType.transactionTypeAction, null);
       break;

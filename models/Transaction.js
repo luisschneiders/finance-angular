@@ -26,7 +26,14 @@ const Transaction = bookshelf.Model.extend({
           qr.whereIn('transactionType', refineTransactionType);
         }
       }).fetchAll();
-    }
+    },
+    getAllTransactions: function(user, startDate, endDate) {
+      let options = new Options(user, startDate, endDate);
+
+      return this.query(function(qr) {
+        queryTransactions(qr, options);
+      }).fetchAll();
+    },
   });
 class Options {
   constructor(user, startDate, endDate) {
@@ -37,8 +44,9 @@ class Options {
 }
 
 function queryTransactions(qr, options) {
-  qr.select('transaction-type.transactionTypeDescription', 'transactions.id', 'transactionType', 'transactionLabel', 'transactionAmount', 'transactionComments', 'transactionDate');
+  qr.select('transaction-type.transactionTypeDescription', 'banks.bankDescription', 'transactions.id', 'transactionType', 'transactionLabel', 'transactionAmount', 'transactionComments', 'transactionDate');
   qr.leftJoin('transaction-type', 'transactions.transactionType', '=', 'transaction-type.id');
+  qr.leftJoin('banks', 'transactions.transactionFromBank', '=', 'banks.id');
   qr.where({'transactionInsertedBy': options.user, 'transactionFlag': 'r'});
   qr.whereBetween('transactionDate', [options.startDate, options.endDate]);
   qr.whereRaw('(transactionAction <> "D" OR transactionLabel <> "T")');

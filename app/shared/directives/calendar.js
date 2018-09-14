@@ -32,6 +32,9 @@ angular.module('MyApp')
           case '/timesheets':
             timesheetView();
             break;
+          case '/data-maintenance':
+            dataMaintenanceView();
+            break;
           default:
             $scope.errorMessage = 'Error loading calendar for this location!';
             $scope.isValidLocation = false;
@@ -50,6 +53,21 @@ angular.module('MyApp')
               buildCalendar(_mapTimesheetData(response));
             }).catch(function(error) {
               console.log('Error getting timesheets:', error);
+            });
+        }
+
+        $scope.dataMaintenanceView = function() {
+          dataMaintenanceView();
+        }
+
+        function dataMaintenanceView() {
+          vm.location.path = $location.path();
+          CalendarServices.getTransactions($routeParams.calendar)
+            .then(function(response) {
+              $scope.transactions = response;
+              buildCalendar(_mapDataMaintenanceData(response));
+            }).catch(function(error) {
+              console.log('Error getting transactions:', error);
             });
         }
 
@@ -130,6 +148,7 @@ angular.module('MyApp')
       }
       return days;
     }
+
     // Timesheet
     function _mapTimesheetData(data) {
       let dataFormatted = [];
@@ -137,7 +156,20 @@ angular.module('MyApp')
 
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.timesheetStartDate;
-        dataFormattedObj.item = moment(item.timesheetTotalhours, "HH:mm").format("hh:mm");
+        dataFormattedObj.item = moment(item.timesheetTotalhours, "hh:mm").format("HH:mm");
+        dataFormatted.push(_.clone(dataFormattedObj))
+      });
+      return dataFormatted;
+    }
+
+    // Data Maintenance
+    function _mapDataMaintenanceData(data) {
+      let dataFormatted = [];
+      let dataFormattedObj = {};
+      let length = 14;
+      _.forEach(data, function(item) {
+        dataFormattedObj.date = item.transactionDate;
+        dataFormattedObj.item = `${item.transactionLabel} - $ ${item.transactionAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`
         dataFormatted.push(_.clone(dataFormattedObj))
       });
       return dataFormatted;

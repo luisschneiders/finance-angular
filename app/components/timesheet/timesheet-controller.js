@@ -1,7 +1,7 @@
 angular.module('MyApp')
-  .controller('TimesheetCtrl', ['$scope', '$auth', '$location', '$routeParams', '$window',
+  .controller('TimesheetCtrl', ['$scope', '$auth', '$location', '$routeParams', '$window', '$timeout',
               'DefaultServices', 'PeopleServices', 'TimesheetServices', 'UserLocalStorageServices',
-  function($scope, $auth, $location, $routeParams, $window, DefaultServices, PeopleServices, TimesheetServices, UserLocalStorageServices) {
+  function($scope, $auth, $location, $routeParams, $window, $timeout, DefaultServices, PeopleServices, TimesheetServices, UserLocalStorageServices) {
     if (!$auth.isAuthenticated()) {
       $location.url('/login');
       return;
@@ -109,6 +109,8 @@ angular.module('MyApp')
     }
 
     vm.modalAddNewRecord = function() {
+      vm.data.form = {};
+      vm.state.messages = {};
       vm.modal.title = vm.settings.modal.add.title
       vm.modal.cssClass = vm.settings.modal.add.cssClass;
       vm.modal.url = vm.settings.modal.add.url;
@@ -227,6 +229,56 @@ angular.module('MyApp')
             error: Array.isArray(error) ? error : [error]
           };
         })
+    };
+
+    vm.modalDeleteRecord = function(data) {
+      vm.data.form = {};
+      vm.state.messages = {};
+      vm.modal.title = vm.settings.modal.remove.title
+      vm.modal.cssClass = vm.settings.modal.remove.cssClass;
+      vm.modal.url = vm.settings.modal.remove.url;
+      vm.state.modal = vm.modal;
+      vm.data.form.id = data.id;
+      angular.element('#myModal').modal('show');
+    };
+
+    vm.deleteTimesheet = function($valid) {
+      vm.status.errorAdd = true;
+
+      if (vm.status.isSaving) {
+        return;
+      }
+
+      if (!$valid) {
+        vm.state.messages = {
+          error: [{
+            msg: vm.state.settings.component.defaults.message.idMissing
+          }]
+        };
+        return;
+      }
+      vm.status.isSaving = true;
+
+      TimesheetServices.removeTimesheet(vm.data.form)
+        .then(function(response) {
+          vm.status.isSaving = false;
+          vm.state.messages = {
+            success: [response]
+          };
+          vm.data.form = {};
+
+          $timeout(function() {
+            angular.element('#myModal').modal('hide');
+          }, 1000);
+
+          $scope.timesheetView();
+
+        }).catch(function(error) {
+          vm.status.isSaving = false;
+          vm.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
     };
 
     $scope.changeView = function(params, value) {

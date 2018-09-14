@@ -7,31 +7,24 @@
     <table class="table table-responsive table-hover">
         <thead>
           <tr>
-            <th>Details</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Comments</th>
             <th class="text-right">Amount</th>
-            <th class="text-center column-action">Action</th>
           </tr>
         </thead>
         <tbody >
           <tr ng-repeat="item in data.transactionsDetails | orderBy: '-transactionDate'">
-            <td data-title="Details">
-              <div>{{::item.transactionDate | date: "dd/MM/yyyy"}}</div>
-              <div>{{::item.transactionComments}}</div>
+            <td data-title="Date">{{::item.transactionDate | date: "dd/MM/yyyy"}}</td>
+            <td>
+              <div class="text-uppercase" ng-switch="item.transactionLabel">
+                <span ng-switch-when="C">Credit</span>
+                <span ng-switch-when="D">Debit</span>
+                <span ng-switch-default>Transfer</span>
+              </div>
             </td>
+            <td data-title="Comments">{{::item.transactionComments}}</td>
             <td data-title="Amount" class="text-right">{{::item.transactionAmount | number: 2}}</td>
-            <td data-title="Action" class="text-center td-no-padding">
-              <button class="btn btn-link" title="Delete" ng-click="checkDelete(this)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
-              <!-- <div ng-show="this.showConfirmDelete">
-                <a class="btn btn-danger cancel" ng-click="checkDelete(this)">
-                  <i class="fa fa-times fa-lg"></i><br>
-                  <span>Cancel</span>
-                </a>
-                <a class="btn btn-success confirm" ng-click="deleteTransaction(item.id)">
-                  <i class="fa fa-trash fa-lg"></i><br>
-                  <span>Delete</span>
-                </a>
-              </div> -->
-            </td>
           </tr>
         </tbody>
     </table>

@@ -92,13 +92,14 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       })
       .when('/populate-database', {
         templateUrl: 'components/settings/populate-database-view.html',
-        // controller: 'PopulateDatabaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/timesheets', {
         templateUrl: 'components/timesheet/timesheet-view.html',
-        // reloadOnSearch: false,
-        // controller: 'TimesheetCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/data-maintenance', {
+        templateUrl: 'components/maintenance/data-maintenance-view.html',
         resolve: { loginRequired: loginRequired }
       })
       .otherwise({
@@ -131,6 +132,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       expensesTypePageSize: 12,
       transactionsTypePageSize: 12,
       timesheetsView: "calendar",
+      dataMaintenanceView: "calendar",
+
     }
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);

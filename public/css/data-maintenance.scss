@@ -1,4 +1,4 @@
-.timesheet {
+.data-maintenance {
   .view-selected {
     color: $mid-green;
   }
@@ -13,16 +13,6 @@
   .table {
     .fa-lg {
       vertical-align: -36%;
-    }
-    td.status {
-      padding: 0;
-      .btn.is-paid, .btn.is-unpaid{
-        padding: 15px 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-        color: #fff;
-      }
     }
   }
 }

@@ -126,6 +126,7 @@ app.post('/people-new', userController.ensureAuthenticated, peopleController.sav
 app.get('/get-people-by-role=:role', peopleController.getPeopleByRole);
 
 // Transaction
+app.get('/get-all-transactions-month/:period', transactionController.getAllTransactions);
 app.get('/transactions-by-custom-search/:from&:to&:transactionType', transactionController.getTransactionByCustomSearch);
 app.post('/transactions/new', userController.ensureAuthenticated, transactionController.saveTransaction);
 
@@ -134,9 +135,10 @@ app.get('/purchases-by-custom-search/:from&:to&:expenseType', purchaseController
 app.post('/purchases/new', userController.ensureAuthenticated, purchaseController.savePurchase);
 
 // Timesheet
-app.get('/get-all-timesheets-month/:period', timesheetController.getAllTimesheets);
+app.get('/get-all-timesheets-month/:period', timesheetController.getAllTimesheetsByMonth);
 app.post('/timesheets/new', userController.ensureAuthenticated, timesheetController.saveTimesheet);
 app.put('/timesheets/update-status=:id', userController.ensureAuthenticated, timesheetController.saveTimesheet);
+app.put('/timesheets/remove-timesheet=:id', userController.ensureAuthenticated, timesheetController.removeTimesheet);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

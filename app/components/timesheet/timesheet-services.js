@@ -29,6 +29,16 @@ angular.module('MyApp')
           return $q.reject(response.data);
         });
       return timesheet;
+    },
+    removeTimesheet: function(data) {
+      let timesheet = {};
+      timesheet = $http.put(`/timesheets/remove-timesheet=${data.id}`, data)
+        .then(function(response) {
+          return response.data;
+        }).catch(function(response) {
+          return $q.reject(response.data);
+        });
+      return timesheet;
     }
   };
 }]);

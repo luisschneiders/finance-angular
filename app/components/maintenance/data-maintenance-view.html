@@ -1,4 +1,4 @@
-<div class="container-fluid timesheet" ng-controller="TimesheetCtrl as ctrl">
+<div class="container-fluid data-maintenance" ng-controller="DataMaintenanceCtrl as ctrl">
   <div class="row fixed-row" ng-include src="'components/top/top-view-new.html'"></div>
   <div class="row">
     <div class="col-sm-12">
@@ -16,8 +16,8 @@
               </div>
               <div class="flex-wrap-item content-center align-center">
                 <span class="toggle-bg toggle-alternate on">
-                  <input type="radio" name="toggle" value="calendar" ng-model="ctrl.switchAlternate" ng-click="changeView('timesheetsView','calendar')">
-                  <input type="radio" name="toggle" value="list" ng-model="ctrl.switchAlternate" ng-click="changeView('timesheetsView','list')">
+                  <input type="radio" name="toggle" value="calendar" ng-model="ctrl.switchAlternate" ng-click="changeView('dataMaintenanceView','calendar')">
+                  <input type="radio" name="toggle" value="list" ng-model="ctrl.switchAlternate" ng-click="changeView('dataMaintenanceView','list')">
                   <span class="switch {{ctrl.switchAlternate}}"></span>
                 </span>
               </div>
@@ -38,59 +38,34 @@
                 </div>
               </div>
             </div>
-            <div ng-if="!timesheets.length">
+            <div ng-if="!transactions.length">
               <h3 class="alert alert-danger text-center">{{::ctrl.state.settings.component.defaults.message.notFound}}</h3>
             </div>
-            <div ng-if="timesheets.length" class="panel well padding">
+            <div ng-if="transactions.length" class="panel well padding">
               <div id="no-more-tables">
                 <table class="table table-responsive table-hover">
                   <thead>
                     <tr>
-                      <th>Employer</th>
                       <th>Date</th>
-                      <th>Punch In</th>
-                      <th>Break</th>
-                      <th>Punch Out</th>
-                      <th>Hours</th>
+                      <th>Bank</th>
+                      <th>Label</th>
+                      <th>Transaction</th>
+                      <th>Comments</th>
                       <th>Total</th>
-                      <th class="text-center">Status</th>
                       <th class="text-center">Remove</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr ng-repeat="item in timesheets | orderBy: '-timesheetStartDate'">
-                      <td data-title="Employer">{{::item.peopleDescription}}</td>
-                      <td data-title="Date">{{::item.timesheetStartDate | date: 'dd/MM/yyyy'}}</td>
-                      <td data-title="Punch In">{{::item.timesheetTimeIn}}</td>
-                      <td data-title="Break">{{::item.timesheetTimeBreak || '00:00:00'}}</td>
-                      <td data-title="Punch Out">{{::item.timesheetTimeOut}}</td>
-                      <td data-title="Hours">{{::item.timesheetTotalhours}}</td>
-                      <td data-title="Total">$ {{::item.timesheetTotal | number:2}}</td>
-                      <td data-title="Status" class="text-center status">
-                        <button class="btn" ng-click="ctrl.updateStatus(item);" ng-class="::item.timesheetStatus == 'P' ? ctrl.state.settings.defaults.cssPaid : ctrl.state.settings.defaults.cssUnpaid">
-                          {{::item.timesheetStatus == 'P' ? 'Paid' : 'Unpaid'}}
-                        </button>
-                      </td>
+                  <tbody class="text-lowercase">
+                    <tr ng-repeat="item in transactions | orderBy: '-transactionDate'">
+                      <td data-title="Date">{{::item.transactionDate | date: 'dd/MM/yyyy'}}</td>
+                      <td data-title="Bank">{{::item.bankDescription}}</td>
+                      <td data-title="Label" class="text-uppercase">{{::item.transactionLabel}}</td>
+                      <td data-title="Transaction">{{::item.transactionTypeDescription || 'Purchases'}}</td>
+                      <td data-title="Comments">{{::item.transactionComments}}</td>
+                      <td data-title="Total">$ {{::item.transactionAmount | number:2}}</td>
                       <td data-title="Remove" class="text-center">
                         <button class="btn btn-link" title="Delete" ng-click="ctrl.modalDeleteRecord(item)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
                       </td>
-                    </tr>
-                    <tr>
-                      <td colspan="6"><strong>Total Paid</strong></td>
-                      <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' : 'P' : 'timesheet' | number:2"></strong></td>
-                      <td colspan="1"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="6"><strong>Total Unpaid</strong></td>
-                      <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' : 'W' : 'timesheet' | number:2"></strong></td>
-                      <td colspan="1"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="6"><strong>Total Hours</strong></td>
-                      <td colspan="2">
-                        <!-- <strong ng-bind="item.totalHours"></strong> -->
-                      </td>
-                      <td colspan="1"></td>
                     </tr>
                   </tbody>
                 </table>

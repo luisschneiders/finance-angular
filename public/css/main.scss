@@ -93,6 +93,15 @@ a {
   border-radius: 15px;
 }
 
+.badge-custom {
+  font-weight: normal;
+  height: 35px;
+  padding-top: 12px;
+  border-radius: 35px;
+  background-color: $mid-pink;
+  @extend .btn-date;
+}
+
 // Panels
 // -------------------------
 .panel {

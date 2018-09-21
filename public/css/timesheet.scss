@@ -26,3 +26,15 @@
     }
   }
 }
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-md-min) {
+  .timesheet {
+    .table {
+      font-size: 1.0rem;
+
+      .btn {
+        font-size: 1.0rem;
+      }
+    }
+  }
+}

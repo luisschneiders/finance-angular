@@ -46,3 +46,13 @@
   }
 
 }
+
+@media (max-width: $screen-md-min) {
+  .calendar-flex {
+    font-size: .95rem;
+
+    .calendar-item {
+      font-size: .90rem;
+    }
+  }
+}

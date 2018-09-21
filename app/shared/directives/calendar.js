@@ -26,7 +26,7 @@ angular.module('MyApp')
         $scope.selected = moment($routeParams.calendar);
         $scope.month = $scope.selected.clone();
         $scope.displayCurrentMonth = _displayCurrentMonth($scope.month);
-        $scope.weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $scope.weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         switch($location.path()) {
           case '/timesheets':

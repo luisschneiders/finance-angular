@@ -50,7 +50,10 @@ footer {
   padding: 10px 30px;
   bottom: 0;
   background-color: $footer-bg;
-  border-top: 1px solid #e0e0e0;
+  // border-top: 1px solid #e0e0e0;
+  span {
+    vertical-align: middle;
+  }
 }
 a {
   color: $dark-blue;
@@ -84,7 +87,16 @@ a {
 // -------------------------
 .modal-content {
   border-radius: 15px;
-  background-color: $mid-gray;
+  background-color: $body-bg;
+}
+.modal-body {
+  background-color: #fff
+}
+.modal-header {
+  border-bottom: none;
+}
+.modal-footer {
+  border-top: none;
 }
 // Alerts
 // -------------------------
@@ -106,6 +118,7 @@ a {
 // -------------------------
 .panel {
   border-radius: 15px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 .panel-body {
   h1, h2, h3, h4, h5, h6 {
@@ -127,10 +140,10 @@ a {
 }
 .well {
   background-color: #fff;
-  border-color: solid 1px $light-gray;
-  margin-bottom: 2px;
+  border: none;
+  // border-color: solid 1px $light-gray;
+  // margin-bottom: 2px;
   padding: 0;
-  box-shadow: none;
 }
 .label {
   padding: .2em .4em;

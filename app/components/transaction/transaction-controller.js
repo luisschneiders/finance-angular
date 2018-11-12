@@ -2,10 +2,9 @@
 angular.module('MyApp')
   .controller('TransactionCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'TransactionServices', 'TransactionTypeServices', 'BankServices',
   function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, TransactionServices, TransactionTypeServices, BankServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
     class State {
       constructor(settings, params, status, messages, modal) {
         this.settings = settings;

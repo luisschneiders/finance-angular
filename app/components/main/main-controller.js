@@ -1,10 +1,9 @@
 angular.module('MyApp')
   .controller('MainCtrl', ['$scope', '$auth', '$location', '$routeParams', 'moment', 'DefaultServices', 'MainServices',
   function($scope, $auth, $location, $routeParams, moment, DefaultServices, MainServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
     class State {
       constructor(settings, params, status, messages) {
         this.settings = settings;

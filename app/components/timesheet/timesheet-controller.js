@@ -2,11 +2,9 @@ angular.module('MyApp')
   .controller('TimesheetCtrl', ['$scope', '$auth', '$location', '$routeParams', '$window', '$timeout',
               'DefaultServices', 'PeopleServices', 'TimesheetServices', 'UserLocalStorageServices',
   function($scope, $auth, $location, $routeParams, $window, $timeout, DefaultServices, PeopleServices, TimesheetServices, UserLocalStorageServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.url('/login');
-      return;
-    }
-
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
     class State {
       constructor(settings, params, status, messages, modal, switchBtn, isNewRate) {
         this.settings = settings;

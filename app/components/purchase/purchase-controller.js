@@ -1,10 +1,9 @@
 angular.module('MyApp')
   .controller('PurchaseCtrl', ['$scope', '$auth', '$location', '$timeout', '$routeParams', 'moment', 'DefaultServices', 'ExpenseTypeServices', 'BankServices', 'PurchaseServices',
   function($scope, $auth, $location, $timeout, $routeParams, moment, DefaultServices, ExpenseTypeServices, BankServices, PurchaseServices) {
-    if (!$auth.isAuthenticated()) {
-      $location.path('/login');
-      return;
-    }
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
     class State {
       constructor(settings, params, status, messages, modal) {
         this.settings = settings;

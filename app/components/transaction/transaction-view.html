@@ -21,18 +21,14 @@
             <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
           </div>
           <div class="col-sm-push-2 col-sm-8" ng-repeat="(key, value) in data.transactionsByGroup">
-            <div class="panel well">
-              <div class="panel-heading">
-                <h3 class="panel-title text-uppercase">{{::value.transactionTypeDescription || 'Purchase'}}</h3>
-              </div>
-              <div class="panel-body">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <strong class="panel-body-content">$ {{value.TotalAmountByTransactionType | number:2 }}</strong>
-                  </div>
-                  <div class="col-xs-6 text-right">
-                    <button class="btn btn-link" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></button>
-                  </div>
+            <div class="list">
+              <div class="row">
+                <div class="col-xs-10 list-records"  ng-class="{'last-item': $last}">
+                  <span class="text-uppercase">{{::value.transactionTypeDescription || 'Purchase'}}</span>
+                  <strong class="pull-right">$ {{value.TotalAmountByTransactionType | number:2 }}</strong>
+                </div>
+                <div class="col-xs-2 list-icon text-center">
+                  <a class="btn btn-default btn-rounded" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></a>
                 </div>
               </div>
             </div>

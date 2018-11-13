@@ -114,6 +114,19 @@ a {
   @extend .btn-date;
 }
 
+// List
+// -------------------------
+.list-icon {
+  padding: 10px 5px;
+}
+.list-records {
+  border-top: solid 1px $dark-gray;
+  padding: 18px 5px;
+}
+.last-item {
+  border-bottom: solid 1px $dark-gray;
+}
+
 // Panels
 // -------------------------
 .panel {

@@ -163,12 +163,13 @@
   }
 }
 .btn-link {
-  color: $mid-pink;
+  color: $light-black;
   height: inherit;
   padding-top: 0;
+  padding-bottom: 0;
 
   &:active, &:hover, &:focus {
-    color: $dark-pink;
+    color: $dark-black;
   }
 }
 // Switch Styles

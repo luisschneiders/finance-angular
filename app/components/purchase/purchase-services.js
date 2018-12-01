@@ -6,6 +6,7 @@ angular.module('MyApp')
       let data = $http.get(`/purchases-by-custom-search/${params.from}&${params.to}&${params.expenses}`)
           .then(function(response) {
             let groupedBy = {};
+            let totalAmount = 0;
 
             groupedBy = _.groupBy(response.data, function(type) {
               return type = type.purchaseExpenseId;
@@ -18,7 +19,11 @@ angular.module('MyApp')
               group.expenseTypeDescription = group[0].expenseTypeDescription;
             });
 
-            return {groupedBy: groupedBy, data: response.data};
+            _.forEach(response.data, function(item) {
+              return totalAmount += item.purchaseAmount;
+            }, totalAmount);
+
+            return {groupedBy, data: response.data, totalAmount};
           }).catch(function(response) {
             return $q.reject(response.data);
           });

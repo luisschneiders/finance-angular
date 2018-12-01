@@ -25,7 +25,7 @@
               <div class="row">
                 <div class="col-xs-10 list-records"  ng-class="{'last-item': $last}">
                   <span class="text-uppercase">{{::value.transactionTypeDescription || 'Purchase'}}</span>
-                  <strong class="pull-right">$ {{value.TotalAmountByTransactionType | number:2 }}</strong>
+                  <strong class="pull-right">${{value.TotalAmountByTransactionType | number:2 }}</strong>
                 </div>
                 <div class="col-xs-2 list-icon text-center">
                   <a class="btn btn-default btn-rounded" data-toggle="modal" data-target="#myModal" ng-click="seeDetails(key, value)" title="See details"><i class="fa fa-list fa-lg"></i></a>

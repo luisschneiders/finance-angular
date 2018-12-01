@@ -56,9 +56,10 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(purchases, purchasesByGroup, purchasesDetails, expensesType, banks, form, customSearch, remainingAmount) {
+      constructor(purchases, purchasesByGroup, totalAmount, purchasesDetails, expensesType, banks, form, customSearch, remainingAmount) {
         this.purchases = purchases;
         this.purchasesByGroup = purchasesByGroup;
+        this.totalAmount = totalAmount;
         this.purchasesDetails = purchasesDetails;
         this.expensesType = expensesType;
         this.banks = banks;
@@ -226,6 +227,7 @@ angular.module('MyApp')
             status.isNull = true;
           }
           data.purchasesByGroup = response.groupedBy;
+          data.totalAmount = response.totalAmount;
         }).catch(function(error){
           status.isNull = false;
           status.isLoading = false;

@@ -17,7 +17,7 @@
   text-transform: uppercase;
   border-radius: 35px;
   height: 35px;
-  padding-top: 9px;
+  padding-top: 8px;
 
   &:focus {
     outline: 0 !important;
@@ -30,10 +30,10 @@
 .btn-primary {
   border-color: transparent;
   border: 0;
-  background: $light-blue;
+  background: $light-pink;
 
   &:active, &:hover, &:focus {
-    background: $mid-blue;
+    background: $mid-pink;
   }
 }
 .btn-default {

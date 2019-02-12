@@ -110,7 +110,7 @@ a {
   height: 35px;
   padding-top: 12px;
   border-radius: 35px;
-  background-color: $mid-pink;
+  background-color: $custom-badget;
   @extend .btn-date;
 }
 
@@ -233,7 +233,7 @@ select {
   @extend .cursor-pointer;
 }
 .loading {
-  color: $mid-pink;
+  color: $loading-icon;
 }
 .field-required {
   border-color: $dark-orange;
@@ -326,7 +326,7 @@ select {
     width: calc(100% - 200px);
     height: 51px;
     padding-top: 8px;
-    background-color: $mid-pink;
+    background-color: $top-fix-header-background;
     z-index: 10;
   }
 }

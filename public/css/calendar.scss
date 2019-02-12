@@ -21,14 +21,14 @@
   }
 
   .item {
-    color: $mid-pink;
+    color: $calendar-item-text;
   }
   
   &.today {
     font-weight: 400;
     color: #fff;
-    border: solid 1px $mid-pink;
-    background-color: $mid-pink;
+    border: solid 1px $calendar-today-border;
+    background-color: $calendar-today-background;
 
     .item {
       font-weight: 200;

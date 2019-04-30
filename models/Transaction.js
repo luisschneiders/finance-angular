@@ -34,6 +34,15 @@ const Transaction = bookshelf.Model.extend({
         queryTransactions(qr, options);
       }).fetchAll();
     },
+    getIncomeByYear: function(user, startDate, endDate) {
+      return this.query(function(qr) {
+        qr.select('transactionDate', 'transactionLabel', 'transactionAmount', 'transactionFlag');
+        qr.sum('transactionAmount AS TotalIncomeByMonth');
+        qr.where({'transactionInsertedBy': user, 'transactionFlag': 'r', 'transactionLabel': 'C'});
+        qr.whereBetween('transactionDate', [startDate, endDate]);
+        qr.groupByRaw('month (transactionDate)');
+      }).fetchAll();
+    },
   });
 class Options {
   constructor(user, startDate, endDate) {

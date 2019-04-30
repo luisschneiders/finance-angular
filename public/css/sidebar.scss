@@ -42,16 +42,17 @@
 }
 .nav-side-menu ul .active,
 .nav-side-menu li .active {
-  border-left: 3px solid $mid-pink;
-  background-color: #4f5b69;
+  border-left: 3px solid $light-pink;
+  background-color: $nav-side-menu-active;
 }
 .nav-side-menu ul .sub-menu li.active,
 .nav-side-menu li .sub-menu li.active {
   color: $mid-pink;
+  background-color: $nav-side-menu-sub-menu-active;
 }
-.nav-side-menu ul .sub-menu li.active a,
-.nav-side-menu li .sub-menu li.active a {
-  color: $mid-pink;
+.nav-side-menu ul .sub-menu li.active,
+.nav-side-menu li .sub-menu li.active {
+  color: $light-gray;
 }
 .nav-side-menu ul .sub-menu li,
 .nav-side-menu li .sub-menu li {
@@ -63,7 +64,6 @@
 .nav-side-menu ul .sub-menu li:hover,
 .nav-side-menu li .sub-menu li:hover {
   background-color: $nav-side-menu-sub-menu-hover;
-  
 }
 .nav-side-menu ul .sub-menu li:before,
 .nav-side-menu li .sub-menu li:before {
@@ -76,21 +76,21 @@
 }
 .nav-side-menu li {
   padding-left: 0px;
-  border-left: 3px solid $mid-black;
+  border-left: 3px solid $light-blue-1;
   border-bottom: 1px solid $navbar-default-border;
   
 }
-.nav-side-menu li a {
+.nav-side-menu li {
   text-decoration: none;
   color: $nav-side-menu-text-hover;
 }
-.nav-side-menu li a i {
+.nav-side-menu li i {
   padding-left: 10px;
   width: 20px;
   padding-right: 20px;
 }
 .nav-side-menu li:hover {
-  border-left: 3px solid $mid-pink;
+  border-left: 3px solid $light-pink;
   background-color: $nav-side-menu-background-hover;
   color: $nav-side-menu-text-hover;
   -webkit-transition: all 1s ease;

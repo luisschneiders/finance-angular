@@ -17,7 +17,7 @@ exports.getTransactionsAndPurchasesByYear = function(req, res) {
         callback(null, transactions);
       }).catch(function(err) {
         console.error(err);
-      });      
+      });
     },
     function(callback) {
       Purchase.getPurchaseByYear(user, startDate, endDate)
@@ -25,7 +25,15 @@ exports.getTransactionsAndPurchasesByYear = function(req, res) {
         callback(null, purchases);
       }).catch(function(err) {
         console.error(err);
-      });      
+      });
+    },
+    function(callback) {
+      Transaction.getIncomeByYear(user, startDate, endDate)
+      .then(function(transactions) {
+        callback(null, transactions);
+      }).catch(function(err) {
+        console.error(err);
+      });
     }
   ], function(err, results) {
       res.json(results);

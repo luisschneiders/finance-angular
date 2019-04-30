@@ -33,18 +33,25 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(purchases, transactions, daily) {
+      constructor(purchases, income, transactions, daily, incomeAndOutcome) {
         this.purchases = purchases;
+        this.income = income;
         this.transactions = transactions;
         this.daily = daily;
+        this.incomeAndOutcome = incomeAndOutcome;
       }
     };
+
+    let incomeAndOutcome = {
+      income: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      outcome: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
 
     let settings = new Settings();
     let params = new Params($routeParams);
     let status = new Status(false, false, true, true);
     let state = new State(null, params, status, null);
-    let data = new Data();
+    let data = new Data(null, null, null, null, incomeAndOutcome);
     let pieChart = null;
     let barChart = null;
     let horizontalBar = null;
@@ -88,12 +95,12 @@ angular.module('MyApp')
             status.transactionIsNull = true;
           } else {
             renderTransactionGraphic(response[0]);
-            renderDailyGraphic(response[0]);
+            renderDailyGraphic();
           }
-          if(response[1].length == 0) {//purchase
+          if(response[1].length == 0 && response[2].length == 0) {//income & purchase
             status.purchaseIsNull = true;
           } else {
-            renderPurchaseGraphic(response[1]);
+            renderPurchaseGraphic(response[1], response[2]);
           }
           status.isLoading = false;
         }).catch(function(error) {
@@ -112,14 +119,14 @@ angular.module('MyApp')
 
       data.transactions = response.map(function(value) {
         switch(value.transactionLabel) {
-          case 'C':
+          case settings.defaults.graphic.labels.income.id:
             value.TotalAmountByLabel;
             break;
-          case 'D':
+          case settings.defaults.graphic.labels.outcome.id:
             value.TotalAmountByLabel;
             break;
-          case 'T':
-            value.TotalAmountByLabel = value.TotalAmountByLabel / 2;
+          case settings.defaults.graphic.labels.transfers.id:
+            value.TotalAmountByLabel = (value.TotalAmountByLabel / 2).toFixed(2);
             break;
           default:
             value.TotalAmountByLabel;
@@ -133,30 +140,30 @@ angular.module('MyApp')
 
       transactionsLabel = response.map(function(value) {
         switch(value.transactionLabel) {
-          case 'C':
-            value.transactionLabel = settings.defaults.graphic.labels[0];
+          case settings.defaults.graphic.labels.income.id:
+            value.label = settings.defaults.graphic.labels.income.label;
             break;
-          case 'D':
-            value.transactionLabel = settings.defaults.graphic.labels[1];
+          case settings.defaults.graphic.labels.outcome.id:
+            value.label = settings.defaults.graphic.labels.outcome.label;
             break;
-          case 'T':
-            value.transactionLabel = settings.defaults.graphic.labels[2];
+          case settings.defaults.graphic.labels.transfers.id:
+            value.label = settings.defaults.graphic.labels.transfers.label;
             break;
           default:
-            value.transactionLabel = 'Label';
+            value.label = 'Label';
         }
-        return [value.transactionLabel];
+        return [value.label];
       });
 
       pieChartColoursBackground = response.map(function(value){
         switch(value.transactionLabel) {
-          case settings.defaults.graphic.labels[0]:
-            value.pieChartColoursBackground = settings.defaults.graphic.colors.color1;
+          case settings.defaults.graphic.labels.income.id:
+            value.pieChartColoursBackground = settings.defaults.graphic.colors.color6;
             break;
-          case settings.defaults.graphic.labels[1]:
+          case settings.defaults.graphic.labels.outcome.id:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.color2;
             break;
-          case settings.defaults.graphic.labels[2]:
+          case settings.defaults.graphic.labels.transfers.id:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.color3;
             break;
           default:
@@ -181,7 +188,8 @@ angular.module('MyApp')
       });
     }
 
-    function renderPurchaseGraphic(response) {
+    function renderPurchaseGraphic(outcome, income) {
+      let month = 0;
       let purchaseChart = document.getElementById("purchaseChart");
       let barChartOptions = {
             scales: {
@@ -193,117 +201,63 @@ angular.module('MyApp')
             }
           };
 
-      barChartLabelsMonths = response.map(function(value) {
-        let month = moment(value.purchaseDate).format('M').toString();
-        switch(month){
-          case '1':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[0];
-            break;
-          case '2':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[1];
-            break;
-          case '3':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[2];
-            break;
-          case '4':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[3];
-            break;
-          case '5':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[4];
-            break;
-          case '6':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[5];
-            break;
-          case '7':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[6];
-            break;
-          case '8':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[7];
-            break;
-          case '9':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[8];
-            break;
-          case '10':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[9];
-            break;
-          case '11':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[10];
-            break;
-          case '12':
-            value.barChartLabelsMonths = settings.defaults.graphic.months[11];
-            break;
-          default:
-            value.barChartLabelsMonths = 'Month';
+      barChartLabelsMonths = [
+        settings.defaults.graphic.months[0],
+        settings.defaults.graphic.months[1],
+        settings.defaults.graphic.months[2],
+        settings.defaults.graphic.months[3],
+        settings.defaults.graphic.months[4],
+        settings.defaults.graphic.months[5],
+        settings.defaults.graphic.months[6],
+        settings.defaults.graphic.months[7],
+        settings.defaults.graphic.months[8],
+        settings.defaults.graphic.months[9],
+        settings.defaults.graphic.months[10],
+        settings.defaults.graphic.months[11],
+      ]
+
+
+      data.incomeAndOutcome.income.forEach(function(item, index){
+        if (income[index]) {
+          month = parseInt(moment(income[index].transactionDate).format('M'))
+          data.incomeAndOutcome.income[month - 1] = income[index].TotalIncomeByMonth;
         }
-        return [value.barChartLabelsMonths];
       });
 
-      barChartColoursBackground = response.map(function(value) {
-        let month = moment(value.purchaseDate).format('M').toString();
-        switch(month){
-          case '1':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color1;
-            break;
-          case '2':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color2;
-            break;
-          case '3':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color3;
-            break;
-          case '4':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color4;
-            break;
-          case '5':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color5;
-            break;
-          case '6':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color6;
-            break;
-          case '7':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color1;
-            break;
-          case '8':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color2;
-            break;
-          case '9':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color3;
-            break;
-          case '10':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color4;
-            break;
-          case '11':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color5;
-            break;
-          case '12':
-            value.barChartColoursBackground = settings.defaults.graphic.colors.color6;
-            break;
-          default:
-            value.barChartColoursBackground = settings.defaults.graphic.colors.default;
+      data.incomeAndOutcome.outcome.forEach(function(item, index){
+        if (outcome[index]) {
+          month = parseInt(moment(outcome[index].purchaseDate).format('M'))
+          data.incomeAndOutcome.outcome[month - 1] = outcome[index].TotalAmountByMonth;
         }
-        return [value.barChartColoursBackground];
       });
 
-      data.purchases = response.map(function(value) {
-        return [value.TotalAmountByMonth];
-      });
       barChart = new Chart(purchaseChart, {
         type: 'bar',
         data: {
             labels: barChartLabelsMonths,
             datasets: [{
-                label: 'Month',
-                data: data.purchases,
-                backgroundColor: barChartColoursBackground,
-                borderColor: settings.defaults.graphic.colors.border,
-                hoverBackgroundColor: settings.defaults.graphic.colors.background,
-                borderWidth: 1
-            }]
+              label: 'Incomes',
+              data: data.incomeAndOutcome.income,
+              backgroundColor: settings.defaults.graphic.colors.color6,
+              borderColor: settings.defaults.graphic.colors.border,
+              hoverBackgroundColor: settings.defaults.graphic.colors.background,
+              borderWidth: 1
+            },
+            {
+              label: 'Outcomes',
+              data: data.incomeAndOutcome.outcome,
+              backgroundColor: settings.defaults.graphic.colors.color2,
+              borderColor: settings.defaults.graphic.colors.border,
+              hoverBackgroundColor: settings.defaults.graphic.colors.background,
+              borderWidth: 1
+          }
+            ]
         },
         options: barChartOptions
       });
     };
 
-    function renderDailyGraphic(response) {
+    function renderDailyGraphic() {
       let dailyChart = document.getElementById("dailyChart");
       let horizontalBarChartOptions = {
         scales: {

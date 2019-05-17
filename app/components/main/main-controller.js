@@ -25,20 +25,20 @@ angular.module('MyApp')
       }
     };
     class Status {
-      constructor(transactionIsNull, purchaseIsNull, isLoading, noSettings) {
+      constructor(transactionIsNull, purchaseIsNull, bankIsNull, isLoading, noSettings) {
         this.transactionIsNull = transactionIsNull;
         this.purchaseIsNull = purchaseIsNull;
+        this.bankIsNull = bankIsNull;
         this.isLoading = isLoading;
         this.noSettings = noSettings;
       }
     };
     class Data {
-      constructor(purchases, income, transactions, daily, incomeAndOutcome) {
-        this.purchases = purchases;
-        this.income = income;
+      constructor(transactions, daily, incomeAndOutcome, banks) {
         this.transactions = transactions;
         this.daily = daily;
         this.incomeAndOutcome = incomeAndOutcome;
+        this.banks = banks;
       }
     };
 
@@ -49,15 +49,18 @@ angular.module('MyApp')
 
     let settings = new Settings();
     let params = new Params($routeParams);
-    let status = new Status(false, false, true, true);
+    let status = new Status(false, false, false, true, true);
     let state = new State(null, params, status, null);
-    let data = new Data(null, null, null, null, incomeAndOutcome);
+    let data = new Data(null, null, incomeAndOutcome, null);
     let pieChart = null;
     let barChart = null;
     let horizontalBar = null;
+    let doughnutChart = null;
     let pieChartColoursBackground = [];
     let barChartColoursBackground = [];
+    let doughnutChartColoursBackground = [];
     let transactionsLabel = [];
+    let banksLabel = [];
     let barChartLabelsMonths = [];
 
     DefaultServices.getSettings()
@@ -90,6 +93,7 @@ angular.module('MyApp')
         .then(function(response) {
           status.transactionIsNull = false;
           status.purchaseIsNull = false;
+          status.bankIsNull = false;
 
           if(response[0].length == 0) {//transaction
             status.transactionIsNull = true;
@@ -101,6 +105,11 @@ angular.module('MyApp')
             status.purchaseIsNull = true;
           } else {
             renderPurchaseGraphic(response[1], response[2]);
+          }
+          if(response[3].length == 0) {//banks
+            status.bankIsNull = true;
+          } else {
+            renderBankGraphic(response[3]);
           }
           status.isLoading = false;
         }).catch(function(error) {
@@ -115,7 +124,7 @@ angular.module('MyApp')
     function renderTransactionGraphic(response) {
       let isLeap = moment([params.year]).isLeapYear();
       let days = isLeap == true ? 366 : 365;
-      let transactionChart = document.getElementById("transactionChart");
+      let transactionChart = document.getElementById('transactionChart');
 
       data.transactions = response.map(function(value) {
         switch(value.transactionLabel) {
@@ -190,7 +199,7 @@ angular.module('MyApp')
 
     function renderPurchaseGraphic(outcome, income) {
       let month = 0;
-      let purchaseChart = document.getElementById("purchaseChart");
+      let purchaseChart = document.getElementById('purchaseChart');
       let barChartOptions = {
             scales: {
               yAxes: [{
@@ -258,7 +267,7 @@ angular.module('MyApp')
     };
 
     function renderDailyGraphic() {
-      let dailyChart = document.getElementById("dailyChart");
+      let dailyChart = document.getElementById('dailyChart');
       let horizontalBarChartOptions = {
         scales: {
           yAxes: [{
@@ -283,6 +292,30 @@ angular.module('MyApp')
             }]
         },
         options: horizontalBarChartOptions
+      });
+    }
+
+    function renderBankGraphic(bank) {
+      let bankChart = document.getElementById('bankChart');
+
+      data.banks = bank.map(function(value) {
+        banksLabel.push(value.bankDescription);
+        doughnutChartColoursBackground.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
+        return [value.bankCurrentBalance];
+      });
+
+      doughnutChart = new Chart(bankChart, {
+        type: 'doughnut',
+        data: {
+          labels: banksLabel,
+          datasets: [{
+            data: data.banks,
+            backgroundColor: doughnutChartColoursBackground,
+            borderColor: settings.defaults.graphic.colors.border,
+            hoverBackgroundColor: settings.defaults.graphic.colors.background,
+            borderWidth: 1
+          }]
+        }
       });
     }
 

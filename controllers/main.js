@@ -1,5 +1,6 @@
 const Purchase = require('../models/Purchase');
 const Transaction = require('../models/Transaction');
+const Bank = require('../models/Bank');
 const async = require('async');
 /**
  * GET /main-by-year/:year
@@ -34,6 +35,14 @@ exports.getTransactionsAndPurchasesByYear = function(req, res) {
       }).catch(function(err) {
         console.error(err);
       });
+    },
+    function(callback) {
+      Bank.getActiveBanks(user)
+      .then(function(banks) {
+        callback(null, banks);
+      }).catch(function(err) {
+        console.error(err);
+      })
     }
   ], function(err, results) {
       res.json(results);

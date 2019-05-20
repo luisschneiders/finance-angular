@@ -43,6 +43,14 @@ exports.getTransactionsAndPurchasesByYear = function(req, res) {
       }).catch(function(err) {
         console.error(err);
       })
+    },
+    function(callback) {
+      Purchase.getPurchaseByExpenseTypeAndYear(user, startDate, endDate)
+      .then(function(purchases) {
+        callback(null, purchases);
+      }).catch(function(err) {
+        console.error(err);
+      })
     }
   ], function(err, results) {
       res.json(results);

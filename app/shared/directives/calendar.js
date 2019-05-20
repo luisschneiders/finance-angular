@@ -50,6 +50,7 @@ angular.module('MyApp')
           CalendarServices.getTimesheets($routeParams.calendar)
             .then(function(response) {
               $scope.timesheets = response;
+              console.log('LFS - timesheet: ', response);
               buildCalendar(_mapTimesheetData(response));
             }).catch(function(error) {
               console.log('Error getting timesheets:', error);

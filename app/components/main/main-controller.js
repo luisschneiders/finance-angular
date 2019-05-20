@@ -5,11 +5,12 @@ angular.module('MyApp')
       return $auth.isAuthenticated();
     };
     class State {
-      constructor(settings, params, status, messages) {
+      constructor(settings, params, status, messages, data) {
         this.settings = settings;
         this.params = params;
         this.status = status;
         this.messages = messages;
+        this.data = data;
       }
     };
     class Params {
@@ -25,20 +26,22 @@ angular.module('MyApp')
       }
     };
     class Status {
-      constructor(transactionIsNull, purchaseIsNull, bankIsNull, isLoading, noSettings) {
+      constructor(transactionIsNull, purchaseIsNull, bankIsNull, isSpentMost, isLoading, noSettings) {
         this.transactionIsNull = transactionIsNull;
         this.purchaseIsNull = purchaseIsNull;
         this.bankIsNull = bankIsNull;
+        this.isSpentMost = isSpentMost;
         this.isLoading = isLoading;
         this.noSettings = noSettings;
       }
     };
     class Data {
-      constructor(transactions, daily, incomeAndOutcome, banks) {
+      constructor(transactions, daily, incomeAndOutcome, banks, spentMostExpensiveType) {
         this.transactions = transactions;
         this.daily = daily;
         this.incomeAndOutcome = incomeAndOutcome;
         this.banks = banks;
+        this.spentMostExpensiveType = spentMostExpensiveType;
       }
     };
 
@@ -47,11 +50,13 @@ angular.module('MyApp')
       outcome: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
 
+    let spentMostExpensiveType = {}
+
     let settings = new Settings();
     let params = new Params($routeParams);
-    let status = new Status(false, false, false, true, true);
-    let state = new State(null, params, status, null);
-    let data = new Data(null, null, incomeAndOutcome, null);
+    let status = new Status(false, false, false, false, true, true);
+    let data = new Data(null, null, incomeAndOutcome, null, spentMostExpensiveType);
+    let state = new State(null, params, status, null, data);
     let pieChart = null;
     let barChart = null;
     let horizontalBar = null;
@@ -94,6 +99,7 @@ angular.module('MyApp')
           status.transactionIsNull = false;
           status.purchaseIsNull = false;
           status.bankIsNull = false;
+          status.isSpentMost = false
 
           if(response[0].length == 0) {//transaction
             status.transactionIsNull = true;
@@ -110,6 +116,11 @@ angular.module('MyApp')
             status.bankIsNull = true;
           } else {
             renderBankGraphic(response[3]);
+          }
+          if (response[4].length == 0) {// spent the most
+            status.isSpentMost = true;
+          } else {
+            getSpentMost(response[4]);
           }
           status.isLoading = false;
         }).catch(function(error) {
@@ -316,6 +327,12 @@ angular.module('MyApp')
             borderWidth: 1
           }]
         }
+      });
+    }
+
+    function getSpentMost(expenses) {
+      data.spentMostExpensiveType = expenses.reduce(function(previous, current) {
+        return (previous.TotalAmountByExpensiveType > current.TotalAmountByExpensiveType) ? previous : current;
       });
     }
 

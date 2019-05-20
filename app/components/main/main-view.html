@@ -15,7 +15,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <span>Transactions:</span>
+            <span class="badge">Transactions:</span>
             <div class="loading text-center" ng-show="state.status.isLoading">
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
@@ -30,7 +30,7 @@
             </div>
           </div>
           <div class="col-md-6">
-            <span>Incomes & Outcomes:</span>
+            <span class="badge">Incomes & Outcomes:</span>
             <div class="loading text-center" ng-show="state.status.isLoading">
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
@@ -48,6 +48,7 @@
         <hr>
         <div class="row">
           <div class="col-md-6">
+            <span class="badge">Day by day:</span>
             <div class="row">
               <div class="col-sm-12" ng-show="state.status.transactionIsNull">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
@@ -58,17 +59,38 @@
             </div>
           </div>
           <div class="col-md-6">
-            <section ng-include src="'components/feed/feed-view.html'"></section>
+            <span class="badge">Stats:</span>
+            <div class="row">
+              <div class="col-md-12" ng-show="state.status.isSpentMost">
+                <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
+              </div>
+              <div class="col-md-12">
+                <br>
+                <table class="table table-responsive table-striped">
+                  <tbody>
+                    <tr ng-show="!state.status.isSpentMost">
+                      <td data-title="">You have spent most in <strong>{{::state.data.spentMostExpensiveType.expenseTypeDescription}}</strong> for {{::state.params.year}}</td>
+                      <td data-title="" ><strong>${{::state.data.spentMostExpensiveType.TotalAmountByExpensiveType}}</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
         <hr>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-6">
+            <span class="badge">Feed:</span>
+            <section ng-include src="'components/feed/feed-view.html'"></section>
+          </div>
+          <div class="col-md-6">
             <div class="row">
               <div class="col-sm-12" ng-show="state.status.bankIsNull">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
               </div>
               <div class="col-md-12" ng-show="!state.status.bankIsNull">
+                <span class="badge">Banks:</span>
                 <canvas id="bankChart"></canvas>
               </div>
             </div>

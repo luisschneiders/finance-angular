@@ -26,6 +26,16 @@ const Purchase = bookshelf.Model.extend({
           qr.whereIn('purchaseExpenseId', refineExpenseType);
         }
       }).fetchAll();
+    },
+    getPurchaseByExpenseTypeAndYear: function(user, startDate, endDate) {
+      return this.query(function(qr) {
+        qr.select('expense-type.expenseTypeDescription');
+        qr.sum('purchaseAmount AS TotalAmountByExpensiveType');
+        qr.leftJoin('expense-type', 'purchase.purchaseExpenseId', '=', 'expense-type.id');
+        qr.where({'purchaseInsertedBy': user, 'purchaseFlag': 'r'});
+        qr.whereBetween('purchaseDate', [startDate, endDate]);
+        qr.groupByRaw('purchaseExpenseId');
+      }).fetchAll();
     }
   });
 class Options {

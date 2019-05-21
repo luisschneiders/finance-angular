@@ -9,21 +9,6 @@
     </div>
     <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
     <div class="menu-list">
-      <!-- <ul id="menu-content" class="menu-content collapse out" ng-if="isAuthenticated()">
-        <li ng-repeat="item in state.navIsAuthenticated"
-            ng-click="goToLocation('{{item.value}}')"
-            data-toggle="collapse"
-            class="collapsed"
-            data-target="{{item.target}}">
-          <i ng-class="item.icon"></i>{{item.label}}
-          <ul class="sub-menu collapse" id="{{item.target}}">
-            <li ng-repeat="submenu in item.subMenu"
-                ng-click="goToLocation('{{submenu.value}}')">
-              <i ng-class="submenu.icon"></i>{{submenu.label}}
-            </li>
-          </ul>
-        </li>
-      </ul> -->
       <ul id="menu-content" ng-if="isAuthenticated()" class="menu-content collapse out">
         <li ng-click="goToLocation('main')"><i class="fa fa-dashboard fa-lg"></i>Dashboard</li>
         <li data-toggle="collapse" data-target="#setup" class="collapsed">

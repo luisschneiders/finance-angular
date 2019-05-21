@@ -102,7 +102,7 @@ exports.saveTimesheet = function(req, res) {
       timesheetTimeBreak: req.body.timesheetTimeBreak,
       timesheetHourly: req.body.timesheetHourly,
       timesheetTotal: totalAmount,
-      timesheetTotalhours: moment.utc(totalHours * 1000).format('HH:mm:ss'),
+      timesheetTotalHours: moment.utc(totalHours * 1000).format('HH:mm:ss'),
       timesheetStatus: 'W',
       timesheetFlag: 'r',
       timesheetAddress: req.body.timesheetAddress,

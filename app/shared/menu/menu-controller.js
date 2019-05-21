@@ -27,7 +27,6 @@ angular.module('MyApp')
         label: 'Dashboard',
         icon: 'fa fa-dashboard fa-lg',
         hasSubMenu: false,
-        // isSubMenu: false,
       },
       {
         id: 1,
@@ -44,7 +43,6 @@ angular.module('MyApp')
             label: 'Banks',
             icon: '',
             hasSubMenu: false,
-            // isSubMenu: true,
           },
           {
             id: 3,
@@ -52,27 +50,9 @@ angular.module('MyApp')
             label: 'Users',
             icon: '',
             hasSubMenu: false,
-            // isSubMenu: true,
           },
         ]
-        // isSubMenu: false,
       },
-      // {
-      //   id: 2,
-      //   value: 'all-banks',
-      //   label: 'Banks',
-      //   icon: '',
-      //   hasSubMenu: false,
-      //   // isSubMenu: true,
-      // },
-      // {
-      //   id: 3,
-      //   value: 'all-users',
-      //   label: 'Users',
-      //   icon: '',
-      //   hasSubMenu: false,
-      //   // isSubMenu: true,
-      // },
     ];
 
     let navNotAuthenticated = [
@@ -97,15 +77,6 @@ angular.module('MyApp')
     let app = new App();
     let state = new State(app, navIsAuthenticated, navNotAuthenticated);
 
-    // let state = {
-    //   logo: '/img/schneiders-tech.svg',
-    //   title: 'Your personal finance app',
-    //   alt: 'Your personal finance app',
-    //   width: 170,
-    //   height: 170,
-    // };
-
-
     $scope.isActive = function (viewLocation) {
       return viewLocation === $location.url();
     };
@@ -119,11 +90,6 @@ angular.module('MyApp')
       delete $window.localStorage.user;
       $location.url(`/`);
     };
-
-    // $scope.getAnnualData = function() {
-    //   isActive(0);
-    //   $location.url(`/main=${moment().format('YYYY')}`);
-    // };
 
     $scope.getMonthlyTransactions = function() {
       isActive(11);
@@ -139,11 +105,6 @@ angular.module('MyApp')
       isActive(10);
       $location.url(`/timesheets?calendar=${moment().startOf('month').format('YYYY-MM')}`);
     }
-
-    // $scope.getMonthlyDataMaintenance = function() {
-    //   isActive(8);
-    //   $location.url(`/data-maintenance?calendar=${moment().startOf('month').format('YYYY-MM')}`);
-    // }
 
     $scope.goToLocation = function(location) {
       switch(location) {
@@ -189,14 +150,11 @@ angular.module('MyApp')
           break;
         default:
           isActive(0);
-          // getAnnualData();
           break;
       }
     }
 
     $scope.state = state;
-
-    // getState();
 
     function isActive(index) {
       let li = angular.element(document).find('li');
@@ -212,51 +170,51 @@ angular.module('MyApp')
       }
     }
 
-    function getState() {
-      switch($location.path()) {
-        case '/login':
-          isActive(0);
-          break;
-        case '/signup':
-          isActive(1);
-          break;
-        case '/all-banks':
-          isActive(2);
-          break;
-        case '/all-users':
-          isActive(3);
-          break;
-        case '/all-expenses-type':
-          isActive(4);
-          break;
-        case '/all-transactions-type':
-          isActive(5);
-          break;
-        case '/populate-database':
-          isActive(6);
-          break;
-        case '/account':
-          isActive(7);
-          break;
-        case '/data-maintenance':
-          isActive(8);
-          break;
-        case `/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`:
-          isActive(9);
-          break;
-        case '/timesheets':
-          isActive(10);
-          break;
-        case `/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`:
-          isActive(11);
-          break;
-        case '/data-maintenance':
-          break;
-        default:
-          isActive(0);
-          break;
-      }
-    }
+    // function getState() {
+    //   switch($location.path()) {
+    //     case '/login':
+    //       isActive(0);
+    //       break;
+    //     case '/signup':
+    //       isActive(1);
+    //       break;
+    //     case '/all-banks':
+    //       isActive(2);
+    //       break;
+    //     case '/all-users':
+    //       isActive(3);
+    //       break;
+    //     case '/all-expenses-type':
+    //       isActive(4);
+    //       break;
+    //     case '/all-transactions-type':
+    //       isActive(5);
+    //       break;
+    //     case '/populate-database':
+    //       isActive(6);
+    //       break;
+    //     case '/account':
+    //       isActive(7);
+    //       break;
+    //     case '/data-maintenance':
+    //       isActive(8);
+    //       break;
+    //     case `/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`:
+    //       isActive(9);
+    //       break;
+    //     case '/timesheets':
+    //       isActive(10);
+    //       break;
+    //     case `/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`:
+    //       isActive(11);
+    //       break;
+    //     case '/data-maintenance':
+    //       break;
+    //     default:
+    //       isActive(0);
+    //       break;
+    //   }
+    // }
 
     $scope.state = state;
   }]);

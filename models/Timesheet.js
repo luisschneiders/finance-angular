@@ -11,6 +11,13 @@ const Timesheets = bookshelf.Model.extend({
         qr.where({'timesheetInsertedBy': user, 'timesheetFlag': 'r'});
         qr.whereBetween('timesheetStartDate', [startDate, endDate]);
       }).fetchAll();
+    },
+    getAllTimesheetByYear: function(user, startDate, endDate) {
+      return this.query(function(qr) {
+        qr.select('timesheetTotalHours');
+        qr.where({'timesheetInsertedBy': user, 'timesheetFlag': 'r'});
+        qr.whereBetween('timesheetStartDate', [startDate, endDate]);
+      }).fetchAll();
     }
   });
 

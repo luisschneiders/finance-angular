@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
       table.time('timesheetTimeBreak');
       table.decimal('timesheetHourly', [4],[2]).notNullable();
       table.decimal('timesheetTotal', [10],[2]).notNullable();
-      table.time('timesheetTotalhours');
+      table.time('timesheetTotalHours');
       table.string('timesheetStatus', [1]).notNullable();
       table.string('timesheetFlag', [1]).notNullable();
       table.timestamps();

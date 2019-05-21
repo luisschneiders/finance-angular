@@ -157,7 +157,7 @@ angular.module('MyApp')
 
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.timesheetStartDate;
-        dataFormattedObj.item = moment(item.timesheetTotalhours, "hh:mm").format("HH:mm");
+        dataFormattedObj.item = moment(item.timesheetTotalHours, "hh:mm").format("HH:mm");
         dataFormatted.push(_.clone(dataFormattedObj))
       });
       return dataFormatted;

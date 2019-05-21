@@ -1,6 +1,7 @@
 const Purchase = require('../models/Purchase');
 const Transaction = require('../models/Transaction');
 const Bank = require('../models/Bank');
+const Timesheet = require('../models/Timesheet');
 const async = require('async');
 /**
  * GET /main-by-year/:year
@@ -42,7 +43,7 @@ exports.getTransactionsAndPurchasesByYear = function(req, res) {
         callback(null, banks);
       }).catch(function(err) {
         console.error(err);
-      })
+      });
     },
     function(callback) {
       Purchase.getPurchaseByExpenseTypeAndYear(user, startDate, endDate)
@@ -50,7 +51,15 @@ exports.getTransactionsAndPurchasesByYear = function(req, res) {
         callback(null, purchases);
       }).catch(function(err) {
         console.error(err);
-      })
+      });
+    },
+    function(callback) {
+      Timesheet.getAllTimesheetByYear(user, startDate, endDate)
+      .then(function(timesheets) {
+        callback(null, timesheets)
+      }).catch(function(err) {
+        console.log(err);
+      });
     }
   ], function(err, results) {
       res.json(results);

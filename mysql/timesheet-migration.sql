@@ -9,7 +9,7 @@ INSERT INTO `finance-angular`.`timesheets`(
   `timesheetTimeBreak`,
   `timesheetHourly`,
   `timesheetTotal`,
-  `timesheetTotalhours`,
+  `timesheetTotalHours`,
   `timesheetStatus`,
   `timesheetFlag`,
   `created_at`

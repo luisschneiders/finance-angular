@@ -1,7 +1,7 @@
 angular.module('MyApp')
   .controller('MainCtrl', ['$scope', '$auth', '$location', '$routeParams', 'moment', 'DefaultServices', 'MainServices',
   function($scope, $auth, $location, $routeParams, moment, DefaultServices, MainServices) {
-    $scope.isAuthenticated = function() {
+    $scope.isAuthenticated = () => {
       return $auth.isAuthenticated();
     };
     class State {
@@ -26,22 +26,24 @@ angular.module('MyApp')
       }
     };
     class Status {
-      constructor(transactionIsNull, purchaseIsNull, bankIsNull, isSpentMost, isLoading, noSettings) {
+      constructor(transactionIsNull, purchaseIsNull, bankIsNull, isSpentMost, isLoading, noSettings, isTimesheet) {
         this.transactionIsNull = transactionIsNull;
         this.purchaseIsNull = purchaseIsNull;
         this.bankIsNull = bankIsNull;
         this.isSpentMost = isSpentMost;
         this.isLoading = isLoading;
         this.noSettings = noSettings;
+        this.isTimesheet = isTimesheet;
       }
     };
     class Data {
-      constructor(transactions, daily, incomeAndOutcome, banks, spentMostExpensiveType) {
+      constructor(transactions, daily, incomeAndOutcome, banks, spentMostExpensiveType, timesheetTotalHours) {
         this.transactions = transactions;
         this.daily = daily;
         this.incomeAndOutcome = incomeAndOutcome;
         this.banks = banks;
         this.spentMostExpensiveType = spentMostExpensiveType;
+        this.timesheetTotalHours = timesheetTotalHours;
       }
     };
 
@@ -54,8 +56,8 @@ angular.module('MyApp')
 
     let settings = new Settings();
     let params = new Params($routeParams);
-    let status = new Status(false, false, false, false, true, true);
-    let data = new Data(null, null, incomeAndOutcome, null, spentMostExpensiveType);
+    let status = new Status(false, false, false, false, true, true, false);
+    let data = new Data(null, null, incomeAndOutcome, null, spentMostExpensiveType, null);
     let state = new State(null, params, status, null, data);
     let pieChart = null;
     let barChart = null;
@@ -69,21 +71,21 @@ angular.module('MyApp')
     let barChartLabelsMonths = [];
 
     DefaultServices.getSettings()
-      .then(function(response) {
+      .then((response) => {
         status.noSettings = false;
         settings.defaults = response.defaults;
         settings.component = response.main;
         settings.templateTop = response.main.defaults.template.top;
         state.settings = settings;
         getGraphicData();
-      }).catch(function(error) {
+      }).catch((error) => {
         status.noSettings = true;
         state.messages = {
           error: Array.isArray(error) ? error : [error]
         };
       });
 
-    $scope.changePeriod = function(value) {
+    $scope.changePeriod = (value) => {
       params.year = parseInt(params.year);
       if(value == 'd') {
         params.year = params.year - 1;
@@ -95,11 +97,12 @@ angular.module('MyApp')
 
     function getGraphicData() {
       MainServices.getTransactionsByYear(params.year)
-        .then(function(response) {
+        .then((response) => {
           status.transactionIsNull = false;
           status.purchaseIsNull = false;
           status.bankIsNull = false;
-          status.isSpentMost = false
+          status.isSpentMost = true;
+          status.isTimesheet = true;
 
           if(response[0].length == 0) {//transaction
             status.transactionIsNull = true;
@@ -118,12 +121,17 @@ angular.module('MyApp')
             renderBankGraphic(response[3]);
           }
           if (response[4].length == 0) {// spent the most
-            status.isSpentMost = true;
+            status.isSpentMost = false;
           } else {
             getSpentMost(response[4]);
           }
+          if (response[5].length == 0) {// timesheet
+            status.isTimesheet = false;
+          } else {
+            getWorkedHours(response[5]);
+          }
           status.isLoading = false;
-        }).catch(function(error) {
+        }).catch((error) => {
           status.noSettings = true;
           status.isLoading = false;
           state.messages = {
@@ -137,7 +145,7 @@ angular.module('MyApp')
       let days = isLeap == true ? 366 : 365;
       let transactionChart = document.getElementById('transactionChart');
 
-      data.transactions = response.map(function(value) {
+      data.transactions = response.map((value) => {
         switch(value.transactionLabel) {
           case settings.defaults.graphic.labels.income.id:
             value.TotalAmountByLabel;
@@ -154,11 +162,11 @@ angular.module('MyApp')
         return [value.TotalAmountByLabel];
       });
 
-      data.daily = response.map(function(value) {
+      data.daily = response.map((value) => {
         return [Number(value.TotalAmountByLabel / days).toFixed(2)];
       });
 
-      transactionsLabel = response.map(function(value) {
+      transactionsLabel = response.map((value) => {
         switch(value.transactionLabel) {
           case settings.defaults.graphic.labels.income.id:
             value.label = settings.defaults.graphic.labels.income.label;
@@ -175,7 +183,7 @@ angular.module('MyApp')
         return [value.label];
       });
 
-      pieChartColoursBackground = response.map(function(value){
+      pieChartColoursBackground = response.map((value) => {
         switch(value.transactionLabel) {
           case settings.defaults.graphic.labels.income.id:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.color6;
@@ -309,7 +317,7 @@ angular.module('MyApp')
     function renderBankGraphic(bank) {
       let bankChart = document.getElementById('bankChart');
 
-      data.banks = bank.map(function(value) {
+      data.banks = bank.map((value) => {
         banksLabel.push(value.bankDescription);
         doughnutChartColoursBackground.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
         return [value.bankCurrentBalance];
@@ -331,9 +339,22 @@ angular.module('MyApp')
     }
 
     function getSpentMost(expenses) {
-      data.spentMostExpensiveType = expenses.reduce(function(previous, current) {
+      data.spentMostExpensiveType = expenses.reduce((previous, current) => {
         return (previous.TotalAmountByExpensiveType > current.TotalAmountByExpensiveType) ? previous : current;
       });
+    }
+
+    function getWorkedHours(timesheets) {
+      let durations = [];
+      timesheets.forEach((timesheet) => {
+        durations.push(timesheet.timesheetTotalHours);
+      });
+
+      let totalDurations = durations.slice(1)
+        .reduce((prev, cur) => moment.duration(cur).add(prev),
+          moment.duration(durations[0]));
+
+      data.timesheetTotalHours = moment.utc(totalDurations.asMilliseconds()).format("H[hrs] m[min]");
     }
 
     $scope.state = state;

@@ -64,7 +64,7 @@
                       <td data-title="Punch In">{{::item.timesheetTimeIn}}</td>
                       <td data-title="Break">{{::item.timesheetTimeBreak || '00:00:00'}}</td>
                       <td data-title="Punch Out">{{::item.timesheetTimeOut}}</td>
-                      <td data-title="Hours">{{::item.timesheetTotalhours}}</td>
+                      <td data-title="Hours">{{::item.timesheetTotalHours}}</td>
                       <td data-title="Total">$ {{::item.timesheetTotal | number:2}}</td>
                       <td data-title="Status" class="text-center status">
                         <button class="btn" ng-click="ctrl.updateStatus(item);" ng-class="::item.timesheetStatus == 'P' ? ctrl.state.settings.defaults.cssPaid : ctrl.state.settings.defaults.cssUnpaid">

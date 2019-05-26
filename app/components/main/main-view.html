@@ -61,7 +61,7 @@
           <div class="col-md-6">
             <span class="badge">Stats:</span>
             <div class="row">
-              <div class="col-md-12" ng-show="!state.status.isSpentMost && !state.status.isTimesheet">
+              <div class="col-md-12" ng-show="!state.status.isSpentMost && !state.status.isTimesheet && !state.status.isBank">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
               </div>
               <div class="col-md-12">
@@ -69,12 +69,17 @@
                 <table class="table table-responsive table-striped">
                   <tbody>
                     <tr ng-show="state.status.isSpentMost">
-                      <td>You have spent most in <strong>{{::state.data.spentMostExpensiveType.expenseTypeDescription}}</strong> for {{::state.params.year}}</td>
-                      <td><strong>${{::state.data.spentMostExpensiveType.TotalAmountByExpensiveType}}</strong></td>
+                      <td>You have spent the most on <strong>{{::state.data.spentMostExpensiveType.expenseTypeDescription}}</strong> for {{::state.params.year}}</td>
+                      <td><strong>${{::state.data.spentMostExpensiveType.TotalAmountByExpensiveType | number:2}}</strong></td>
                     </tr>
                     <tr ng-show="state.status.isTimesheet">
                       <td>Worked hours recorded for {{::state.params.year}}</td>
                       <td><strong ng-bind="state.data.timesheetTotalHours"></strong></td>
+                    </tr>
+
+                    <tr ng-show="state.status.isBank">
+                      <td>Total in Cash</td>
+                      <td><strong>${{::state.data.banks.totalCash | number:2}}</strong></td>
                     </tr>
                   </tbody>
                 </table>
@@ -90,10 +95,10 @@
           </div>
           <div class="col-md-6">
             <div class="row">
-              <div class="col-sm-12" ng-show="state.status.bankIsNull">
+              <div class="col-sm-12" ng-show="!state.status.isBank">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
               </div>
-              <div class="col-md-12" ng-show="!state.status.bankIsNull">
+              <div class="col-md-12" ng-show="state.status.isBank">
                 <span class="badge">Banks:</span>
                 <canvas id="bankChart"></canvas>
               </div>

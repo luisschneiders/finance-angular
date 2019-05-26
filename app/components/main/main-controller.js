@@ -26,10 +26,10 @@ angular.module('MyApp')
       }
     };
     class Status {
-      constructor(transactionIsNull, purchaseIsNull, bankIsNull, isSpentMost, isLoading, noSettings, isTimesheet) {
+      constructor(transactionIsNull, purchaseIsNull, isBank, isSpentMost, isLoading, noSettings, isTimesheet) {
         this.transactionIsNull = transactionIsNull;
         this.purchaseIsNull = purchaseIsNull;
-        this.bankIsNull = bankIsNull;
+        this.isBank = isBank;
         this.isSpentMost = isSpentMost;
         this.isLoading = isLoading;
         this.noSettings = noSettings;
@@ -50,14 +50,17 @@ angular.module('MyApp')
     let incomeAndOutcome = {
       income: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       outcome: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    }
+    };
 
-    let spentMostExpensiveType = {}
-
+    let spentMostExpensiveType = {};
+    let banks = {
+      totalCash: 0,
+      bankCurrentBalance: {}
+    };
     let settings = new Settings();
     let params = new Params($routeParams);
     let status = new Status(false, false, false, false, true, true, false);
-    let data = new Data(null, null, incomeAndOutcome, null, spentMostExpensiveType, null);
+    let data = new Data(null, null, incomeAndOutcome, null, spentMostExpensiveType, banks);
     let state = new State(null, params, status, null, data);
     let pieChart = null;
     let barChart = null;
@@ -100,7 +103,7 @@ angular.module('MyApp')
         .then((response) => {
           status.transactionIsNull = false;
           status.purchaseIsNull = false;
-          status.bankIsNull = false;
+          status.isBank = true;
           status.isSpentMost = true;
           status.isTimesheet = true;
 
@@ -116,7 +119,7 @@ angular.module('MyApp')
             renderPurchaseGraphic(response[1], response[2]);
           }
           if(response[3].length == 0) {//banks
-            status.bankIsNull = true;
+            status.isBank = false;
           } else {
             renderBankGraphic(response[3]);
           }
@@ -316,19 +319,22 @@ angular.module('MyApp')
 
     function renderBankGraphic(bank) {
       let bankChart = document.getElementById('bankChart');
-
-      data.banks = bank.map((value) => {
+      let totalCash = 0;
+      banks.bankCurrentBalance = bank.map((value) => {
         banksLabel.push(value.bankDescription);
         doughnutChartColoursBackground.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
+        totalCash += value.bankCurrentBalance;
         return [value.bankCurrentBalance];
       });
-
+      console.log('LFS - banks: ', banks);
+      banks.totalCash = totalCash.toFixed(2);
+      data.banks = banks;
       doughnutChart = new Chart(bankChart, {
         type: 'doughnut',
         data: {
           labels: banksLabel,
           datasets: [{
-            data: data.banks,
+            data: data.banks.bankCurrentBalance,
             backgroundColor: doughnutChartColoursBackground,
             borderColor: settings.defaults.graphic.colors.border,
             hoverBackgroundColor: settings.defaults.graphic.colors.background,

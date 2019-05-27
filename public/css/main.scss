@@ -110,8 +110,20 @@ a {
   height: 35px;
   padding-top: 12px;
   border-radius: 35px;
-  background-color: $custom-badget;
+  background-color: $custom-badge;
   @extend .btn-date;
+}
+
+.badge {
+  &.dashboard {
+    width: 160px;
+    text-transform: uppercase;
+    text-align: left;
+    font-weight: 300;
+    background-color: $mid-blue;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
 }
 
 // List

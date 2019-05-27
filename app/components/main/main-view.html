@@ -15,7 +15,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <span class="badge">Transactions:</span>
+            <span class="badge dashboard  text-left">Transactions:</span>
             <div class="loading text-center" ng-show="state.status.isLoading">
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
@@ -30,7 +30,7 @@
             </div>
           </div>
           <div class="col-md-6">
-            <span class="badge">Incomes & Outcomes:</span>
+            <span class="badge dashboard">Incomes & Outcomes:</span>
             <div class="loading text-center" ng-show="state.status.isLoading">
               <i ng-class="state.settings.defaults.cssClassLoading"></i>
               <span class="sr-only">Loading...</span>
@@ -48,7 +48,7 @@
         <hr>
         <div class="row">
           <div class="col-md-6">
-            <span class="badge">Day by day:</span>
+            <span class="badge dashboard">Day by day:</span>
             <div class="row">
               <div class="col-sm-12" ng-show="state.status.transactionIsNull">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="col-md-6">
-            <span class="badge">Stats:</span>
+            <span class="badge dashboard">Stats:</span>
             <div class="row">
               <div class="col-md-12" ng-show="!state.status.isSpentMost && !state.status.isTimesheet && !state.status.isBank">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
@@ -90,16 +90,16 @@
         <hr>
         <div class="row">
           <div class="col-md-6">
-            <span class="badge">Feed:</span>
+            <span class="badge dashboard">Feed:</span>
             <section ng-include src="'components/feed/feed-view.html'"></section>
           </div>
           <div class="col-md-6">
+            <span class="badge dashboard">Banks:</span>
             <div class="row">
               <div class="col-sm-12" ng-show="!state.status.isBank">
                 <h3 class="alert alert-danger text-center">{{::state.settings.component.defaults.message.notFound}}</h3>
               </div>
               <div class="col-md-12" ng-show="state.status.isBank">
-                <span class="badge">Banks:</span>
                 <canvas id="bankChart"></canvas>
               </div>
             </div>

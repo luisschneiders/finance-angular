@@ -190,12 +190,15 @@ angular.module('MyApp')
         switch(value.transactionLabel) {
           case settings.defaults.graphic.labels.income.id:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.color6;
+            // value.pieChartColoursBackground = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
             break;
           case settings.defaults.graphic.labels.outcome.id:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.color2;
+            // value.pieChartColoursBackground = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
             break;
           case settings.defaults.graphic.labels.transfers.id:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.color3;
+            // value.pieChartColoursBackground = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
             break;
           default:
             value.pieChartColoursBackground = settings.defaults.graphic.colors.default;
@@ -270,6 +273,7 @@ angular.module('MyApp')
               label: 'Incomes',
               data: data.incomeAndOutcome.income,
               backgroundColor: settings.defaults.graphic.colors.color6,
+              // backgroundColor: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
               borderColor: settings.defaults.graphic.colors.border,
               hoverBackgroundColor: settings.defaults.graphic.colors.background,
               borderWidth: 1
@@ -278,6 +282,7 @@ angular.module('MyApp')
               label: 'Outcomes',
               data: data.incomeAndOutcome.outcome,
               backgroundColor: settings.defaults.graphic.colors.color2,
+              // backgroundColor: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
               borderColor: settings.defaults.graphic.colors.border,
               hoverBackgroundColor: settings.defaults.graphic.colors.background,
               borderWidth: 1
@@ -320,20 +325,22 @@ angular.module('MyApp')
     function renderBankGraphic(bank) {
       let bankChart = document.getElementById('bankChart');
       let totalCash = 0;
-      banks.bankCurrentBalance = bank.map((value) => {
+      banks.bankCurrentBalance = bank.map((value, index) => {
         banksLabel.push(value.bankDescription);
-        doughnutChartColoursBackground.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
+        // doughnutChartColoursBackground.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
+        doughnutChartColoursBackground.push(((index % 2) == 1) ? settings.defaults.graphic.colors.color3 : settings.defaults.graphic.colors.color6);
         totalCash += value.bankCurrentBalance;
         return [value.bankCurrentBalance];
       });
-      console.log('LFS - banks: ', banks);
+
       banks.totalCash = totalCash.toFixed(2);
       data.banks = banks;
       doughnutChart = new Chart(bankChart, {
-        type: 'doughnut',
+        type: 'horizontalBar',
         data: {
           labels: banksLabel,
           datasets: [{
+            label: 'Amount on Bank',
             data: data.banks.bankCurrentBalance,
             backgroundColor: doughnutChartColoursBackground,
             borderColor: settings.defaults.graphic.colors.border,

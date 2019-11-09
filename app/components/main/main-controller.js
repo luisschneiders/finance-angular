@@ -330,9 +330,9 @@ angular.module('MyApp')
       let totalCash = 0;
       banks.bankCurrentBalance = bank.map((value, index) => {
         banksLabel.push(value.bankDescription);
-        if (value.bankCurrentBalance > 0 && value.bankCurrentBalance <= 5000) {
+        if (value.bankCurrentBalance >= 0 && value.bankCurrentBalance <= 5000) {
           doughnutChartColoursBackground.push(settings.defaults.graphic.colors.color2);
-        } else if (value.bankCurrentBalance > 5000 && value.bankCurrentBalance <= 15000) {
+        } else if (value.bankCurrentBalance >= 5000 && value.bankCurrentBalance <= 15000) {
           doughnutChartColoursBackground.push(settings.defaults.graphic.colors.color3);
         } else {
           doughnutChartColoursBackground.push(settings.defaults.graphic.colors.color6);

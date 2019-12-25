@@ -235,7 +235,7 @@ angular.module('MyApp')
                 }
               }]
             }
-          };
+        };
 
       barChartLabelsMonths = [
         settings.defaults.graphic.months[0],
@@ -251,7 +251,6 @@ angular.module('MyApp')
         settings.defaults.graphic.months[10],
         settings.defaults.graphic.months[11],
       ]
-
 
       data.incomeAndOutcome.income.forEach(function(item, index){
         if (income[index]) {
@@ -286,8 +285,7 @@ angular.module('MyApp')
               borderColor: settings.defaults.graphic.colors.border,
               hoverBackgroundColor: settings.defaults.graphic.colors.background,
               borderWidth: 1
-          }
-            ]
+            }]
         },
         options: barChartOptions
       });
@@ -330,9 +328,9 @@ angular.module('MyApp')
       let totalCash = 0;
       banks.bankCurrentBalance = bank.map((value, index) => {
         banksLabel.push(value.bankDescription);
-        if (value.bankCurrentBalance >= 0 && value.bankCurrentBalance <= 5000) {
+        if (value.bankCurrentBalance >= 0 && value.bankCurrentBalance <= 1000) {
           doughnutChartColoursBackground.push(settings.defaults.graphic.colors.color2);
-        } else if (value.bankCurrentBalance >= 5000 && value.bankCurrentBalance <= 15000) {
+        } else if (value.bankCurrentBalance >= 1000 && value.bankCurrentBalance <= 20000) {
           doughnutChartColoursBackground.push(settings.defaults.graphic.colors.color3);
         } else {
           doughnutChartColoursBackground.push(settings.defaults.graphic.colors.color6);

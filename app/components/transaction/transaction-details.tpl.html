@@ -9,6 +9,7 @@
           <tr>
             <th>Date</th>
             <th>Type</th>
+            <th>Bank</th>
             <th>Comments</th>
             <th class="text-right">Amount</th>
           </tr>
@@ -23,6 +24,7 @@
                 <span ng-switch-default>Transfer</span>
               </div>
             </td>
+            <td data-title="Bank">{{::item.bankDescription}}</td>
             <td data-title="Comments">{{::item.transactionComments}}</td>
             <td data-title="Amount" class="text-right">{{::item.transactionAmount | number: 2}}</td>
           </tr>

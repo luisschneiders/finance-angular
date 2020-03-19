@@ -101,12 +101,12 @@ angular.module('MyApp')
 
     $scope.getMonthlyTransactions = function() {
       isActive(11);
-      $location.path(`/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`);
+      $location.url(`/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`);
     };
 
     $scope.getMonthlyPurchases = function() {
       isActive(9);
-      $location.path(`/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`);
+      $location.url(`/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`);
     }
 
     $scope.getMonthlyTimesheet = function() {

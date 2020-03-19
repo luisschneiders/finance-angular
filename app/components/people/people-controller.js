@@ -1,6 +1,8 @@
 angular.module('MyApp')
-  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'PeopleServices',
-  function($scope, $auth, $location, $routeParams, DefaultServices, PeopleServices) {
+  .controller('PeopleCtrl', ['$scope', '$auth', '$location', '$routeParams',
+              'DefaultServices', 'PeopleServices', 'UserLocalStorageServices',
+  function($scope, $auth, $location, $routeParams,
+          DefaultServices, PeopleServices, UserLocalStorageServices) {
     if (!$auth.isAuthenticated()) {
       $location.url('/login');
       return;
@@ -75,6 +77,7 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
+      UserLocalStorageServices.updateUserSettings('usersPageSize', pageSize);
     };
 
     $scope.addNewRecord = function() {

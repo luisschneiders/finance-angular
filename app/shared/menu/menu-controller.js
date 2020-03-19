@@ -1,10 +1,17 @@
 angular.module('MyApp')
-  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', function($scope, $location, $window, $auth, moment) {
+  .controller('MenuCtrl', ['$scope', '$location', '$window', '$auth', 'moment', 
+  function($scope, $location, $window, $auth, moment) {
     class State {
       constructor(app, navIsAuthenticated, navNotAuthenticated) {
         this.app = app;
         this.navIsAuthenticated = navIsAuthenticated;
         this.navNotAuthenticated = navNotAuthenticated;
+      }
+    };
+
+    class Params {
+      constructor() {
+        this.rows = JSON.parse($window.localStorage.userSettings);
       }
     };
 
@@ -74,6 +81,7 @@ angular.module('MyApp')
       }
     ]
 
+    let params = new Params();
     let app = new App();
     let state = new State(app, navIsAuthenticated, navNotAuthenticated);
 
@@ -114,19 +122,19 @@ angular.module('MyApp')
           break;
         case 'all-banks':
           isActive(2);
-          $location.url(`all-banks?page=1&pageSize=12`);
+          $location.url(`all-banks?page=1&pageSize=${params.rows.banksPageSize}`);
           break;
         case 'all-users':
           isActive(3);
-          $location.url(`all-users?page=1&pageSize=12`);
+          $location.url(`all-users?page=1&pageSize=${params.rows.usersPageSize}`);
           break;
         case 'all-expenses-type':
           isActive(4);
-          $location.url(`all-expenses-type?page=1&pageSize=12`);
+          $location.url(`all-expenses-type?page=1&pageSize=${params.rows.expensesTypePageSize}`);
           break;
         case 'all-transactions-type':
           isActive(5);
-          $location.url(`all-transactions-type?page=1&pageSize=12`);
+          $location.url(`all-transactions-type?page=1&pageSize=${params.rows.transactionsTypePageSize}`);
           break;
         case 'populate-database':
           isActive(6);
@@ -169,52 +177,6 @@ angular.module('MyApp')
         li[index].className += ' active';
       }
     }
-
-    // function getState() {
-    //   switch($location.path()) {
-    //     case '/login':
-    //       isActive(0);
-    //       break;
-    //     case '/signup':
-    //       isActive(1);
-    //       break;
-    //     case '/all-banks':
-    //       isActive(2);
-    //       break;
-    //     case '/all-users':
-    //       isActive(3);
-    //       break;
-    //     case '/all-expenses-type':
-    //       isActive(4);
-    //       break;
-    //     case '/all-transactions-type':
-    //       isActive(5);
-    //       break;
-    //     case '/populate-database':
-    //       isActive(6);
-    //       break;
-    //     case '/account':
-    //       isActive(7);
-    //       break;
-    //     case '/data-maintenance':
-    //       isActive(8);
-    //       break;
-    //     case `/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`:
-    //       isActive(9);
-    //       break;
-    //     case '/timesheets':
-    //       isActive(10);
-    //       break;
-    //     case `/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`:
-    //       isActive(11);
-    //       break;
-    //     case '/data-maintenance':
-    //       break;
-    //     default:
-    //       isActive(0);
-    //       break;
-    //   }
-    // }
 
     $scope.state = state;
   }]);

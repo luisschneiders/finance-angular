@@ -1,6 +1,8 @@
 angular.module('MyApp')
-  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams', 'DefaultServices', 'TransactionTypeServices',
-  function($scope, $auth, $location, $filter, $routeParams, DefaultServices, TransactionTypeServices) {
+  .controller('TransactionTypeCtrl', ['$scope', '$auth', '$location', '$filter', '$routeParams',
+              'DefaultServices', 'TransactionTypeServices', 'UserLocalStorageServices',
+  function($scope, $auth, $location, $filter, $routeParams,
+          DefaultServices, TransactionTypeServices, UserLocalStorageServices) {
     if (!$auth.isAuthenticated()) {
       $location.url('/login');
       return;
@@ -75,6 +77,7 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
+      UserLocalStorageServices.updateUserSettings('transactionsTypePageSize', pageSize);
     };
 
     $scope.addNewRecord = function() {

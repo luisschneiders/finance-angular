@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'BankServices',
-  function($scope, $auth, $location, $routeParams, DefaultServices, BankServices) {
+  .controller('BankCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'BankServices', 'UserLocalStorageServices',
+  function($scope, $auth, $location, $routeParams, DefaultServices, BankServices, UserLocalStorageServices) {
     if (!$auth.isAuthenticated()) {
       $location.url('/login');
       return;
@@ -75,6 +75,7 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
+      UserLocalStorageServices.updateUserSettings('banksPageSize', pageSize);
     };
 
     $scope.addNewRecord = function() {

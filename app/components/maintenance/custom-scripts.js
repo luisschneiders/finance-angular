@@ -1,12 +1,12 @@
 angular.module('MyApp')
-  .directive('customScripts', ['AppStatusServices', function(AppStatusServices) {
+  .directive('customScripts', ['AppStatusServices', 'GOOGLE_MAP_KEY', function(AppStatusServices, GOOGLE_MAP_KEY) {
     return {
       template: function() {
         let scripts = [];
         let appStatus = AppStatusServices;
 
         if (appStatus.onLine) {
-          scripts = ["<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBmIGyld82_bPAst5Fh0xRA6vkmOUKdLSQ&libraries=places' async defer></script>"]
+          scripts = [`<script src='https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_KEY}&libraries=places' async defer></script>`]
         }
 
         return scripts;

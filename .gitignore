@@ -17,10 +17,12 @@ coverage
 settings
 public/css/main.css
 public/js/
+public/config/
 
 # API keys
 .env
 cert
+config.json
 
 # Dependency directory
 node_modules

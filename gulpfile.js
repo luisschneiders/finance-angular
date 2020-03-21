@@ -11,6 +11,33 @@ const buffer = require('vinyl-buffer');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
+const ngConfig = require('gulp-ng-config');
+const fs = require('fs');
+const config = require('./config.js');
+
+// If the app environment is not set, we default to development
+const ENV = process.env.APP_ENV || 'development';
+
+/*
+ *  We first generate the json file that gulp-ng-config uses as input.
+ *  Then we source it into our gulp task.
+ *  The env constants will be a saved as a sub-module of our app, MyApp.
+ */
+gulp.task('ng-config', function() {
+  fs.writeFileSync('./config.json', JSON.stringify(config[ENV]));
+  return gulp.src('./config.json')
+    .pipe(
+      ngConfig('MyApp', {
+        createModule: false
+      }))
+    .pipe(gulp.dest('public/config'))
+});
+
+// gulp.task('config', function() {
+//   return gulp.src(['config.json'])
+//     .pipe(gulpNgConfig('MyApp', configureSetup))
+//     .pipe(gulp.dest('public/config'));
+// });
 
 gulp.task('sass', function() {
   return gulp.src('public/css/main.scss')
@@ -59,5 +86,5 @@ gulp.task('watch', function() {
   gulp.watch('app/**/**/*.js', ['angular']);
 });
 
-gulp.task('build', ['sass', 'angular', 'vendor', 'templates', 'misc']);
+gulp.task('build', ['ng-config', 'sass', 'angular', 'vendor', 'templates', 'misc']);
 gulp.task('default', ['build', 'watch']);

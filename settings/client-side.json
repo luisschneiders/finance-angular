@@ -1,0 +1,426 @@
+{
+  "defaults": {
+    "cssClassLoading": "fa fa-refresh fa-spin fa-2x fa-fw",
+    "cssClassActive": "label label-success",
+    "cssClassInactive": "label label-warning",
+    "cssClassEnabled": "is-enabled",
+    "cssClassDisabled": "is-disabled",
+    "cssClassModalTitle": "modal-title text-uppercase clip-settings black-gradient",
+    "cssPaid": "is-paid",
+    "cssUnpaid": "is-unpaid",
+    "pageSize": [12, 24, 48],
+    "graphic": {
+      "labels": {
+        "income": {
+          "id":"C",
+          "label": "Incomes"
+        },
+        "outcome": {
+          "id":"D",
+          "label": "Outcomes"
+        },
+        "transfers": {
+          "id":"T",
+          "label": "Transfers"
+        }
+      },
+      "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "colors": {
+        "color1": "#a1d6e2",
+        "color2": "#da3c0b",
+        "color3": "#BBE4F1",
+        "color4": "#bcbabe",
+        "color5": "#9a9eab",
+        "color6": "#274472",
+        "border": "#383838",
+        "background": "rgba(77, 77, 51,0.2)",
+        "default": "99D6EA"
+      }
+    }
+  },
+  "profile": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "Profile Information",
+          "buttonTitle": "",
+          "buttonUrl": "",
+          "buttonDisplay": false
+        }
+      }
+    }
+  },
+  "bank": {
+    "defaults": {
+      "page": 1,
+      "pageSize": 12,
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "banks",
+          "buttonTitle": "add",
+          "buttonUrl": "/bank=new",
+          "buttonDisplay": true
+        }
+      }
+    },
+    "newRecord": {
+      "form": {
+        "bankDescription": null,
+        "bankAccount": null,
+        "bankInitialBalance": 0.00,
+        "bankCurrentBalance": 0.00,
+        "bankIsActive": 1
+      },
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "new record",
+          "buttonTitle": "add",
+          "buttonUrl": "/bank=new",
+          "buttonDisplay": false
+        }
+      }
+    },
+    "existingRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "update record",
+          "buttonTitle": "add",
+          "buttonUrl": "/bank=new",
+          "buttonDisplay": true
+        }
+      }
+    }
+  },
+  "people": {
+    "defaults": {
+      "page": 1,
+      "pageSize": 12,
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "users",
+          "buttonTitle": "add",
+          "buttonUrl": "/user=new",
+          "buttonDisplay": true
+        }
+      }
+    },
+    "newRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "new record",
+          "buttonTitle": "add",
+          "buttonUrl": "/user=new",
+          "buttonDisplay": false
+        }
+      },
+      "form": {
+        "peopleDescription": null,
+        "peopleRates": null,
+        "peopleType": null,
+        "peopleIsActive": 1
+      }
+    },
+    "existingRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "update record",
+          "buttonTitle": "add",
+          "buttonUrl": "/user=new",
+          "buttonDisplay": true
+        }
+      }
+    }
+  },
+  "expenseType": {
+    "defaults": {
+      "page": 1,
+      "pageSize": 12,
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "expenses type",
+          "buttonTitle": "add",
+          "buttonUrl": "/expense-type=new",
+          "buttonDisplay": true
+        }
+      }
+    },
+    "newRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "new record",
+          "buttonTitle": "add",
+          "buttonUrl": "/expense-type=new",
+          "buttonDisplay": false
+        }
+      },
+      "form": {
+        "expenseTypeDescription": null,
+        "expenseTypeIsActive": 1
+      }
+    },
+    "existingRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "update record",
+          "buttonTitle": "add",
+          "buttonUrl": "/expense-type=new",
+          "buttonDisplay": true
+        }
+      }
+    }
+  },
+  "transactionType": {
+    "defaults": {
+      "page": 1,
+      "pageSize": 12,
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "transactions type",
+          "buttonTitle": "add",
+          "buttonUrl": "/transaction-type=new",
+          "buttonDisplay": true
+        }
+      }
+    },
+    "newRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "new record",
+          "buttonTitle": "add",
+          "buttonUrl": "/transaction-type=new",
+          "buttonDisplay": false
+        }
+      },
+      "form": {
+        "transactionTypeDescription": null,
+        "transactionTypeAction": null,
+        "transactionTypeIsActive": 1
+      }
+    },
+    "existingRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "update record",
+          "buttonTitle": "add",
+          "buttonUrl": "/transaction-type=new",
+          "buttonDisplay": true
+        }
+      }
+    }
+  },
+  "transactions": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-click.tpl.html",
+          "pageTitle": "transactions",
+          "buttonTitle": "Add new record",
+          "buttonUrl": "",
+          "buttonDisplay": true
+        }
+      },
+      "modal": {
+        "search": {
+          "cssClass": "modal-dialog",
+          "title": "Search for transactions",
+          "url": "components/transaction/transaction-search.tpl.html"
+        },
+        "details": {
+          "cssClass": "modal-dialog modal-md",
+          "title": null,
+          "url": "components/transaction/transaction-details.tpl.html"
+        },
+        "add": {
+          "cssClass": "modal-dialog",
+          "title": "Add new transaction",
+          "url": "components/transaction/transaction-add.tpl.html"
+        }
+      },
+      "message": {
+        "notFound": "No record found!",
+        "required": "Please check required fields!",
+        "notZero": "Amount cannot be zero!",
+        "notEqualBanks": "Transfer between same accounts not allowed!"
+      }
+    },
+    "newRecord": {
+      "table": {
+        "bank": {
+          "url": "/bank=new",
+          "title": "Add bank"
+        },
+        "transactionType": {
+          "url": "/transaction-type=new",
+          "title": "Add transaction type"
+        }
+      }
+    }
+  },
+  "purchases": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-click.tpl.html",
+          "pageTitle": "purchases",
+          "buttonTitle": "Add new record",
+          "buttonUrl": "",
+          "buttonDisplay": true
+        }
+      },
+      "modal": {
+        "search": {
+          "cssClass": "modal-dialog",
+          "title": "Search for Purchases",
+          "url": "components/purchase/purchase-search.tpl.html"
+        },
+        "details": {
+          "cssClass": "modal-dialog modal-md",
+          "title": null,
+          "url": "components/purchase/purchase-details.tpl.html"
+        },
+        "add": {
+          "cssClass": "modal-dialog",
+          "title": "Add new Purchase",
+          "url": "components/purchase/purchase-add.tpl.html"
+        }
+      },
+      "message": {
+        "notFound": "No record found!",
+        "required": "Please check required fields!"
+      }
+    },
+    "newRecord": {
+      "table": {
+        "bank": {
+          "url": "/bank=new",
+          "title": "Add bank"
+        },
+        "expenseType": {
+          "url": "/expense-type=new",
+          "title": "Add expense type"
+        }
+      }
+    }
+  },
+  "timesheets": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-click-new.tpl.html",
+          "pageTitle": "Timesheet",
+          "buttonTitle": "Add new record",
+          "buttonUrl": "",
+          "buttonDisplay": true
+        }
+      },
+      "modal": {
+        "search": {
+          "cssClass": "modal-dialog",
+          "title": "Search for Timesheets",
+          "url": ""
+        },
+        "details": {
+          "cssClass": "modal-dialog modal-md",
+          "title": null,
+          "url": ""
+        },
+        "add": {
+          "cssClass": "modal-dialog",
+          "title": "Add new Timesheet",
+          "url": "components/timesheet/timesheet-add.tpl.html"
+        },
+        "remove": {
+          "cssClass": "modal-dialog",
+          "title": "Remove Timesheet",
+          "url": "components/timesheet/timesheet-remove.tpl.html"
+        }
+      },
+      "message": {
+        "notFound": "No record found!",
+        "required": "Please check required fields!",
+        "idMissing": "Something wrong happened, please refresh page and try again!",
+        "time": "Time format is invalid, please check!",
+        "break": "Break must be smaller than duration of work!"
+      }
+    },
+    "newRecord": {
+      "table": {
+        "user": {
+          "url": "/user=new",
+          "title": "Add user"
+        }
+      }
+    }
+  },  
+  "main": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "Home",
+          "buttonTitle": "",
+          "buttonUrl": "",
+          "buttonDisplay": false
+        }
+      },
+      "message": {
+        "notFound": "No record found!"
+      }
+    }
+  },
+  "dataMaintenance": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-click-new.tpl.html",
+          "pageTitle": "Data Maintenance",
+          "buttonTitle": "",
+          "buttonUrl": "",
+          "buttonDisplay": false
+        }
+      },
+      "modal": {
+        "search": {
+          "cssClass": "modal-dialog",
+          "title": "",
+          "url": ""
+        },
+        "details": {
+          "cssClass": "modal-dialog modal-md",
+          "title": null,
+          "url": ""
+        },
+        "add": {
+          "cssClass": "modal-dialog",
+          "title": "",
+          "url": "components/maintenance/data-maintenance-add.tpl.html"
+        },
+        "remove": {
+          "cssClass": "modal-dialog",
+          "title": "Remove Transaction",
+          "url": "components/maintenance/data-maintenance-remove.tpl.html"
+        }
+      },
+      "message": {
+        "notFound": "No record found!",
+        "required": "Please check required fields!",
+        "idMissing": "Something wrong happened, please refresh page and try again!",
+        "time": "Time format is invalid, please check!",
+        "break": "Break must be smaller than duration of work!"
+      }
+    }
+  }
+}

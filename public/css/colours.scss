@@ -49,8 +49,9 @@ $dark-green     : #008000;
 $light-black    : #636363;
 $mid-black      : #4f4f4f;
 $dark-black     : #383838;
-$light-pink     : #ff25ff;
-$mid-pink       : #c2185b;
+// $light-pink     : #ff25ff;
+$light-pink       : #ce28a8;
+$mid-pink       : #b82295;
 $dark-pink      : #600080;
 
 
@@ -100,21 +101,21 @@ $footer-bg: $light-gray;
 }
 .blue-gradient {
   background-image: $dark-blue;
-  background-image: -moz-linear-gradient(left, $dark-blue 0%, $light-blue-1 100%);
-  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-blue), color-stop(100%, $light-blue-1));
-  background-image: -webkit-linear-gradient(left, $dark-blue 0%, $light-blue-1 100%);
-  background-image: -o-linear-gradient(left, $dark-blue 0%, $light-blue-1 100%);
-  background-image: -ms-linear-gradient(left, $dark-blue 0%, $light-blue-1 100%);
-  background-image: linear-gradient(to right, $dark-blue 0%, $light-blue-1 100%);
+  background-image: -moz-linear-gradient(left, $dark-blue 0%, $mid-blue 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-blue), color-stop(100%, $mid-blue));
+  background-image: -webkit-linear-gradient(left, $dark-blue 0%, $mid-blue 100%);
+  background-image: -o-linear-gradient(left, $dark-blue 0%, $mid-blue 100%);
+  background-image: -ms-linear-gradient(left, $dark-blue 0%, $mid-blue 100%);
+  background-image: linear-gradient(to right, $dark-blue 0%, $mid-blue 100%);
 }
 .pink-gradient {
   background-image: $dark-pink;
-  background-image: -moz-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
-  background-image: -webkit-gradient(left top, right top, color-stop(0%, $dark-pink), color-stop(100%, $light-pink));
-  background-image: -webkit-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
-  background-image: -o-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
-  background-image: -ms-linear-gradient(left, $dark-pink 0%, $light-pink 100%);
-  background-image: linear-gradient(to right, $dark-pink 0%, $light-pink 100%);
+  background-image: -moz-linear-gradient(left, $mid-pink 0%, $light-pink 100%);
+  background-image: -webkit-gradient(left top, right top, color-stop(0%, $mid-pink), color-stop(100%, $light-pink));
+  background-image: -webkit-linear-gradient(left, $mid-pink 0%, $light-pink 100%);
+  background-image: -o-linear-gradient(left, $mid-pink 0%, $light-pink 100%);
+  background-image: -ms-linear-gradient(left, $mid-pink 0%, $light-pink 100%);
+  background-image: linear-gradient(to right, $mid-pink 0%, $light-pink 100%);
 }
 .black-gradient {
   background-image: $dark-black;

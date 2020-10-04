@@ -29,6 +29,7 @@ let transactionTypeController = require('./controllers/transaction-type');
 let peopleController = require('./controllers/people');
 let transactionController = require('./controllers/transaction');
 let timesheetController = require('./controllers/timesheet');
+let tripController = require('./controllers/trip');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 4040);
@@ -126,6 +127,11 @@ app.get('/get-all-timesheets-month/:period', timesheetController.getAllTimesheet
 app.post('/timesheets/new', userController.ensureAuthenticated, timesheetController.saveTimesheet);
 app.put('/timesheets/update-status=:id', userController.ensureAuthenticated, timesheetController.saveTimesheet);
 app.put('/timesheets/remove-timesheet=:id', userController.ensureAuthenticated, timesheetController.removeTimesheet);
+
+// Trip
+app.get('/get-all-trips-month/:period', tripController.getAllTripsByMonth);
+app.post('/trips/new', userController.ensureAuthenticated, tripController.saveTrip);
+app.put('/trips/remove-trip=:id', userController.ensureAuthenticated, tripController.removeTrip);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

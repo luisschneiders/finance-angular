@@ -364,7 +364,47 @@
         }
       }
     }
-  },  
+  },
+  "trips": {
+    "defaults": {
+      "template": {
+        "top": {
+          "url": "components/top/top-click-new.tpl.html",
+          "pageTitle": "Trip",
+          "buttonTitle": "Add new record",
+          "buttonUrl": "",
+          "buttonDisplay": true
+        }
+      },
+      "modal": {
+        "search": {
+          "cssClass": "modal-dialog",
+          "title": "Search for Trips",
+          "url": ""
+        },
+        "details": {
+          "cssClass": "modal-dialog modal-md",
+          "title": null,
+          "url": ""
+        },
+        "add": {
+          "cssClass": "modal-dialog",
+          "title": "Add new Trip",
+          "url": "components/trip/trip-add.tpl.html"
+        },
+        "remove": {
+          "cssClass": "modal-dialog",
+          "title": "Remove Trip",
+          "url": "components/trip/trip-remove.tpl.html"
+        }
+      },
+      "message": {
+        "notFound": "No record found!",
+        "required": "Please check required fields!",
+        "idMissing": "Something wrong happened, please refresh page and try again!"
+      }
+    }
+  },
   "main": {
     "defaults": {
       "template": {

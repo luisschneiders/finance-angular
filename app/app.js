@@ -98,6 +98,10 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         templateUrl: 'components/timesheet/timesheet-view.html',
         resolve: { loginRequired: loginRequired }
       })
+      .when('/trips', {
+        templateUrl: 'components/trip/trip-view.html',
+        resolve: { loginRequired: loginRequired }
+      })
       .when('/data-maintenance', {
         templateUrl: 'components/maintenance/data-maintenance-view.html',
         resolve: { loginRequired: loginRequired }
@@ -132,6 +136,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       expensesTypePageSize: 12,
       transactionsTypePageSize: 12,
       timesheetsView: "calendar",
+      tripsView: "calendar",
       dataMaintenanceView: "calendar",
 
     }

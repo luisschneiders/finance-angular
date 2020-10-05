@@ -104,6 +104,11 @@ angular.module('MyApp')
       $location.url(`/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`);
     };
 
+    $scope.getMonthlyTrips = function() {
+      isActive(12);
+      $location.url(`/trips?calendar=${moment().startOf('month').format('YYYY-MM')}`);
+    }
+
     $scope.getMonthlyPurchases = function() {
       isActive(9);
       $location.url(`/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`);

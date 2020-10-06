@@ -32,11 +32,14 @@ angular.module('MyApp')
           case '/timesheets':
             timesheetView();
             break;
+          case '/trips':
+            tripView();
+            break;
           case '/data-maintenance':
             dataMaintenanceView();
             break;
           default:
-            $scope.errorMessage = 'Error loading calendar for this location!';
+            $scope.errorMessage = 'Error loading calendar for this feature!';
             $scope.isValidLocation = false;
             break;
         }
@@ -52,8 +55,23 @@ angular.module('MyApp')
               $scope.timesheets = response;
               buildCalendar(_mapTimesheetData(response));
             }).catch(function(error) {
-              console.log('Error getting timesheets:', error);
+              console.log('Error getting timesheets: ', error);
             });
+        }
+
+        $scope.tripView = function() {
+          tripView();
+        }
+
+        function tripView() {
+          vm.location.path = $location.path();
+          CalendarServices.getTrips($routeParams.calendar)
+            .then(function(response) {
+              $scope.trips = response;
+              buildCalendar(_mapTripData(response));
+            }).catch(function(error) {
+              console.log('Error getting trips: ', error);
+            })
         }
 
         $scope.dataMaintenanceView = function() {
@@ -67,7 +85,7 @@ angular.module('MyApp')
               $scope.transactions = response;
               buildCalendar(_mapDataMaintenanceData(response));
             }).catch(function(error) {
-              console.log('Error getting transactions:', error);
+              console.log('Error getting transactions: ', error);
             });
         }
 
@@ -157,7 +175,20 @@ angular.module('MyApp')
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.timesheetStartDate;
         dataFormattedObj.item = moment(item.timesheetTotalHours, "hh:mm").format("HH:mm");
-        dataFormatted.push(_.clone(dataFormattedObj))
+        dataFormatted.push(_.clone(dataFormattedObj));
+      });
+      return dataFormatted;
+    }
+
+    // Trip
+    function _mapTripData(data) {
+      let dataFormatted = [];
+      let dataFormattedObj = {};
+
+      _.forEach(data, function(item) {
+        dataFormattedObj.date = item.tripDate;
+        dataFormattedObj.item = item.tripDistance;
+        dataFormatted.push(_.clone(dataFormattedObj));
       });
       return dataFormatted;
     }
@@ -169,8 +200,8 @@ angular.module('MyApp')
       let length = 14;
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.transactionDate;
-        dataFormattedObj.item = `${item.transactionLabel} - $ ${item.transactionAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`
-        dataFormatted.push(_.clone(dataFormattedObj))
+        dataFormattedObj.item = `${item.transactionLabel} - $ ${item.transactionAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+        dataFormatted.push(_.clone(dataFormattedObj));
       });
       return dataFormatted;
     }

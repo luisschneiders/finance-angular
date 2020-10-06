@@ -1,0 +1,40 @@
+.trip {
+  .view-selected {
+    color: $mid-green;
+  }
+  .switchViewButton {
+    .flex-wrap-item {
+      min-width: 70px;
+    }
+    .switchLabel {
+      color: $dark-gray;
+    }
+  }
+  .table {
+    .fa-lg {
+      vertical-align: -36%;
+    }
+    td.status {
+      padding: 0;
+      .btn.is-paid, .btn.is-unpaid{
+        padding: 15px 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        color: #fff;
+      }
+    }
+  }
+}
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-md-min) {
+  .trip {
+    .table {
+      font-size: 1.0rem;
+
+      .btn {
+        font-size: 1.0rem;
+      }
+    }
+  }
+}

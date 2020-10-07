@@ -5,8 +5,11 @@ const Trip = bookshelf.Model.extend({
     hasTimestamps: true,
   },{
     getAllTripsByMonth: function(user, startDate, endDate) {
-    },
-    getAllTripsByYear: function(user, startDate, endDate) {
+      return this.query(function(qr) {
+        qr.select('trip.*');
+        qr.where({'tripInsertedBy': user, 'tripFlag': 'r'});
+        qr.whereBetween('tripDate', [startDate, endDate]);
+      }).fetchAll();
     }
   });
 

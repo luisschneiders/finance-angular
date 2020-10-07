@@ -7,8 +7,8 @@ const moment = require('moment');
 exports.getAllTripsByMonth = function(req, res) {
   let user = req.user.id;
   let period = req.params.period;
-  let startDate = moment(period).startOf('month').format('YYYY-MM-DD HH:mm:ss');
-  let endDate = moment(period).endOf('month').format('YYYY-MM-DD HH:mm:ss');
+  let startDate = moment(period).startOf('month').format('YYYY-MM-DD');
+  let endDate = moment(period).endOf('month').format('YYYY-MM-DD');
 
   Trip.getAllTripsByMonth(user, startDate, endDate)
     .then(function(trips) {

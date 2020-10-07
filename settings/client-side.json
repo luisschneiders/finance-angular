@@ -370,7 +370,7 @@
       "template": {
         "top": {
           "url": "components/top/top-click-new.tpl.html",
-          "pageTitle": "Trip",
+          "pageTitle": "Trips",
           "buttonTitle": "Add new record",
           "buttonUrl": "",
           "buttonDisplay": true

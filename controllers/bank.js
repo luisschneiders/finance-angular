@@ -10,7 +10,7 @@ exports.getAllBanks = function(req, res) {
   };
   Bank.getAllBanks(req.user.id, params)
     .then(function(banks) {
-      res.send(JSON.stringify({banks: banks, pagination: banks.pagination}));
+      res.send(JSON.stringify({ banks, pagination: banks.pagination }));
     }).catch(function(err) {
       console.error(err);
     });

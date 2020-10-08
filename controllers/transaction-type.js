@@ -10,7 +10,7 @@ exports.getAllTransactionsType = function(req, res) {
   };
   TransactionType.getAllTransactionsType(req.user.id, params)
   .then(function(transactionsType) {
-    res.send(JSON.stringify({transactionsType: transactionsType, pagination: transactionsType.pagination}));
+    res.send(JSON.stringify({ transactionsType, pagination: transactionsType.pagination }));
   }).catch(function(err) {
     console.error(err);
   });

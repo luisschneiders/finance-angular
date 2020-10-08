@@ -10,7 +10,7 @@ exports.getAllExpensesType = function(req, res) {
   };
   ExpenseType.getAllExpensesType(req.user.id, params)
   .then(function(expensesType) {
-    res.send(JSON.stringify({expensesType: expensesType, pagination: expensesType.pagination}));
+    res.send(JSON.stringify({ expensesType, pagination: expensesType.pagination }));
   }).catch(function(err) {
     console.error(err);
   });

@@ -90,16 +90,22 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
         controller: 'PurchaseCtrl',
         resolve: { loginRequired: loginRequired }
       })
-      .when('/populate-database', {
-        templateUrl: 'components/settings/populate-database-view.html',
-        resolve: { loginRequired: loginRequired }
-      })
       .when('/timesheets', {
         templateUrl: 'components/timesheet/timesheet-view.html',
         resolve: { loginRequired: loginRequired }
       })
       .when('/trips', {
         templateUrl: 'components/trip/trip-view.html',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/all-vehicles', {
+        templateUrl: 'components/vehicle/vehicle-view.html',
+        controller: 'VehicleCtrl',
+        resolve: { loginRequired: loginRequired }
+      })
+      .when('/vehicle=:id', {
+        templateUrl: 'components/vehicle/vehicle-update-view.html',
+        controller: 'VehicleUpdateCtrl',
         resolve: { loginRequired: loginRequired }
       })
       .when('/data-maintenance', {
@@ -135,6 +141,7 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       usersPageSize: 12,
       expensesTypePageSize: 12,
       transactionsTypePageSize: 12,
+      vehiclesPageSize: 12,
       timesheetsView: "calendar",
       tripsView: "calendar",
       dataMaintenanceView: "calendar",

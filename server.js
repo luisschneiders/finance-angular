@@ -30,6 +30,7 @@ let peopleController = require('./controllers/people');
 let transactionController = require('./controllers/transaction');
 let timesheetController = require('./controllers/timesheet');
 let tripController = require('./controllers/trip');
+let vehicleController = require('./controllers/vehicle');
 
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 4040);
@@ -132,6 +133,13 @@ app.put('/timesheets/remove-timesheet=:id', userController.ensureAuthenticated, 
 app.get('/get-all-trips-month/:period', tripController.getAllTripsByMonth);
 app.post('/trips/new', userController.ensureAuthenticated, tripController.saveTrip);
 app.put('/trips/remove-trip=:id', userController.ensureAuthenticated, tripController.removeTrip);
+
+// Vehicle
+app.get('/get-all-vehicles/page=:page&pageSize=:pageSize', vehicleController.getAllVehicles);
+app.get('/get-active-vehicles', vehicleController.getActiveVehicles);
+app.get('/vehicle-id=:id', vehicleController.getVehicleById);
+app.put('/vehicle-id=:id', userController.ensureAuthenticated, vehicleController.saveVehicle);
+app.post('/vehicle-new', userController.ensureAuthenticated, vehicleController.saveVehicle);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));

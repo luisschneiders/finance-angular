@@ -100,22 +100,22 @@ angular.module('MyApp')
     };
 
     $scope.getMonthlyTransactions = function() {
-      isActive(11);
+      isActive(3);
       $location.url(`/transactions/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&transactions=all`);
     };
 
     $scope.getMonthlyTrips = function() {
-      isActive(12);
+      isActive(4);
       $location.url(`/trips?calendar=${moment().startOf('month').format('YYYY-MM')}`);
     }
 
     $scope.getMonthlyPurchases = function() {
-      isActive(9);
+      isActive(1);
       $location.url(`/purchases/from=${moment().startOf('month').format('YYYY-MM-DD')}&to=${moment().endOf('month').format('YYYY-MM-DD')}&expenses=all`);
     }
 
     $scope.getMonthlyTimesheet = function() {
-      isActive(10);
+      isActive(2);
       $location.url(`/timesheets?calendar=${moment().startOf('month').format('YYYY-MM')}`);
     }
 
@@ -126,28 +126,32 @@ angular.module('MyApp')
           $location.url(`/main=${moment().format('YYYY')}`);
           break;
         case 'all-banks':
-          isActive(2);
+          isActive(6);
           $location.url(`all-banks?page=1&pageSize=${params.rows.banksPageSize}`);
           break;
-        case 'all-users':
-          isActive(3);
-          $location.url(`all-users?page=1&pageSize=${params.rows.usersPageSize}`);
-          break;
         case 'all-expenses-type':
-          isActive(4);
+          isActive(7);
           $location.url(`all-expenses-type?page=1&pageSize=${params.rows.expensesTypePageSize}`);
           break;
+        case 'account':
+          isActive(8);
+          $location.url(`account`);
+          break;
         case 'all-transactions-type':
-          isActive(5);
+          isActive(9);
           $location.url(`all-transactions-type?page=1&pageSize=${params.rows.transactionsTypePageSize}`);
           break;
-        case 'populate-database':
-          isActive(6);
-          $location.url(`populate-database`);
+        case 'all-users':
+          isActive(10);
+          $location.url(`all-users?page=1&pageSize=${params.rows.usersPageSize}`);
           break;
-        case 'account':
-          isActive(7);
-          $location.url(`account`);
+        case 'all-vehicles':
+          isActive(11);
+          $location.url(`all-vehicles?page=1&pageSize=${params.rows.vehiclesPageSize}`);
+          break;
+        case 'data-maintenance':
+          isActive(13);
+          $location.url(`/data-maintenance?calendar=${moment().startOf('month').format('YYYY-MM')}`);
           break;
         case 'login':
           isActive(0);
@@ -156,10 +160,6 @@ angular.module('MyApp')
         case 'signup':
           isActive(1);
           $location.url(`signup`);
-          break;
-        case 'data-maintenance':
-          isActive(8);
-          $location.url(`/data-maintenance?calendar=${moment().startOf('month').format('YYYY-MM')}`);
           break;
         default:
           isActive(0);

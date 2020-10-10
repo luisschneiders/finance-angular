@@ -1,7 +1,8 @@
 angular.module('MyApp')
   .controller('TripCtrl', ['$scope', '$auth', '$location', '$routeParams', '$window', '$timeout',
-              'DefaultServices', 'TripServices', 'UserLocalStorageServices',
-  function($scope, $auth, $location, $routeParams, $window, $timeout, DefaultServices, TripServices, UserLocalStorageServices) {
+              'DefaultServices', 'TripServices', 'UserLocalStorageServices', 'VehicleServices',
+  function($scope, $auth, $location, $routeParams, $window, $timeout,
+          DefaultServices, TripServices, UserLocalStorageServices, VehicleServices) {
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();
     };
@@ -35,6 +36,7 @@ angular.module('MyApp')
       constructor() {
         this.isNull = false;
         this.isLoadingModal = true;
+        this.isLoadingVehicle = true;
         this.noSettings = true;
         this.isSaving = false;
         this.errorAdd = false;
@@ -50,8 +52,9 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(trip) {
+      constructor(trip, vehicle) {
         this.trip = trip;
+        this.vehicle = vehicle;
       }
     };
 
@@ -93,6 +96,22 @@ angular.module('MyApp')
       vm.modal.cssClass = vm.settings.modal.add.cssClass;
       vm.modal.url = vm.settings.modal.add.url;
       vm.state.modal = vm.modal;
+      vm.getVehicle();
+    };
+
+    vm.getVehicle = function() {
+      VehicleServices.getActiveVehicles()
+        .then(function(response) {
+          vm.data.vehicle = response;
+          vm.status.isLoadingVehicle = false;
+        }).catch(function(error) {
+          vm.status.noSettings = true;
+          vm.status.errorView = true;
+          vm.status.isLoadingVehicle = false;
+          vm.state.messages = {
+            error: Array.isArray(error) ? error : [error]
+          };
+        });
     };
 
     vm.saveTrip = function($valid) {

@@ -16,7 +16,7 @@
               </div>
               <span ng-if="ctrl.data.vehicle.length == 0" class="text-danger">{{::ctrl.state.settings.component.defaults.message.notFound}}</span>
               <select name="tripVehicle" id="tripVehicle" class="form-control text-uppercase" ng-model="ctrl.data.form.tripVehicle" required
-                ng-options="vehicle.id as vehicle.vehicleDescription for vehicle in ctrl.data.vehicle | orderBy:'vehicleDescription'" ng-disabled="ctrl.data.vehicle == 0">
+                ng-options="vehicle.id as vehicle.vehiclePlate + ' - ' + vehicle.vehicleDescription for vehicle in ctrl.data.vehicle | orderBy:'vehicleDescription'" ng-disabled="ctrl.data.vehicle == 0">
               </select>
             </div>
           </div>

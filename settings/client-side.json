@@ -405,6 +405,48 @@
       }
     }
   },
+  "vehicle": {
+    "defaults": {
+      "page": 1,
+      "pageSize": 12,
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "Vehicles",
+          "buttonTitle": "add",
+          "buttonUrl": "/vehicle=new",
+          "buttonDisplay": true
+        }
+      }
+    },
+    "newRecord": {
+      "form": {
+        "vehicleDescription": null,
+        "vehiclePlate": null,
+        "vehicleIsActive": 1
+      },
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "new record",
+          "buttonTitle": "add",
+          "buttonUrl": "/vehicle=new",
+          "buttonDisplay": false
+        }
+      }
+    },
+    "existingRecord": {
+      "template": {
+        "top": {
+          "url": "components/top/top-link.tpl.html",
+          "pageTitle": "update record",
+          "buttonTitle": "add",
+          "buttonUrl": "/vehicle=new",
+          "buttonDisplay": true
+        }
+      }
+    }
+  },
   "main": {
     "defaults": {
       "template": {

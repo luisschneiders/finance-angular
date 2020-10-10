@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="row fixed-row" ng-include src="'components/top/top-view.html'"></div>
+    <div class="row">
+      <div class="col-sm-12">
+        <section ng-include="'components/partials/messages.tpl.html'"></section>
+        <form name="standardForm" ng-submit="saveVehicle(standardForm.$valid)" class="form-horizontal" ng-if="!state.status.noSettings && !state.status.isNull">
+          <div class="form-group">
+            <label for="vehicleDescription" class="col-sm-3">Description</label>
+            <div class="col-sm-7">
+              <input type="text" name="vehicleDescription" id="vehicleDescription" class="form-control" ng-model="data.form.vehicleDescription" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="vehiclePlate" class="col-sm-3">Plate</label>
+            <div class="col-sm-7">
+              <input type="text" name="vehiclePlate" id="vehiclePlate" class="form-control" ng-model="data.form.vehiclePlate" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="vehicleIsActive" class="col-sm-3">Active</label>
+            <div class="col-sm-7">
+              <input type="checkbox" name="vehicleIsActive" ng-model="data.form.vehicleIsActive" ng-checked="data.form.vehicleIsActive === 1" ng-true-value="1" ng-false-value="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-4">
+              <button type="submit" class="btn btn-success">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -145,8 +145,8 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'angularMoment', 'angular-loda
       timesheetsView: "calendar",
       tripsView: "calendar",
       dataMaintenanceView: "calendar",
-
     }
+
     if ($window.localStorage.user) {
       $rootScope.currentUser = JSON.parse($window.localStorage.user);
     }

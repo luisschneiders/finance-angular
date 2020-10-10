@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('BankCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'BankServices', 'UserLocalStorageServices',
-  function($scope, $auth, $location, $routeParams, DefaultServices, BankServices, UserLocalStorageServices) {
+  .controller('VehicleCtrl', ['$scope', '$auth', '$location', '$routeParams', 'DefaultServices', 'VehicleServices', 'UserLocalStorageServices',
+  function($scope, $auth, $location, $routeParams, DefaultServices, VehicleServices, UserLocalStorageServices) {
     if (!$auth.isAuthenticated()) {
       $location.url('/login');
       return;
@@ -35,8 +35,8 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(banks) {
-        this.banks = banks;
+      constructor(vehicles) {
+        this.vehicles = vehicles;
       }
     };
 
@@ -50,10 +50,10 @@ angular.module('MyApp')
       .then(function(response) {
         status.noSettings = false;
         settings.defaults = response.defaults;
-        settings.component = response.bank;
-        settings.templateTop = response.bank.defaults.template.top;
+        settings.component = response.vehicle;
+        settings.templateTop = response.vehicle.defaults.template.top;
         state.settings = settings;
-        getBanks();
+        getVehicles();
       }).catch(function(error) {
         status.noSettings = true;
         state.messages = {
@@ -61,8 +61,8 @@ angular.module('MyApp')
         };
       });
 
-    $scope.editBank = function(id) {
-      $location.url(`/bank=${id}`);
+    $scope.editVehicle = function(id) {
+      $location.url(`/vehicle=${id}`);
     };
 
     $scope.previousPage = function() {
@@ -75,18 +75,18 @@ angular.module('MyApp')
 
     $scope.refreshList = function(pageSize) {
       $location.url(`${$location.path()}?page=${state.pagination.page}&pageSize=${pageSize}`);
-      UserLocalStorageServices.updateUserSettings('banksPageSize', pageSize);
+      UserLocalStorageServices.updateUserSettings('vehiclesPageSize', pageSize);
     };
 
     $scope.addNewRecord = function() {
       $location.url(state.settings.templateTop.buttonUrl);
     }
 
-    function getBanks() {
-      BankServices.getAllBanks(params)
+    function getVehicles() {
+      VehicleServices.getAllVehicles(params)
         .then(function(response) {
           status.isLoading = false;
-          data.banks = response.banks;
+          data.vehicles = response.vehicles;
           state.pagination = response.pagination;
         }).catch(function(error) {
           status.isLoading = false;

@@ -38,7 +38,7 @@
                 </div>
               </div>
             </div>
-            <div ng-if="!timesheets.length">
+            <div ng-if="timesheets.length == 0">
               <h3 class="alert alert-danger text-center">{{::ctrl.state.settings.component.defaults.message.notFound}}</h3>
             </div>
             <div ng-if="timesheets.length">

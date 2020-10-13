@@ -187,7 +187,7 @@ angular.module('MyApp')
 
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.tripDate;
-        dataFormattedObj.item = item.tripDistance;
+        dataFormattedObj.item = `${item.tripDistance} KM`;
         dataFormatted.push(_.clone(dataFormattedObj));
       });
       return dataFormatted;

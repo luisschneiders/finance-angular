@@ -6,7 +6,8 @@ const Trip = bookshelf.Model.extend({
   },{
     getAllTripsByMonth: function(user, startDate, endDate) {
       return this.query(function(qr) {
-        qr.select('trip.*');
+        qr.select('vehicle.vehicleDescription', 'vehicle.vehiclePlate', 'trip.*');
+        qr.leftJoin('vehicle', 'trip.tripVehicle', '=', 'vehicle.id');
         qr.where({'tripInsertedBy': user, 'tripFlag': 'r'});
         qr.whereBetween('tripDate', [startDate, endDate]);
       }).fetchAll();

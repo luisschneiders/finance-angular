@@ -38,7 +38,7 @@
                 </div>
               </div>
             </div>
-            <div ng-if="!trips.length">
+            <div ng-if="trips.length == 0">
               <h3 class="alert alert-danger text-center">{{::ctrl.state.settings.component.defaults.message.notFound}}</h3>
             </div>
             <div ng-if="trips.length">
@@ -46,43 +46,29 @@
                 <table class="table table-responsive table-hover">
                   <thead>
                     <tr>
-                      <th>Employer</th>
+                      <th>Vehicle</th>
                       <th>Date</th>
-                      <th>Punch In</th>
-                      <th>Break</th>
-                      <th>Punch Out</th>
-                      <th>Hours</th>
-                      <th>Total</th>
+                      <th class="text-right">Distance (KM) </th>
                       <th class="text-center">Remove</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- <tr ng-repeat="item in trips | orderBy: '-tripDate'">
-                      <td data-title="Employer">{{::item.peopleDescription}}</td>
-                      <td data-title="Date">{{::item.timesheetStartDate | date: 'dd/MM/yyyy'}}</td>
-                      <td data-title="Punch In">{{::item.timesheetTimeIn}}</td>
-                      <td data-title="Break">{{::item.timesheetTimeBreak || '00:00:00'}}</td>
-                      <td data-title="Punch Out">{{::item.timesheetTimeOut}}</td>
-                      <td data-title="Hours">{{::item.timesheetTotalHours}}</td>
-                      <td data-title="Total">$ {{::item.timesheetTotal | number:2}}</td>
+                    <tr ng-repeat="item in trips | orderBy: '-tripDate'">
+                      <td data-title="Vehicle">{{::item.vehiclePlate}} - {{::item.vehicleDescription}}</td>
+                      <td data-title="Date">{{::item.tripDate | date: 'dd/MM/yyyy'}}</td>
+                      <td class="text-right" data-title="Distance (KM)">{{::item.tripDistance | number:1}}</td>
                       <td data-title="Remove" class="text-center">
                         <button class="btn btn-link" title="Delete" ng-click="ctrl.modalDeleteRecord(item)"><i class="fa fa-trash fa-lg icon-delete"></i></button>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="6"><strong>Total Paid</strong></td>
-                      <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' : 'P' : 'timesheet' | number:2"></strong></td>
+                      <td colspan="2"><strong>Total</strong></td>
+                      <td colspan="1" class="text-right"><strong ng-bind="trips | sumColumns: 'tripDistance' : '' : 'trip' | number:1"></strong></td>
                       <td colspan="1"></td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                       <td colspan="6"><strong>Total Unpaid</strong></td>
                       <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' : 'W' : 'timesheet' | number:2"></strong></td>
-                      <td colspan="1"></td>
-                    </tr>
-                    <tr>
-                      <td colspan="6"><strong>Total Hours</strong></td>
-                      <td colspan="2">
-                      </td>
                       <td colspan="1"></td>
                     </tr> -->
                   </tbody>

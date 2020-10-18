@@ -1,5 +1,6 @@
 angular.module('MyApp')
-  .directive('calendarWidget', ['$location', '$routeParams', '$window', 'CalendarServices', function($location, $routeParams, $window, CalendarServices) {
+  .directive('calendarWidget', ['$location', '$routeParams', '$window', 'CalendarServices',
+    function($location, $routeParams, $window, CalendarServices) {
     return {
       restrict: 'EAC',
       templateUrl: 'components/calendar/calendar-view.html',
@@ -23,6 +24,7 @@ angular.module('MyApp')
 
         $scope.isValidDate = true;
         $scope.isValidLocation = true;
+        $scope.weekdaysTotal = {};
         $scope.selected = moment($routeParams.calendar);
         $scope.month = $scope.selected.clone();
         $scope.displayCurrentMonth = _displayCurrentMonth($scope.month);
@@ -33,6 +35,7 @@ angular.module('MyApp')
             timesheetView();
             break;
           case '/trips':
+            $scope.hasTotal = true;
             tripView();
             break;
           case '/data-maintenance':
@@ -69,6 +72,7 @@ angular.module('MyApp')
             .then(function(response) {
               $scope.trips = response;
               buildCalendar(_mapTripData(response));
+              $scope.weekdaysTotal = getWeekDayTotal(response);
             }).catch(function(error) {
               console.log('Error getting trips: ', error);
             })
@@ -154,7 +158,7 @@ angular.module('MyApp')
 
       for (var i = 0; i < 7; i++) {
         days.push({
-          name: date.format("dd").substring(0, 1),
+          name: date.format("ddd").substring(0, 3),
           number: date.date(),
           isCurrentMonth: date.month() === month.month(),
           isToday: date.isSame(new Date(), "day"),
@@ -217,5 +221,45 @@ angular.module('MyApp')
         }), 'item')
 
       return items;
+    }
+
+    function getWeekDayTotal(data) {
+      let weekday = {
+        sun: 0,
+        mon: 0,
+        tue: 0,
+        wed: 0,
+        thu: 0,
+        fri: 0,
+        sat: 0,
+      }
+
+      _.forEach(data, function(item) {
+        const dayOfTheWeek = moment(item.tripDate).format("ddd").substring(0, 3);
+        switch(dayOfTheWeek){
+          case 'Sun':
+            weekday.sun += item.tripDistance;
+            break;
+          case 'Mon':
+            weekday.mon += item.tripDistance;
+            break;
+          case 'Tue':
+            weekday.tue += item.tripDistance;
+            break;
+          case 'Wed':
+            weekday.wed += item.tripDistance;
+            break;
+          case 'Thu':
+            weekday.thu += item.tripDistance;
+            break;
+          case 'Fri':
+            weekday.fri += item.tripDistance;
+            break;
+          case 'Sat':
+            weekday.sat += item.tripDistance;
+            break;
+        }
+      });
+      return weekday;
     }
   }]);

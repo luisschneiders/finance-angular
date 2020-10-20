@@ -71,8 +71,8 @@ angular.module('MyApp')
           CalendarServices.getTrips($routeParams.calendar)
             .then(function(response) {
               $scope.trips = response;
-              buildCalendar(_mapTripData(response));
               $scope.weekdaysTotal = getWeekDayTotal(response);
+              buildCalendar(_mapTripData(response));
             }).catch(function(error) {
               console.log('Error getting trips: ', error);
             })

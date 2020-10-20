@@ -53,7 +53,7 @@
           <span class="content-center"><strong>Totals</strong></span>
           <div class="flex-wrap content-center week">
             <div class="day flex-wrap-item calendar-item content-center align-center" ng-repeat="weekdayTotal in weekdaysTotal">
-              <strong>{{::weekdayTotal == 0 ? '-' : weekdayTotal | number:1 }}{{::weekdayTotal == 0 ? '' : ' KM'}}</strong>
+              <strong>{{weekdayTotal == 0 ? '-' : weekdayTotal | number:1 }}</strong>
             </div>
           </div>
         </div>

@@ -71,7 +71,7 @@ angular.module('MyApp')
           CalendarServices.getTrips($routeParams.calendar)
             .then(function(response) {
               $scope.trips = response;
-              $scope.weekdaysTotal = getWeekDayTotal(response);
+              $scope.weekdaysTotal = getWeekDayTotal(_mapTripDataTotal(response));
               buildCalendar(_mapTripData(response));
             }).catch(function(error) {
               console.log('Error getting trips: ', error);
@@ -197,6 +197,18 @@ angular.module('MyApp')
       return dataFormatted;
     }
 
+    function _mapTripDataTotal(data) {
+      let dataFormatted = [];
+      let dataFormattedObj = {};
+
+      _.forEach(data, function(item) {
+        dataFormattedObj.date = item.tripDate;
+        dataFormattedObj.value = item.tripDistance;
+        dataFormatted.push(_.clone(dataFormattedObj));
+      });
+      return dataFormatted;
+    }
+
     // Data Maintenance
     function _mapDataMaintenanceData(data) {
       let dataFormatted = [];
@@ -232,33 +244,35 @@ angular.module('MyApp')
         thu: 0,
         fri: 0,
         sat: 0,
-      }
+      };
 
       _.forEach(data, function(item) {
-        const dayOfTheWeek = moment(item.tripDate).format("ddd").substring(0, 3);
+        const dayOfTheWeek = moment(item.date).format("ddd").substring(0, 3);
+
         switch(dayOfTheWeek){
           case 'Sun':
-            weekday.sun += item.tripDistance;
+            weekday.sun += item.value;
             break;
           case 'Mon':
-            weekday.mon += item.tripDistance;
+            weekday.mon += item.value;
             break;
           case 'Tue':
-            weekday.tue += item.tripDistance;
+            weekday.tue += item.value;
             break;
           case 'Wed':
-            weekday.wed += item.tripDistance;
+            weekday.wed += item.value;
             break;
           case 'Thu':
-            weekday.thu += item.tripDistance;
+            weekday.thu += item.value;
             break;
           case 'Fri':
-            weekday.fri += item.tripDistance;
+            weekday.fri += item.value;
             break;
           case 'Sat':
-            weekday.sat += item.tripDistance;
+            weekday.sat += value.item;
             break;
         }
+
       });
       return weekday;
     }

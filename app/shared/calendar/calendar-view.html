@@ -21,6 +21,9 @@
             <div class="flex-wrap-item calendar-header" ng-repeat="weekday in weekDays">
               <span class="content-center" ng-bind="weekday"></span>
             </div>
+            <div class="flex-wrap-item calendar-header" ng-if="hasTotalWeek">
+              <strong class="content-center">Total</strong>
+            </div>
           </div>
         </div>
         <div class="panel-body">
@@ -41,19 +44,25 @@
                 </div>
               </div>
             </div>
+            <div class="day flex-wrap-item calendar-item content-center align-center" ng-if="hasTotalWeek">
+              <strong ng-bind="week.days | sumColumns: 'total' : '' : 'calendar' | number:1"></strong>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row" ng-if="hasTotal">
+  <div class="row" ng-if="hasTotalWeekDay">
     <div class="col-sm-12">
       <div class="calendar-flex">
         <div class="panel-body">
-          <span class="content-center"><strong>Totals</strong></span>
+          <strong class="content-center">Total</strong>
           <div class="flex-wrap content-center week">
             <div class="day flex-wrap-item calendar-item content-center align-center" ng-repeat="weekdayTotal in weekdaysTotal">
               <strong>{{weekdayTotal == 0 ? '-' : weekdayTotal | number:1 }}</strong>
+            </div>
+            <div class="day flex-wrap-item calendar-item content-center align-center" ng-if="hasTotalWeek">
+              --
             </div>
           </div>
         </div>

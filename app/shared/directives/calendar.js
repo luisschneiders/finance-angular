@@ -24,6 +24,8 @@ angular.module('MyApp')
 
         $scope.isValidDate = true;
         $scope.isValidLocation = true;
+        $scope.hasTotalWeekDay = false;
+        $scope.hasTotalWeek = false;
         $scope.weekdaysTotal = {};
         $scope.selected = moment($routeParams.calendar);
         $scope.month = $scope.selected.clone();
@@ -35,7 +37,8 @@ angular.module('MyApp')
             timesheetView();
             break;
           case '/trips':
-            $scope.hasTotal = true;
+            $scope.hasTotalWeekDay = true;
+            $scope.hasTotalWeek = true;
             tripView();
             break;
           case '/data-maintenance':
@@ -71,7 +74,7 @@ angular.module('MyApp')
           CalendarServices.getTrips($routeParams.calendar)
             .then(function(response) {
               $scope.trips = response;
-              $scope.weekdaysTotal = getWeekDayTotal(_mapTripDataTotal(response));
+              $scope.weekdaysTotal = getWeekDayTotal(_mapTripDataWeekdaysTotal(response));
               buildCalendar(_mapTripData(response));
             }).catch(function(error) {
               console.log('Error getting trips: ', error);
@@ -98,7 +101,7 @@ angular.module('MyApp')
 
           start.date(1);
           _removeTime(start.day(0));
-          _buildMonth($scope, start, $scope.month, data);
+          _buildMonth($scope, start, $scope.month, data, $scope.hasTotalWeek);
           $scope.select = function(day) {
             $scope.selected = day.date;
           };
@@ -108,7 +111,7 @@ angular.module('MyApp')
 
             _removeTime(next.month(next.month() + 1).date(1));
             $scope.month.month($scope.month.month() + 1);
-            _buildMonth($scope, next, $scope.month, data);
+            _buildMonth($scope, next, $scope.month, data, $scope.hasTotalWeek);
             $scope.displayCurrentMonth = _displayCurrentMonth($scope.month);
             $location.url(`${vm.location.path}?calendar=${$scope.displayCurrentMonth}`);
           };
@@ -118,7 +121,7 @@ angular.module('MyApp')
 
             _removeTime(previous.month(previous.month()-1).date(1));
             $scope.month.month($scope.month.month()-1);
-            _buildMonth($scope, previous, $scope.month, data);
+            _buildMonth($scope, previous, $scope.month, data, $scope.hasTotalWeek);
             $scope.displayCurrentMonth = _displayCurrentMonth($scope.month);
             $location.url(`${vm.location.path}?calendar=${$scope.displayCurrentMonth}`);
           };
@@ -138,7 +141,7 @@ angular.module('MyApp')
       return date.day(0).hour(0).minute(0).second(0).millisecond(0);
     }
 
-    function _buildMonth($scope, start, month, data) {
+    function _buildMonth($scope, start, month, data, hasTotalWeek) {
       let done = false;
       let date = start.clone();
       let monthIndex = date.month(), count = 0;
@@ -146,14 +149,16 @@ angular.module('MyApp')
       $scope.weeks = [];
 
       while (!done) {
-        $scope.weeks.push({ days: _buildWeek(date.clone(), month, data) });
+        $scope.weeks.push({
+          days: _buildWeek(date.clone(), month, data, hasTotalWeek)
+        });
         date.add(1, "w");
         done = count++ > 2 && monthIndex !== date.month();
         monthIndex = date.month();
       }
     }
 
-    function _buildWeek(date, month, data) {
+    function _buildWeek(date, month, data, hasTotalWeek) {
       let days = [];
 
       for (var i = 0; i < 7; i++) {
@@ -163,7 +168,8 @@ angular.module('MyApp')
           isCurrentMonth: date.month() === month.month(),
           isToday: date.isSame(new Date(), "day"),
           date: date,
-          item: getAllItems(date, month, data)
+          item: getAllItems(date, month, data),
+          total: hasTotalWeek ? getAllWeekItems(date, month, data) : 0
         });
         date = date.clone();
         date.add(1, "d");
@@ -187,17 +193,22 @@ angular.module('MyApp')
     // Trip
     function _mapTripData(data) {
       let dataFormatted = [];
-      let dataFormattedObj = {};
+      let dataFormattedObj = {
+        date: null,
+        item: null,
+        distance: 0
+      };
 
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.tripDate;
         dataFormattedObj.item = `${item.tripDistance} KM`;
+        dataFormattedObj.distance = item.tripDistance;
         dataFormatted.push(_.clone(dataFormattedObj));
       });
       return dataFormatted;
     }
 
-    function _mapTripDataTotal(data) {
+    function _mapTripDataWeekdaysTotal(data) {
       let dataFormatted = [];
       let dataFormattedObj = {};
 
@@ -213,7 +224,7 @@ angular.module('MyApp')
     function _mapDataMaintenanceData(data) {
       let dataFormatted = [];
       let dataFormattedObj = {};
-      let length = 14;
+
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.transactionDate;
         dataFormattedObj.item = `${item.transactionLabel} - $ ${item.transactionAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
@@ -223,7 +234,6 @@ angular.module('MyApp')
     }
 
     function getAllItems(date, month, data) {
-
       let items = [];
 
       _.result(_.find(data, function(item) {
@@ -233,6 +243,18 @@ angular.module('MyApp')
         }), 'item')
 
       return items;
+    }
+
+    function getAllWeekItems(date, month, data) {
+      let total = 0;
+
+      _.result(_.find(data, function(item) {
+          if (moment(item.date).format('DD') == date.date() && date.month() === month.month()) {
+            total += item.distance;
+          }
+        }), 'item')
+
+      return total;
     }
 
     function getWeekDayTotal(data) {

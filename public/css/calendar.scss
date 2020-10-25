@@ -6,13 +6,21 @@
     padding-bottom: 30px;
   }
 }
+.calendar-flex {
+  .panel-heading {
+    padding: 10px 0;
+  }
+  .panel-body {
+    padding: 0 0 10px 0;
+  }
+}
 .calendar-header {
   padding-bottom: 10px;
-  flex-basis: 14%;
+  flex-basis: 12%;
 }
 .calendar-item {
   border: dotted 1px $colour-2-light;
-  flex-basis: 14%;
+  flex-basis: 12%;
   min-height: 80px;
   background-color: #fff;
 

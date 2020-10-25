@@ -12,6 +12,7 @@
               break;
             case 'purchases':
             case 'trip':
+            case 'calendar':
               return total += item[key];
             default:
               return null;

@@ -266,10 +266,12 @@ angular.module('MyApp')
         thu: 0,
         fri: 0,
         sat: 0,
+        tot: 0
       };
 
       _.forEach(data, function(item) {
         const dayOfTheWeek = moment(item.date).format("ddd").substring(0, 3);
+        weekday.tot += item.value;
 
         switch(dayOfTheWeek){
           case 'Sun':

@@ -57,7 +57,7 @@
             <div class="col-sm-8">
               <input type="text" name="purchaseAmount" id="purchaseAmount" class="form-control" ng-model="data.form.purchaseAmount"
                 ng-change="remainingAmount(data.form.purchaseBank)" format="number" required autocomplete="off">
-              <span>Remaining amount:<strong class="clip-settings black-gradient">{{data.remainingAmount | number: 2}}</strong></span>
+              <span>Remaining amount:<strong>{{data.remainingAmount | number: 2}}</strong></span>
             </div>
           </div>
         </div>

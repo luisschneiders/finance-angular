@@ -12,7 +12,7 @@ function generateToken(user) {
     iss: 'my.domain.com', // needs to be updated
     sub: user.id,
     iat: moment().unix(),
-    exp: moment().add(7, 'days').unix()
+    exp: moment().add(365, 'days').unix()
   };
   return jwt.sign(payload, process.env.TOKEN_SECRET);
 }

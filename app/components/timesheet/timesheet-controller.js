@@ -117,7 +117,7 @@ angular.module('MyApp')
     };
 
     vm.getPeople = function() {
-      PeopleServices.getPeopleByRole(vm.role)
+      PeopleServices.getActivePeople()
         .then(function(response) {
           vm.data.people = response;
           vm.status.isLoadingPeople = false;

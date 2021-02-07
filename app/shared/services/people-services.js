@@ -81,6 +81,16 @@ angular.module('MyApp')
             return $q.reject(response.data);
           });
       return people;
+    },
+    getActivePeople: function() {
+      let people = $http.get(`/get-active-people`)
+          .then(function(response){
+            return response.data;
+          })
+          .catch(function(response) {
+            return $q.reject(response.data);
+          });
+      return people;
     }
   };
 }]);

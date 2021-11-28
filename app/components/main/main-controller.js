@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('MainCtrl', ['$scope', '$auth', '$location', '$routeParams', 'moment', 'DefaultServices', 'MainServices',
-  function($scope, $auth, $location, $routeParams, moment, DefaultServices, MainServices) {
+  .controller('MainCtrl', ['$scope', '$auth', '$location', '$routeParams', 'moment', 'DefaultServices', 'MainServices', 'TimeServices',
+  function($scope, $auth, $location, $routeParams, moment, DefaultServices, MainServices, TimeServices) {
     $scope.isAuthenticated = () => {
       return $auth.isAuthenticated();
     };
@@ -368,16 +368,7 @@ angular.module('MyApp')
     }
 
     function getWorkedHours(timesheets) {
-      let durations = [];
-      timesheets.forEach((timesheet) => {
-        durations.push(timesheet.timesheetTotalHours);
-      });
-
-      let totalDurations = durations.slice(1)
-        .reduce((prev, cur) => moment.duration(cur).add(prev),
-          moment.duration(durations[0]));
-
-      data.timesheetTotalHours = moment.utc(totalDurations.asMilliseconds()).format("H[hrs] m[min]");
+      data.timesheetTotalHours = TimeServices.getWorkedHours(timesheets);
     }
 
     $scope.state = state;

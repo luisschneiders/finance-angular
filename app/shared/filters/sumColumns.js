@@ -8,7 +8,7 @@
             case 'timesheet':
               if (item.timesheetStatus == condition ) {
                 return total += item[key];
-              }  
+              }
               break;
             case 'purchases':
             case 'trip':

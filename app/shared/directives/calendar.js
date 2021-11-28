@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .directive('calendarWidget', ['$location', '$routeParams', '$window', 'CalendarServices',
-    function($location, $routeParams, $window, CalendarServices) {
+  .directive('calendarWidget', ['$location', '$routeParams', '$window', 'CalendarServices', 'TimeServices',
+    function($location, $routeParams, $window, CalendarServices, TimeServices) {
     return {
       restrict: 'EAC',
       templateUrl: 'components/calendar/calendar-view.html',
@@ -59,6 +59,7 @@ angular.module('MyApp')
           CalendarServices.getTimesheets($routeParams.calendar)
             .then(function(response) {
               $scope.timesheets = response;
+              $scope.totalHours = TimeServices.getWorkedHours(response);
               buildCalendar(_mapTimesheetData(response));
             }).catch(function(error) {
               console.log('Error getting timesheets: ', error);

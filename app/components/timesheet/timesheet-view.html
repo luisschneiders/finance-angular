@@ -37,6 +37,21 @@
                   <a class="btn btn-default" ng-click="next()"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                 </div>
               </div>
+              <div class="col-xs-12 col-md-3 col-md-push-3 text-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-md dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ctrl.data.employerSelected.peopleDescription || "Select employer..." | limitTo: ctrl.state.settings.limitTo}} {{ctrl.data.employerSelected.peopleDescription.length > ctrl.state.settings.limitTo ? '...' : ''}} <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="text-center">
+                      <a class="button cursor-pointer" ng-click="selectEmployer(undefined);">Clear selection</a>
+                    </li>
+                    <li class="text-center" ng-repeat="employer in ctrl.data.people">
+                      <a class="button cursor-pointer" ng-click="selectEmployer(employer);">{{::employer.peopleDescription}}<i class="fa fa-check"></i></a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
             <div ng-if="timesheets.length == 0">
               <h3 class="alert alert-danger text-center">{{::ctrl.state.settings.component.defaults.message.notFound}}</h3>
@@ -58,7 +73,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="item in timesheets | orderBy: '-timesheetStartDate'">
+                    <tr ng-repeat="item in timesheets | orderBy: '-timesheetStartDate' | filter: ctrl.data.employerSelected.peopleDescription ">
                       <td data-title="Employer">{{::item.peopleDescription}}</td>
                       <td data-title="Date">{{::item.timesheetStartDate | date: 'dd/MM/yyyy'}}</td>
                       <td data-title="Punch In">{{::item.timesheetTimeIn}}</td>
@@ -77,18 +92,18 @@
                     </tr>
                     <tr>
                       <td colspan="6"><strong>Total Paid</strong></td>
-                      <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' : 'P' : 'timesheet' | number:2"></strong></td>
+                      <td colspan="2">$ <strong ng-bind="timesheets | filter: ctrl.data.employerSelected.peopleDescription |  sumColumns: 'timesheetTotal' : 'P' : 'timesheet' | number:2"></strong></td>
                       <td colspan="1"></td>
                     </tr>
                     <tr>
                       <td colspan="6"><strong>Total Unpaid</strong></td>
-                      <td colspan="2">$ <strong ng-bind="timesheets | sumColumns: 'timesheetTotal' : 'W' : 'timesheet' | number:2"></strong></td>
+                      <td colspan="2">$ <strong ng-bind="timesheets | filter: ctrl.data.employerSelected.peopleDescription | sumColumns: 'timesheetTotal' : 'W' : 'timesheet' | number:2"></strong></td>
                       <td colspan="1"></td>
                     </tr>
                     <tr>
                       <td colspan="6"><strong>Total Hours</strong></td>
                       <td colspan="2">
-                        <strong ng-bind="totalHours"></strong>
+                        <strong ng-bind="timesheets | filter: ctrl.data.employerSelected.peopleDescription | totalHours: 'timesheets' "></strong>
                       </td>
                       <td colspan="1"></td>
                     </tr>

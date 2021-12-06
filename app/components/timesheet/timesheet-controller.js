@@ -24,12 +24,13 @@ angular.module('MyApp')
       }
     };
     class Settings {
-      constructor(defaults, component, newRecord, templateTop, modal) {
+      constructor(defaults, component, newRecord, templateTop, modal, limitTo) {
         this.defaults = defaults;
         this.component = component;
         this.newRecord = newRecord;
         this.templateTop = templateTop;
         this.modal = modal;
+        this.limitTo = limitTo;
       }
     };
     class Status {
@@ -59,9 +60,10 @@ angular.module('MyApp')
       }
     };
     class Data {
-      constructor(timesheets, people) {
+      constructor(timesheets, people, employer) {
         this.timesheets = timesheets;
         this.people = people;
+        this.employerSelected = employer;
       }
     };
 
@@ -89,7 +91,9 @@ angular.module('MyApp')
         vm.settings.component = response.timesheets;
         vm.settings.templateTop = response.timesheets.defaults.template.top;
         vm.settings.modal = response.timesheets.defaults.modal;
+        vm.settings.limitTo = 18;
         vm.state.settings = vm.settings;
+        vm.getPeople();
       }).catch(function(error) {
         vm.status.noSettings = true;
         vm.status.errorView = true;
@@ -113,13 +117,15 @@ angular.module('MyApp')
       vm.modal.cssClass = vm.settings.modal.add.cssClass;
       vm.modal.url = vm.settings.modal.add.url;
       vm.state.modal = vm.modal;
-      vm.getPeople();
+      // vm.getPeople();
     };
 
     vm.getPeople = function() {
       PeopleServices.getActivePeople()
         .then(function(response) {
           vm.data.people = response;
+          vm.data.employerSelected = undefined;
+          // vm.data.employerSelected = response[0];
           vm.status.isLoadingPeople = false;
         }).catch(function(error) {
           vm.status.noSettings = true;
@@ -198,7 +204,7 @@ angular.module('MyApp')
           };
           vm.data.form = {};
 
-          $scope.timesheetView();
+          $scope.timesheetView(vm.data.employerSelected);
 
         }).catch(function(error) {
           vm.status.isSaving = false;
@@ -220,7 +226,7 @@ angular.module('MyApp')
           vm.state.messages = {
             success: [response]
           };
-          $scope.timesheetView();
+          $scope.timesheetView(vm.data.employerSelected);
         }).catch(function(error){
           vm.status.isSaving = false;
           vm.state.messages = {
@@ -269,7 +275,7 @@ angular.module('MyApp')
             angular.element('#myModal').modal('hide');
           }, 1000);
 
-          $scope.timesheetView();
+          $scope.timesheetView(vm.data.employerSelected);
 
         }).catch(function(error) {
           vm.status.isSaving = false;
@@ -284,6 +290,10 @@ angular.module('MyApp')
       vm.totalUnpaid = 0;
       UserLocalStorageServices.updateUserSettings(params, value)
     }
+
+    $scope.selectEmployer = function(employer) {
+      vm.data.employerSelected = employer;
+    };
 
     function checkTimeIsValid() {
       let punchIn = moment(vm.data.form.timesheetTimeIn, 'YYYY-MM-DD HH:mm:ss', true).isValid();

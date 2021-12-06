@@ -85,6 +85,7 @@ angular.module('MyApp')
 
     DefaultServices.getSettings()
       .then(function(response) {
+        vm.getPeople();
         vm.status.noSettings = false;
         vm.status.errorView = false;
         vm.settings.defaults = response.defaults;
@@ -93,7 +94,6 @@ angular.module('MyApp')
         vm.settings.modal = response.timesheets.defaults.modal;
         vm.settings.limitTo = 18;
         vm.state.settings = vm.settings;
-        vm.getPeople();
       }).catch(function(error) {
         vm.status.noSettings = true;
         vm.status.errorView = true;

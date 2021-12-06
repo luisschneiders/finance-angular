@@ -59,7 +59,6 @@ angular.module('MyApp')
           CalendarServices.getTimesheets($routeParams.calendar)
             .then(function(response) {
               $scope.timesheets = response;
-              $scope.totalHours = TimeServices.getWorkedHours(response);
               buildCalendar(_mapTimesheetData(response));
             }).catch(function(error) {
               console.log('Error getting timesheets: ', error);

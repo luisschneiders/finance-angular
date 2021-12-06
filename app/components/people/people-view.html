@@ -4,7 +4,7 @@
       <div class="col-sm-12">
         <section ng-include="'components/partials/messages.tpl.html'"></section>
         <section ng-if="!state.status.noSettings">
-          <div class="row">
+          <div class="row top-flex">
             <div class="col-xs-6 col-sm-4"><input type="text" placeholder="Search..." ng-model="peopleDescription" class="search-input"></div>
             <div class="col-xs-6 col-sm-4 text-center"><span class="badge">{{::state.pagination.rowCount}}</span> records</div>
             <div class="col-xs-12 col-sm-4 text-right">

@@ -306,6 +306,15 @@ select {
     padding: 15px 5px;
   }
 }
+
+// top
+.top-flex {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+}
+
 @media (min-width: 767px) {
   .padding-top-bottom {
     padding: 0;

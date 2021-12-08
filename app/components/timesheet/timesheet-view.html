@@ -30,30 +30,33 @@
         <div class="row">
           <div class="col-md-12" ng-if="ctrl.switchAlternate == 'list'">
             <div class="row select-period">
-              <div class="col-xs-12 col-md-6 col-md-push-3">
+              <div class="col-xs-12 col-md-4 col-md-push-4">
                 <div class="padding-bottom text-center">
                   <a class="btn btn-default" ng-click="previous()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
                   <a class="btn btn-default btn-date" ng-click="currentMonth()" title="Current Month"><i class="fa fa-calendar"></i> {{::displayCurrentMonth}}</a>
                   <a class="btn btn-default" ng-click="next()"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                 </div>
               </div>
-              <div class="col-xs-12 col-md-3 col-md-push-3 text-center">
+              <div class="col-xs-12 col-md-2 col-md-push-4 text-center padding-bottom">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-md dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ctrl.data.employerSelected.peopleDescription || "Select employer..." | limitTo: ctrl.state.settings.limitTo}}{{ctrl.data.employerSelected.peopleDescription.length >= ctrl.state.settings.limitTo ? '...' : ''}}<span class="caret"></span>
+                    {{ctrl.data.employerSelected.peopleDescription || "Select employer" | limitTo: ctrl.state.settings.limitTo}}{{ctrl.data.employerSelected.peopleDescription.length >= ctrl.state.settings.limitTo ? '...' : ''}}<span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
-                    <li class="text-center">
-                      <a class="button cursor-pointer" ng-click="selectEmployer(undefined)">Clear selection</a>
-                    </li>
-                    <li class="text-center" ng-repeat="employer in ctrl.data.people">
-                      <a class="button cursor-pointer" ng-click="selectEmployer(employer)">{{::employer.peopleDescription}}
+                    <li class="text-right" ng-repeat="employer in ctrl.data.people">
+                      <a class="button cursor-pointer" ng-click="selectEmployer(employer)">{{::employer.peopleDescription | limitTo: ctrl.state.settings.limitTo}}
                         <i class="fa fa-check"
                           ng-class="employer.peopleDescription === ctrl.data.employerSelected.peopleDescription ? ctrl.state.settings.defaults.cssClassEnabled : ctrl.state.settings.defaults.cssClassDisabled"></i>
                       </a>
                     </li>
                   </ul>
                 </div>
+              </div>
+              <div class="col-xs-12 col-md-2 col-md-push-4 text-center padding-bottom ">
+                <a class="btn btn-info" ng-click="selectEmployer(undefined)"
+                    ng-disabled="ctrl.data.employerSelected.peopleDescription === undefined">
+                  Clear filter
+                </a>
               </div>
             </div>
             <div ng-if="timesheets.length == 0">

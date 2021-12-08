@@ -92,7 +92,7 @@ angular.module('MyApp')
         vm.settings.component = response.timesheets;
         vm.settings.templateTop = response.timesheets.defaults.template.top;
         vm.settings.modal = response.timesheets.defaults.modal;
-        vm.settings.limitTo = 18;
+        vm.settings.limitTo = 15;
         vm.state.settings = vm.settings;
       }).catch(function(error) {
         vm.status.noSettings = true;

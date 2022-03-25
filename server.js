@@ -11,6 +11,7 @@ const request = require('request');
 const favicon = require('serve-favicon');
 
 // Load environment variables from .env file
+dotenv.config({ path: path.join(__dirname, '..' ,'/../env/finance-angular', '/.env') });
 dotenv.load();
 
 // Models

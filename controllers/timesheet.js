@@ -107,7 +107,8 @@ exports.saveTimesheet = function(req, res) {
       timesheetFlag: 'r',
       timesheetAddress: req.body.timesheetAddress,
       timesheetLatitude: req.body.latitude,
-      timesheetLongitude: req.body.longitude
+      timesheetLongitude: req.body.longitude,
+      timesheetComments: req.body.timesheetComments
     })
     .then(function(model) {
       res.send({ bank: model, msg: 'Timesheet has been added!' });

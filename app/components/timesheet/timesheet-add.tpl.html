@@ -45,6 +45,12 @@
             </div>
           </div>
           <div class="form-group">
+            <label for="timesheetComments" class="col-sm-4">Comments</label>
+            <div class="col-sm-8">
+              <input type="text" name="timesheetComments" id="timesheetComments" class="form-control" ng-model="ctrl.data.form.timesheetComments" autocomplete="off"/>
+            </div>
+          </div>
+          <div class="form-group">
             <label for="timesheetHourly" class="col-sm-12">Public Holiday or Different Rate?
               <input type="checkbox" name="isNewRate" id="isNewRate" ng-model="ctrl.state.isNewRate" ng-true-value="true" ng-false-value="false">
             </label>

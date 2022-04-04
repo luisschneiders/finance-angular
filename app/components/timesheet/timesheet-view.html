@@ -74,6 +74,7 @@
                       <th>Punch Out</th>
                       <th>Hours</th>
                       <th>Total</th>
+                      <th>Comments</th>
                       <th class="text-center">Status</th>
                       <th class="text-center">Remove</th>
                     </tr>
@@ -87,6 +88,7 @@
                       <td data-title="Punch Out">{{::item.timesheetTimeOut}}</td>
                       <td data-title="Hours">{{::item.timesheetTotalHours}}</td>
                       <td data-title="Total">$ {{::item.timesheetTotal | number:2}}</td>
+                      <td data-title="Comments">{{::item.timesheetComments || "-"}}</td>
                       <td data-title="Status" class="text-center status">
                         <button class="btn" ng-click="ctrl.updateStatus(item);" ng-class="::item.timesheetStatus == 'P' ? ctrl.state.settings.defaults.cssPaid : ctrl.state.settings.defaults.cssUnpaid">
                           {{::item.timesheetStatus == 'P' ? 'Paid' : 'Unpaid'}}
@@ -99,19 +101,19 @@
                     <tr>
                       <td colspan="6"><strong>Total Paid</strong></td>
                       <td colspan="2">$ <strong ng-bind="timesheets | filter: ctrl.data.employerSelected.peopleDescription |  sumColumns: 'timesheetTotal' : 'P' : 'timesheet' | number:2"></strong></td>
-                      <td colspan="1"></td>
+                      <td colspan="2"></td>
                     </tr>
                     <tr>
                       <td colspan="6"><strong>Total Unpaid</strong></td>
                       <td colspan="2">$ <strong ng-bind="timesheets | filter: ctrl.data.employerSelected.peopleDescription | sumColumns: 'timesheetTotal' : 'W' : 'timesheet' | number:2"></strong></td>
-                      <td colspan="1"></td>
+                      <td colspan="2"></td>
                     </tr>
                     <tr>
                       <td colspan="6"><strong>Total Hours</strong></td>
                       <td colspan="2">
                         <strong ng-bind="timesheets | filter: ctrl.data.employerSelected.peopleDescription | totalHours: 'timesheets' "></strong>
                       </td>
-                      <td colspan="1"></td>
+                      <td colspan="2"></td>
                     </tr>
                   </tbody>
                 </table>

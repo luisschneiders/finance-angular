@@ -184,7 +184,7 @@ angular.module('MyApp')
 
       _.forEach(data, function(item) {
         dataFormattedObj.date = item.timesheetStartDate;
-        dataFormattedObj.item = moment(item.timesheetTotalHours, "hh:mm").format("HH:mm");
+        dataFormattedObj.item = item.timesheetComments != null ? `${moment(item.timesheetTotalHours, "hh:mm").format("HH:mm")} - Comments` : moment(item.timesheetTotalHours, "hh:mm").format("HH:mm");
         dataFormatted.push(_.clone(dataFormattedObj));
       });
       return dataFormatted;
